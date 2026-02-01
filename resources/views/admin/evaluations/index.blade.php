@@ -55,13 +55,23 @@
                                     <p class="text-gray-900 font-bold whitespace-no-wrap">{{ $form->title }}</p>
                                     <p class="text-gray-400 text-xs">{{ Str::limit($form->description, 50) }}</p>
                                 </td>
-                                <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                    <span class="relative inline-block px-3 py-1 font-semibold text-blue-900 leading-tight">
+                                <div class="flex flex-col">
+                                    <span
+                                        class="relative inline-block px-3 py-1 font-semibold text-blue-900 leading-tight w-fit">
                                         <span aria-hidden
                                             class="absolute inset-0 bg-blue-200 opacity-50 rounded-full"></span>
                                         <span
                                             class="relative text-xs uppercase tracking-wide">{{ ucfirst($form->type) }}</span>
                                     </span>
+                                    <div class="flex gap-2 mt-1">
+                                        <span
+                                            class="text-[10px] bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full border border-gray-200 font-mono">v{{ $form->version }}</span>
+                                        @if($form->is_draft)
+                                            <span
+                                                class="text-[10px] bg-amber-100 text-amber-700 px-2 py-0.5 rounded-full border border-amber-200 font-bold uppercase tracking-wider">Draft</span>
+                                        @endif
+                                    </div>
+                                </div>
                                 </td>
                                 <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm text-center">
                                     <span class="font-bold text-gray-700">{{ $form->responses_count }}</span>
@@ -73,16 +83,59 @@
                                     </span>
                                 </td>
                                 <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm text-right">
-                                    <div class="flex justify-end gap-3">
+                                    <div class="flex justify-end gap-2 items-center">
+                                        <!-- Analytics / Results -->
                                         <a href="{{ route('admin.evaluations.show', $form->id) }}"
-                                            class="text-brand-600 hover:text-brand-900 font-medium text-xs uppercase tracking-wide">Results</a>
-                                        <form action="{{ route('admin.evaluations.destroy', $form->id) }}" method="POST"
-                                            onsubmit="return confirm('Are you sure? This will delete all responses.');">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit"
-                                                class="text-red-600 hover:text-red-900 font-medium text-xs uppercase tracking-wide">Delete</button>
-                                        </form>
+                                            class="group relative inline-flex items-center justify-center p-2 rounded-lg bg-brand-50 text-brand-600 hover:bg-brand-600 hover:text-white transition-all duration-200"
+                                            title="View Analytics">
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                                            </svg>
+                                        </a>
+
+                                        <!-- Edit -->
+                                        <a href="{{ route('admin.evaluations.edit', $form->id) }}"
+                                            class="p-2 rounded-lg text-gray-400 hover:text-blue-600 hover:bg-blue-50 transition-colors"
+                                            title="Edit Form">
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                            </svg>
+                                        </a>
+
+                                        <!-- Duplicate Action -->
+                                        <button type="button" @click="$dispatch('open-confirmation-modal', { 
+                                                    title: 'Duplicate Form', 
+                                                    message: 'Create a draft copy of \'{{ $form->title }}\'?', 
+                                                    action: '{{ route('admin.evaluations.duplicate', $form->id) }}', 
+                                                    method: 'POST', 
+                                                    confirmText: 'Duplicate' 
+                                                })"
+                                            class="p-2 rounded-lg text-gray-400 hover:text-amber-600 hover:bg-amber-50 transition-colors"
+                                            title="Duplicate Form">
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                                            </svg>
+                                        </button>
+
+                                        <!-- Delete Action -->
+                                        <button type="button" @click="$dispatch('open-confirmation-modal', { 
+                                                    title: 'Delete Evaluation Form', 
+                                                    message: 'Are you sure you want to delete \'{{ $form->title }}\'? This will permanently delete all associated questions and responses.', 
+                                                    action: '{{ route('admin.evaluations.destroy', $form->id) }}', 
+                                                    method: 'DELETE', 
+                                                    danger: true,
+                                                    confirmText: 'Delete Form' 
+                                                })"
+                                            class="p-2 rounded-lg text-gray-400 hover:text-red-600 hover:bg-red-50 transition-colors"
+                                            title="Delete Form">
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                            </svg>
+                                        </button>
                                     </div>
                                 </td>
                             </tr>
@@ -254,12 +307,20 @@
                                 </div>
                             </div>
 
-                            <div class="mt-8 flex justify-end gap-3 border-t pt-4">
-                                <button type="button" @click="closeModal()"
-                                    class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 font-bold hover:bg-gray-50 transition-colors">Cancel</button>
-                                <button type="submit"
-                                    class="px-6 py-2 bg-brand-600 hover:bg-brand-700 text-white font-bold rounded-lg shadow-sm transition-colors transform hover:-translate-y-0.5">Create
-                                    Form</button>
+                            <div class="mt-4 flex items-center justify-between border-t pt-4">
+                                <label class="flex items-center">
+                                    <input type="checkbox" name="save_as_active" value="1"
+                                        class="rounded border-gray-300 text-brand-600 shadow-sm focus:ring-brand-500">
+                                    <span class="ml-2 text-sm text-gray-600 font-bold">Publish Immediately
+                                        (Active)</span>
+                                </label>
+                                <div class="flex gap-3">
+                                    <button type="button" @click="closeModal()"
+                                        class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 font-bold hover:bg-gray-50 transition-colors">Cancel</button>
+                                    <button type="submit"
+                                        class="px-6 py-2 bg-brand-600 hover:bg-brand-700 text-white font-bold rounded-lg shadow-sm transition-colors transform hover:-translate-y-0.5">Create
+                                        Form</button>
+                                </div>
                             </div>
                         </form>
                     </div>

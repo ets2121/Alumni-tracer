@@ -60,18 +60,22 @@
                                     </div>
                                     <div
                                         class="text-sm font-bold text-gray-900 group-hover:text-brand-600 transition-colors">
-                                        {{ $user->name }}</div>
+                                        {{ $user->name }}
+                                    </div>
                                 </div>
                             </td>
                             <td class="px-6 py-3 whitespace-nowrap text-sm"><span
                                     class="px-2 py-0.5 text-[10px] font-bold rounded-md bg-brand-50 text-brand-700 uppercase">{{ $user->alumniProfile->course->code ?? 'N/A' }}</span>
                             </td>
                             <td class="px-6 py-3 whitespace-nowrap text-sm text-gray-600 font-medium">
-                                {{ $user->alumniProfile->batch_year ?? 'N/A' }}</td>
+                                {{ $user->alumniProfile->batch_year ?? 'N/A' }}
+                            </td>
                             <td class="px-6 py-3 whitespace-nowrap text-sm text-gray-500">
-                                {{ $user->alumniProfile->position ?? 'Not specified' }}</td>
+                                {{ $user->alumniProfile->position ?? 'Not specified' }}
+                            </td>
                             <td class="px-6 py-3 whitespace-nowrap text-sm text-gray-500">
-                                {{ $user->alumniProfile->contact_number ?? 'N/A' }}</td>
+                                {{ $user->alumniProfile->contact_number ?? 'N/A' }}
+                            </td>
                             <td class="px-6 py-3 whitespace-nowrap"><span
                                     class="px-2.5 py-1 text-[10px] font-black rounded-full bg-green-100 text-green-700 uppercase tracking-wider">Active</span>
                             </td>
@@ -99,8 +103,14 @@
                                                 d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                                         </svg>
                                     </button>
-                                    <button
-                                        @click="confirmDelete('{{ route('admin.alumni.destroy', $user->id) }}', '{{ $user->name }}')"
+                                    <button @click="$dispatch('open-confirmation-modal', { 
+                                                title: 'Delete Alumni Record', 
+                                                message: 'Are you sure you want to delete {{ $user->name }}? This action cannot be undone.', 
+                                                action: '{{ route('admin.alumni.destroy', $user->id) }}', 
+                                                method: 'DELETE', 
+                                                danger: true,
+                                                confirmText: 'Delete Record' 
+                                            })"
                                         class="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all"
                                         title="Delete Record">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

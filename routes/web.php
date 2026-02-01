@@ -37,6 +37,8 @@ Route::middleware(['auth', 'status'])->group(function () {
         Route::delete('chat-management/message/{message}', [App\Http\Controllers\Admin\ChatManagementController::class, 'deleteMessage'])->name('chat-management.delete-message');
 
         // System Evaluations
+        Route::get('evaluations/{evaluation}/analytics', [App\Http\Controllers\Admin\EvaluationAnalyticsController::class, 'show'])->name('evaluations.analytics');
+        Route::post('evaluations/{evaluation}/duplicate', [App\Http\Controllers\Admin\EvaluationController::class, 'duplicate'])->name('evaluations.duplicate');
         Route::resource('evaluations', App\Http\Controllers\Admin\EvaluationController::class);
 
         // Admin Profile

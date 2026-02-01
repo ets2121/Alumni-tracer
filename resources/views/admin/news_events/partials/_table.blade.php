@@ -148,8 +148,14 @@
                                     </path>
                                 </svg>
                             </button>
-                            <button
-                                @click="confirmDelete('{{ route('admin.news_events.destroy', $post->id) }}', '{{ addslashes($post->title) }}')"
+                            <button @click="$dispatch('open-confirmation-modal', { 
+                                        title: 'Delete Publication', 
+                                        message: 'Are you sure you want to delete {{ addslashes($post->title) }}? This action cannot be undone.', 
+                                        action: '{{ route('admin.news_events.destroy', $post->id) }}', 
+                                        method: 'DELETE', 
+                                        danger: true, 
+                                        confirmText: 'Delete' 
+                                    })"
                                 class="p-1.5 text-gray-400 hover:bg-red-50 hover:text-red-600 rounded-lg transition-colors"
                                 title="Delete">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -54,9 +54,14 @@
                         <span class="text-[8px] font-bold text-gray-400 uppercase tracking-wider">Assets</span>
                         <span class="text-xs font-bold text-gray-900">{{ $album->photos_count }}</span>
                     </div>
-                    <button
-                        @click="confirmDelete('{{ route('admin.gallery.destroy', $album->id) }}', '{{ addslashes($album->name) }}')"
-                        class="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all"
+                    <button @click="$dispatch('open-confirmation-modal', { 
+                                title: 'Delete Album', 
+                                message: 'Are you sure you want to delete {{ addslashes($album->name) }}? This will also delete all photos in this album.', 
+                                action: '{{ route('admin.gallery.destroy', $album->id) }}', 
+                                method: 'DELETE', 
+                                danger: true, 
+                                confirmText: 'Delete Album' 
+                            })" class="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all"
                         title="Delete Album">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"

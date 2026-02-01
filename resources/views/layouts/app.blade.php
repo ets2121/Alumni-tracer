@@ -54,6 +54,7 @@
         @endunless
     </div>
 
+    <x-confirm-modal />
     <x-toast />
     @stack('scripts')
 </body>

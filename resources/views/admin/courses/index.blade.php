@@ -65,40 +65,7 @@
             </div>
         </div>
 
-        <!-- Delete Confirmation Modal -->
-        <div x-show="deleteModalOpen" class="fixed inset-0 z-50 overflow-y-auto" style="display: none;">
-            <div class="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-                <div class="modal-backdrop" @click="deleteModalOpen = false" x-show="deleteModalOpen"
-                    x-transition:enter="transition ease-out duration-500" x-transition:enter-start="opacity-0"
-                    x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-300"
-                    x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"></div>
-                <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-                <div class="modal-content-container sm:max-w-md sm:w-full text-center" x-show="deleteModalOpen"
-                    x-transition:enter="transition ease-out duration-500"
-                    x-transition:enter-start="opacity-0 scale-95 translate-y-8"
-                    x-transition:enter-end="opacity-100 scale-100 translate-y-0"
-                    x-transition:leave="transition ease-in duration-300"
-                    x-transition:leave-start="opacity-100 scale-100 translate-y-0"
-                    x-transition:leave-end="opacity-0 scale-95 translate-y-8">
-                    <div
-                        class="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-red-50 text-red-600 mb-6 border border-red-100">
-                        <svg class="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                        </svg>
-                    </div>
-                    <h3 class="text-2xl font-black text-gray-900 mb-2">Delete Program?</h3>
-                    <p class="text-sm text-gray-500 mb-8 px-4">Removing <span class="font-bold text-gray-800"
-                            x-text="itemToDelete"></span>. Programs with alumni cannot be deleted.</p>
-                    <div class="flex justify-center gap-3">
-                        <button @click="deleteModalOpen = false"
-                            class="flex-1 px-6 py-3 border border-gray-200 rounded-xl text-sm font-bold text-gray-600 bg-white hover:bg-gray-50 transition-all">Cancel</button>
-                        <button @click="executeDelete()"
-                            class="flex-1 px-6 py-3 bg-red-600 text-white rounded-xl text-sm font-bold hover:bg-red-700 transition-all shadow-lg shadow-red-100">Delete</button>
-                    </div>
-                </div>
-            </div>
-        </div>
+
     </div>
 
     @push('scripts')
@@ -195,32 +162,7 @@
                         finally { this.saving = false; }
                     },
 
-                    confirmDelete(url, name) {
-                        this.deleteUrl = url;
-                        this.itemToDelete = name;
-                        this.deleteModalOpen = true;
-                    },
 
-                    async executeDelete() {
-                        try {
-                            const response = await fetch(this.deleteUrl, {
-                                method: 'DELETE',
-                                headers: {
-                                    'X-Requested-With': 'XMLHttpRequest',
-                                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-                                }
-                            });
-                            const data = await response.json();
-                            if (response.ok) {
-                                this.deleteModalOpen = false;
-                                this.fetchData();
-                                this.showFlash(data.success);
-                            } else {
-                                this.deleteModalOpen = false;
-                                this.showFlash(data.error, 'error');
-                            }
-                        } catch (error) { console.error('Delete failed:', error); }
-                    },
 
                     showFlash(message, type = 'success') {
                         const flash = document.getElementById('flash-message');

@@ -9,7 +9,7 @@ class EvaluationForm extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['title', 'description', 'type', 'is_active'];
+    protected $fillable = ['title', 'description', 'type', 'is_active', 'version', 'parent_form_id', 'is_draft'];
 
     public function questions()
     {
