@@ -22,6 +22,8 @@ Route::middleware(['auth', 'status'])->group(function () {
         Route::resource('alumni', App\Http\Controllers\Admin\AlumniController::class);
         Route::resource('courses', App\Http\Controllers\Admin\CourseController::class);
         Route::get('news_events/gallery-photos', [App\Http\Controllers\Admin\NewsEventController::class, 'getGalleryPhotos'])->name('news_events.gallery_photos');
+        Route::get('news_events/{news_event}/broadcast', [App\Http\Controllers\Admin\NewsEventController::class, 'broadcastForm'])->name('news_events.broadcast.form');
+        Route::post('news_events/{news_event}/broadcast', [App\Http\Controllers\Admin\NewsEventController::class, 'broadcast'])->name('news_events.broadcast');
         Route::resource('news_events', App\Http\Controllers\Admin\NewsEventController::class);
         Route::resource('gallery', App\Http\Controllers\Admin\GalleryController::class);
         Route::post('gallery/{gallery}/upload', [App\Http\Controllers\Admin\GalleryController::class, 'uploadPhotos'])->name('gallery.upload');

@@ -32,6 +32,7 @@
             const result = await response.json();
             if (result.success) {
                 this.otpRequired = true;
+                window.dispatchEvent(new CustomEvent('toast', { detail: { message: result.message, type: 'success' } }));
             } else {
                 this.error = result.message;
             }

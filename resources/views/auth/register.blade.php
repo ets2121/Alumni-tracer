@@ -31,6 +31,7 @@
                 if (result.success) {
                     this.step = 'verify';
                     this.message = result.message;
+                    window.dispatchEvent(new CustomEvent('toast', { detail: { message: result.message, type: 'success' } }));
                 } else {
                     this.error = result.message;
                 }

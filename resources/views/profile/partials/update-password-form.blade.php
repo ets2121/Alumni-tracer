@@ -31,6 +31,7 @@
             const result = await response.json();
             if (result.success) {
                 this.otpRequired = true;
+                window.dispatchEvent(new CustomEvent('toast', { detail: { message: result.message, type: 'success' } }));
             } else {
                 this.error = result.message;
             }
@@ -132,7 +133,8 @@
             class="bg-white rounded-3xl shadow-2xl max-w-md w-full p-8 relative animate-in slide-in-from-bottom-8 duration-300">
             <h3 class="text-2xl font-black text-brand-900 uppercase tracking-tight mb-2">Confirm Your Identity</h3>
             <p class="text-sm text-gray-600 mb-6">For security, we've sent a 6-digit code to
-                <strong>{{ $user->email }}</strong>. Enter it to authorize this password change.</p>
+                <strong>{{ $user->email }}</strong>. Enter it to authorize this password change.
+            </p>
 
             <div x-show="error" class="mb-4 p-3 bg-red-50 border-l-4 border-red-500 text-red-700 text-sm"
                 x-text="error"></div>

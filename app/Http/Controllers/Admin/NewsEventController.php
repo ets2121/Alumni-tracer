@@ -354,4 +354,48 @@ class NewsEventController extends Controller
             ]);
         }
     }
+
+    public function broadcastForm(NewsEvent $news_event)
+    {
+        if ($news_event->type !== 'event') {
+            return response()->json(['error' => 'Only events can be broadcasted.'], 400);
+        }
+        $courses = \App\Models\Course::orderBy('name')->get();
+        return view('admin.news_events.partials._broadcast_form', compact('news_event', 'courses'));
+    }
+
+    public function broadcast(Request $request, NewsEvent $news_event)
+    {
+        $validated = $request->validate([
+            'target_type' => 'required|in:all,batch,course,batch_course',
+            'target_batch' => 'nullable|string',
+            'target_course_id' => 'nullable|exists:courses,id',
+        ]);
+
+        $query = \App\Models\User::where('role', 'alumni')->where('status', 'active');
+
+        if ($validated['target_type'] !== 'all') {
+            $query->whereHas('alumniProfile', function ($q) use ($validated) {
+                if ($validated['target_type'] === 'batch' || $validated['target_type'] === 'batch_course') {
+                    $q->where('graduation_year', $validated['target_batch']);
+                }
+                if ($validated['target_type'] === 'course' || $validated['target_type'] === 'batch_course') {
+                    $q->where('course_id', $validated['target_course_id']);
+                }
+            });
+        }
+
+        $alumni = $query->get();
+
+        if ($alumni->isEmpty()) {
+            return response()->json(['error' => 'No active alumni found matching the selected criteria.'], 422);
+        }
+
+        // Update the event's targeting for record keeping
+        $news_event->update($validated);
+
+        \Illuminate\Support\Facades\Notification::send($alumni, new \App\Notifications\EventInvitation($news_event));
+
+        return response()->json(['success' => 'Invitations broadcasted to ' . $alumni->count() . ' alumni successfully!']);
+    }
 }

@@ -54,6 +54,7 @@
         @endunless
     </div>
 
+    <x-toast />
     @stack('scripts')
 </body>
 

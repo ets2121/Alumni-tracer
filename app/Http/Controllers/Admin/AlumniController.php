@@ -81,9 +81,35 @@ class AlumniController extends Controller
         if ($oldStatus !== 'active' && $alumni->status === 'active') {
             try {
                 $alumni->notify(new \App\Notifications\RegistrationApproved($alumni));
+
+                // AUTOMATED: Send invitations for upcoming events matching this alumni's profile
+                $upcomingEvents = \App\Models\NewsEvent::where('type', 'event')
+                    ->where('event_date', '>=', now())
+                    ->where(function ($query) use ($alumni) {
+                        $profile = $alumni->alumniProfile;
+                        $query->where('target_type', 'all')
+                            ->orWhere(function ($q) use ($profile) {
+                                $q->where('target_type', 'batch')
+                                    ->where('target_batch', $profile->batch_year ?? $profile->graduation_year);
+                            })
+                            ->orWhere(function ($q) use ($profile) {
+                                $q->where('target_type', 'course')
+                                    ->where('target_course_id', $profile->course_id);
+                            })
+                            ->orWhere(function ($q) use ($profile) {
+                                $q->where('target_type', 'batch_course')
+                                    ->where('target_batch', $profile->batch_year ?? $profile->graduation_year)
+                                    ->where('target_course_id', $profile->course_id);
+                            });
+                    })
+                    ->get();
+
+                foreach ($upcomingEvents as $event) {
+                    $alumni->notify(new \App\Notifications\EventInvitation($event));
+                }
             } catch (\Exception $e) {
                 // Log the error but don't block the update
-                \Illuminate\Support\Facades\Log::error("Failed to send approval email: " . $e->getMessage());
+                \Illuminate\Support\Facades\Log::error("Failed to process approval notifications: " . $e->getMessage());
             }
         }
 

@@ -128,6 +128,17 @@
                         class="sticky right-0 bg-white group-hover:bg-gray-50 shadow-[-4px_0_8px_-2px_rgba(0,0,0,0.05)] px-5 py-4 text-sm text-right z-10">
                         <div
                             class="flex items-center justify-end gap-2 opacity-80 group-hover:opacity-100 transition-opacity">
+                            @if($post->type === 'event')
+                                <button
+                                    @click="openModal('{{ route('admin.news_events.broadcast.form', $post->id) }}', 'Broadcast Invitations')"
+                                    class="p-1.5 text-gray-400 hover:text-purple-600 hover:bg-purple-50 rounded-lg transition-colors"
+                                    title="Broadcast Invitations">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.167H3.38a1.745 1.745 0 01-1.457-2.711l1.547-2.166a1.723 1.723 0 011.121-.632L11 5.882zM11 5.882c.35-.022.724.019 1 .118.475.17.888.477 1.177.876L16.273 11c.238.328.39.706.441 1.103.053.458.044.891-.026 1.285L15 15.391a2.01 2.01 0 01-1.574.882c-.183.003-.366-.02-.545-.068l-1.881-.512M11 5.882c0-.183.021-.366.068-.545L12 3m6 10l2 2m-2-4l2-2" />
+                                    </svg>
+                                </button>
+                            @endif
                             <button @click="openModal('{{ route('admin.news_events.edit', $post->id) }}', 'Edit Content')"
                                 class="p-1.5 text-gray-400 hover:text-brand-600 hover:bg-brand-50 rounded-lg transition-colors"
                                 title="Edit">

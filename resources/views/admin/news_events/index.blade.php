@@ -297,13 +297,10 @@
                         } catch (error) { console.error('Delete failed:', error); }
                     },
 
-                    showFlash(message) {
-                        const flash = document.getElementById('flash-message');
-                        flash.innerHTML = `<div class="fixed top-8 right-8 z-[100] bg-gray-900 border border-white/10 backdrop-blur-xl text-white px-8 py-4 rounded-2xl shadow-2xl animate-in slide-in-from-right duration-500 flex items-center gap-4">
-                                            <div class="p-2 bg-green-500 rounded-full text-white"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" /></svg></div>
-                                            <span class="font-bold text-sm">${message}</span>
-                                        </div>`;
-                        setTimeout(() => flash.innerHTML = '', 4000);
+                    showFlash(message, type = 'success') {
+                        window.dispatchEvent(new CustomEvent('toast', {
+                            detail: { message: message, type: type }
+                        }));
                     }
                 }
             }
