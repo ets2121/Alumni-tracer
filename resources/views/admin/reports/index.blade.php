@@ -65,6 +65,22 @@
                     <option value="Local">Local</option>
                     <option value="Overseas">Overseas</option>
                 </select>
+
+                <select x-model="courseId"
+                    class="bg-white border-gray-100 rounded-xl text-[10px] font-black uppercase tracking-widest focus:ring-brand-500 shadow-sm transition-all h-10 w-40">
+                    <option value="">All Programs</option>
+                    @foreach($courses as $course)
+                        <option value="{{ $course->id }}">{{ $course->code }}</option>
+                    @endforeach
+                </select>
+
+                <select x-model="batchYear"
+                    class="bg-white border-gray-100 rounded-xl text-[10px] font-black uppercase tracking-widest focus:ring-brand-500 shadow-sm transition-all h-10">
+                    <option value="">All Batches</option>
+                    @for($y = date('Y'); $y >= 1990; $y--)
+                        <option value="{{ $y }}">{{ $y }}</option>
+                    @endfor
+                </select>
             </div>
         </div>
 
@@ -335,6 +351,8 @@
                     workStatus: '',
                     establishmentType: '',
                     workLocation: '',
+                    courseId: '',
+                    batchYear: '',
                     loading: false,
                     previewOpen: false,
                     currentReportType: '',
@@ -355,6 +373,8 @@
                         if (this.workStatus) url.searchParams.set('work_status', this.workStatus);
                         if (this.establishmentType) url.searchParams.set('establishment_type', this.establishmentType);
                         if (this.workLocation) url.searchParams.set('work_location', this.workLocation);
+                        if (this.courseId) url.searchParams.set('course_id', this.courseId);
+                        if (this.batchYear) url.searchParams.set('batch_year', this.batchYear);
 
                         try {
                             const response = await fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' } });
@@ -376,16 +396,42 @@
                         const baseConfig = { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } };
 
                         // 1. COMBINED MATRIX CHARTS
-                        this.createChart('chartByCourse', 'doughnut', baseConfig, { cutout: '85%', colors: ['#6366f1', '#a855f7', '#ec4899', '#f43f5e', '#f97316', '#eab308'] });
+                        this.createChart('chartByCourse', 'bar', baseConfig, { colors: ['#6366f1'] }); // Changed to Bar as requested
                         this.createChart('chartByEmployment', 'pie', baseConfig, { colors: ['#2563eb', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6'] });
                         this.createChart('chartByGender', 'polarArea', baseConfig, { colors: ['rgba(99, 102, 241, 0.7)', 'rgba(236, 72, 153, 0.7)', 'rgba(100, 116, 139, 0.7)'] });
-                        this.createChart('chartByCivil', 'bar', baseConfig, { borderRadius: 8, colors: ['#6366f1'] });
+                        
+                        // Stacked Bar for Stability
+                        const ctxStability = document.getElementById('chartStabilityStacked');
+                        if (ctxStability) {
+                            new Chart(ctxStability, {
+                                type: 'bar',
+                                data: {
+                                    labels: JSON.parse(ctxStability.dataset.labels),
+                                    datasets: [
+                                        { label: 'Permanent', data: JSON.parse(ctxStability.dataset.permanent), backgroundColor: '#10b981' },
+                                        { label: 'Contractual', data: JSON.parse(ctxStability.dataset.contractual), backgroundColor: '#f59e0b' },
+                                        { label: 'Job Order', data: JSON.parse(ctxStability.dataset.jo), backgroundColor: '#ef4444' }
+                                    ]
+                                },
+                                options: { ...baseConfig, scales: { x: { stacked: true }, y: { stacked: true } } }
+                            });
+                        }
 
-                        // 1.5 NEW MATRIX CHARTS
-                        this.createChart('chartByWorkStatus', 'pie', baseConfig, { colors: ['#10b981', '#f59e0b', '#ef4444'] });
-                        this.createChart('chartByEstablishment', 'doughnut', baseConfig, { cutout: '70%', colors: ['#6366f1', '#a855f7'] });
-                        this.createChart('chartByWorkLocation', 'pie', baseConfig, { colors: ['#3b82f6', '#f97316'] });
-                        this.createChart('chartTopFieldsMatrix', 'bar', baseConfig, { indexAxis: 'y', borderRadius: 4, colors: ['#6366f1'] });
+                        // Combination Chart for Registration vs Employment
+                        const ctxCombo = document.getElementById('chartCombinationSummary');
+                        if (ctxCombo) {
+                            new Chart(ctxCombo, {
+                                type: 'bar',
+                                data: {
+                                    labels: JSON.parse(ctxCombo.dataset.labels),
+                                    datasets: [
+                                        { type: 'bar', label: 'Total Alumni', data: JSON.parse(ctxCombo.dataset.total), backgroundColor: 'rgba(99, 102, 241, 0.2)', borderColor: '#6366f1', borderWidth: 1 },
+                                        { type: 'line', label: 'Employed', data: JSON.parse(ctxCombo.dataset.employed), borderColor: '#10b981', borderWidth: 3, tension: 0.4, fill: false }
+                                    ]
+                                },
+                                options: baseConfig
+                            });
+                        }
 
                         // 2. FOCUS VIEW CHARTS
                         this.createChart('chartProgramFocus', 'bar', baseConfig, {
@@ -403,15 +449,35 @@
                         this.createChart('chartCivilFocus', 'bar', baseConfig, { borderRadius: 12, colors: ['#8b5cf6'] });
 
                         // 4. LABOR ANALYTICS ADDITIONS
-                        this.createChart('chartWorkStatusFocus', 'pie', baseConfig, { colors: ['#10b981', '#f59e0b', '#ef4444'] });
-                        this.createChart('chartEstablishmentFocus', 'doughnut', baseConfig, { cutout: '70%', colors: ['#6366f1', '#a855f7'] });
-                        this.createChart('chartWorkLocationFocus', 'pie', baseConfig, { colors: ['#3b82f6', '#f97316'] });
+                        // Grouped Bar for Location Matrix
+                        const ctxLoc = document.getElementById('chartLocationGrouped');
+                        if (ctxLoc) {
+                            new Chart(ctxLoc, {
+                                type: 'bar',
+                                data: {
+                                    labels: JSON.parse(ctxLoc.dataset.labels),
+                                    datasets: [
+                                        { label: 'Local', data: JSON.parse(ctxLoc.dataset.local), backgroundColor: '#3b82f6' },
+                                        { label: 'Overseas', data: JSON.parse(ctxLoc.dataset.overseas), backgroundColor: '#f97316' }
+                                    ]
+                                },
+                                options: baseConfig
+                            });
+                        }
+
+                        this.createChart('chartByEstablishmentPie', 'pie', baseConfig, { colors: ['#6366f1', '#a855f7'] });
+                        this.createChart('chartByWorkLocationDonut', 'doughnut', baseConfig, { cutout: '70%', colors: ['#3b82f6', '#f97316'] });
+                        
                         this.createChart('chartTopFieldsFocus', 'bar', baseConfig, {
                             indexAxis: 'y',
                             borderRadius: 20,
                             colors: ['#6366f1'],
                             scales: { x: { grid: { display: false } }, y: { grid: { display: false } } }
                         });
+
+                        // Tracer Static Examples
+                        this.createChart('chartTracerLikert', 'bar', baseConfig, { colors: ['#10b981', '#34d399', '#94a3b8', '#f87171', '#ef4444'] });
+                        this.createChart('chartTracerMultiple', 'bar', baseConfig, { indexAxis: 'y', colors: ['#6366f1'] });
 
                         // 3. REGISTRATION TREND
                         const ctxTrend = document.getElementById('chartRegistrationTrend');
@@ -498,40 +564,40 @@
 
                         // Premium Print Header with Logo
                         printWindow.document.write(`
-                                <div class="mb-12 pb-8 border-b-4 border-gray-900 flex justify-between items-end">
-                                    <div class="flex items-center gap-6">
-                                        <img src="${logoUrl}" class="w-16 h-16 object-contain" alt="Logo">
-                                        <div class="h-12 w-px bg-gray-200"></div>
-                                        <div>
-                                            <h1 class="text-2xl font-black uppercase tracking-[0.1em] text-gray-900 leading-none">Alumni Management System</h1>
-                                            <p class="text-[10px] font-black text-brand-600 uppercase tracking-[0.3em] mt-2">Official Analytical Intelligence Record</p>
+                                    <div class="mb-12 pb-8 border-b-4 border-gray-900 flex justify-between items-end">
+                                        <div class="flex items-center gap-6">
+                                            <img src="${logoUrl}" class="w-16 h-16 object-contain" alt="Logo">
+                                            <div class="h-12 w-px bg-gray-200"></div>
+                                            <div>
+                                                <h1 class="text-2xl font-black uppercase tracking-[0.1em] text-gray-900 leading-none">Alumni Management System</h1>
+                                                <p class="text-[10px] font-black text-brand-600 uppercase tracking-[0.3em] mt-2">Official Analytical Intelligence Record</p>
+                                            </div>
+                                        </div>
+                                        <div class="text-right">
+                                            <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Document ID: AMS-${Date.now()}</p>
+                                            <p class="text-[10px] font-black text-gray-900 uppercase tracking-widest mt-1">Generated: {{ date('F d, Y') }}</p>
                                         </div>
                                     </div>
-                                    <div class="text-right">
-                                        <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Document ID: AMS-${Date.now()}</p>
-                                        <p class="text-[10px] font-black text-gray-900 uppercase tracking-widest mt-1">Generated: {{ date('F d, Y') }}</p>
-                                    </div>
-                                </div>
-                            `);
+                                `);
 
                         printWindow.document.write(clone.innerHTML);
 
                         // Signatory Section for Print
                         printWindow.document.write(`
-                                <div class="mt-24 pt-10 border-t border-gray-100 flex justify-between items-start opacity-80">
-                                    <div class="text-center">
-                                        <div class="w-48 border-b border-gray-900 mb-2 mx-auto"></div>
-                                        <p class="text-[9px] font-black uppercase tracking-widest">Verified by Records Office</p>
+                                    <div class="mt-24 pt-10 border-t border-gray-100 flex justify-between items-start opacity-80">
+                                        <div class="text-center">
+                                            <div class="w-48 border-b border-gray-900 mb-2 mx-auto"></div>
+                                            <p class="text-[9px] font-black uppercase tracking-widest">Verified by Records Office</p>
+                                        </div>
+                                        <div class="text-center">
+                                            <p class="text-[9px] font-black text-gray-300 uppercase tracking-widest italic mb-2">END OF DOCUMENT</p>
+                                        </div>
+                                        <div class="text-center">
+                                            <div class="w-48 border-b border-gray-900 mb-2 mx-auto"></div>
+                                            <p class="text-[9px] font-black uppercase tracking-widest">Institutional Registrar</p>
+                                        </div>
                                     </div>
-                                    <div class="text-center">
-                                        <p class="text-[9px] font-black text-gray-300 uppercase tracking-widest italic mb-2">END OF DOCUMENT</p>
-                                    </div>
-                                    <div class="text-center">
-                                        <div class="w-48 border-b border-gray-900 mb-2 mx-auto"></div>
-                                        <p class="text-[9px] font-black uppercase tracking-widest">Institutional Registrar</p>
-                                    </div>
-                                </div>
-                            `);
+                                `);
 
                         printWindow.document.write('</body></html>');
                         printWindow.document.close();

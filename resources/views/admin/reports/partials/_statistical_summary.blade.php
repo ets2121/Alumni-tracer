@@ -17,6 +17,9 @@
             <button @click="subTab = 'demographics'"
                 :class="subTab === 'demographics' ? 'bg-white shadow-sm text-gray-900' : 'text-gray-500 hover:text-gray-700'"
                 class="flex-1 md:flex-none px-6 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all">Demographics</button>
+            <button @click="subTab = 'tracer'"
+                :class="subTab === 'tracer' ? 'bg-white shadow-sm text-gray-900' : 'text-gray-500 hover:text-gray-700'"
+                class="flex-1 md:flex-none px-6 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all">Tracer Results</button>
         </div>
         <div class="text-[9px] font-bold text-gray-400 uppercase hidden lg:block italic">💡 Click a tab to focus on
             specific datasets • Report Date: {{ date('M d, Y') }}</div>
@@ -28,12 +31,12 @@
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             <!-- Course Dist (Doughnut) -->
             <div class="bg-gray-50/50 p-6 rounded-[2rem] border border-gray-100 flex flex-col items-center">
-                <span class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-4">Top Programs</span>
+                <span class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-4">Programs</span>
                 <div class="h-32 w-32 relative">
                     <canvas id="chartByCourse" data-labels="{{ json_encode($data['by_course']->pluck('code')) }}"
                         data-values="{{ json_encode($data['by_course']->pluck('alumni_count')) }}"></canvas>
                 </div>
-                <div class="mt-4 text-[8px] font-bold text-gray-400 uppercase">Program Distribution</div>
+                <div class="mt-4 text-[8px] font-bold text-gray-400 uppercase">Bar Chart Comparison</div>
             </div>
 
             <!-- Employment (Pie) -->
@@ -59,24 +62,26 @@
 
             <!-- Civil Status (Bar) -->
             <div class="bg-gray-50/50 p-6 rounded-[2rem] border border-gray-100 flex flex-col items-center">
-                <span class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-4">Civil Status</span>
+                <span class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-4">Stability Focus</span>
                 <div class="h-32 w-32 relative">
-                    <canvas id="chartByCivil"
-                        data-labels="{{ json_encode($data['by_civil_status']->pluck('civil_status')) }}"
-                        data-values="{{ json_encode($data['by_civil_status']->pluck('count')) }}"></canvas>
+                    <canvas id="chartStabilityStacked"
+                        data-labels="{{ json_encode($data['stability_matrix']->pluck('program')) }}"
+                        data-permanent="{{ json_encode($data['stability_matrix']->pluck('Permanent')) }}"
+                        data-contractual="{{ json_encode($data['stability_matrix']->pluck('Contractual')) }}"
+                        data-jo="{{ json_encode($data['stability_matrix']->pluck('Job Order')) }}"></canvas>
                 </div>
-                <div class="mt-4 text-[8px] font-bold text-gray-400 uppercase">Social Metrics</div>
+                <div class="mt-4 text-[8px] font-bold text-gray-400 uppercase">Stacked Status Matrix</div>
             </div>
         </div>
 
-        <!-- Momentum Trend -->
+        <!-- Momentum Trend (Combination Chart) -->
         <div class="bg-gray-900 p-8 rounded-[2.5rem] shadow-2xl">
-            <h4 class="text-[9px] font-black text-brand-400 uppercase tracking-widest mb-6 px-2">Institutional
-                Registration Velocity</h4>
+            <h4 class="text-[9px] font-black text-brand-400 uppercase tracking-widest mb-6 px-2">Overall Employment Flux (Combination)</h4>
             <div class="h-48 w-full">
-                <canvas id="chartRegistrationTrend"
-                    data-labels="{{ json_encode($data['registration_trend']->pluck('month')) }}"
-                    data-values="{{ json_encode($data['registration_trend']->pluck('count')) }}"></canvas>
+                <canvas id="chartCombinationSummary"
+                    data-labels="{{ json_encode($data['combination_data']->pluck('month')) }}"
+                    data-total="{{ json_encode($data['combination_data']->pluck('total_registrants')) }}"
+                    data-employed="{{ json_encode($data['combination_data']->pluck('employed_count')) }}"></canvas>
             </div>
         </div>
     </div>
@@ -148,11 +153,12 @@
 
             <!-- Professional Focus (New) -->
             <div class="bg-indigo-50 p-8 rounded-[2.5rem] border border-indigo-100 md:col-span-1">
-                <h4 class="text-xs font-black text-indigo-900 mb-6 uppercase tracking-tight">Contractual Mix</h4>
+                <h4 class="text-xs font-black text-indigo-900 mb-6 uppercase tracking-tight">Location Matrix (Grouped)</h4>
                 <div class="h-48 w-full">
-                    <canvas id="chartWorkStatusFocus"
-                        data-labels="{{ json_encode($data['by_work_status']->pluck('work_status')) }}"
-                        data-values="{{ json_encode($data['by_work_status']->pluck('count')) }}"></canvas>
+                    <canvas id="chartLocationGrouped"
+                        data-labels="{{ json_encode($data['location_matrix']->pluck('program')) }}"
+                        data-local="{{ json_encode($data['location_matrix']->pluck('Local')) }}"
+                        data-overseas="{{ json_encode($data['location_matrix']->pluck('Overseas')) }}"></canvas>
                 </div>
             </div>
 
@@ -160,12 +166,12 @@
                 <h4 class="text-xs font-black text-purple-900 mb-6 uppercase tracking-tight">Sector & Location Focus</h4>
                 <div class="grid grid-cols-2 gap-4 h-full">
                     <div class="h-32">
-                        <canvas id="chartEstablishmentFocus"
+                        <canvas id="chartByEstablishmentPie"
                             data-labels="{{ json_encode($data['by_establishment']->pluck('establishment_type')) }}"
                             data-values="{{ json_encode($data['by_establishment']->pluck('count')) }}"></canvas>
                     </div>
                     <div class="h-32">
-                        <canvas id="chartWorkLocationFocus"
+                        <canvas id="chartByWorkLocationDonut"
                             data-labels="{{ json_encode($data['by_work_location']->pluck('work_location')) }}"
                             data-values="{{ json_encode($data['by_work_location']->pluck('count')) }}"></canvas>
                     </div>
@@ -256,6 +262,34 @@
                 <h4 class="text-xs font-black text-gray-400 mb-6 uppercase tracking-widest px-2">Civil Status Architecture</h4>
                 <div class="h-[300px] w-full relative">
                     <canvas id="chartCivilFocus" data-labels="{{ json_encode($data['by_civil_status']->pluck('civil_status')) }}" data-values="{{ json_encode($data['by_civil_status']->pluck('count')) }}"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TRACER RESULTS FOCUS -->
+    <div x-show="subTab === 'tracer'" class="animate-in fade-in duration-500">
+        <div class="bg-white p-12 rounded-[3rem] border border-gray-100 shadow-xl text-center">
+            <div class="w-20 h-20 bg-brand-50 text-brand-600 rounded-[2.5rem] flex items-center justify-center mx-auto mb-8">
+                <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+            </div>
+            <h3 class="text-3xl font-black text-gray-900 mb-4 uppercase tracking-tighter">Graduate Tracer Engine</h3>
+            <p class="text-gray-500 max-w-xl mx-auto mb-10 leading-relaxed font-medium">Capture Likert-scale sentiment and multiple-choice career path analysis. CHED-compliant reporting for institutional evaluation.</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="bg-gray-50 p-8 rounded-[2.5rem] border border-gray-100">
+                    <h4 class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-6">Likert Evaluation (Rating)</h4>
+                    <div class="h-48 w-full">
+                        <canvas id="chartTracerLikert" data-labels='["Very Satisfied", "Satisfied", "Neutral", "Unsatisfied", "Very Unsatisfied"]' data-values='[45, 30, 15, 7, 3]'></canvas>
+                    </div>
+                </div>
+                <div class="bg-gray-50 p-8 rounded-[2.5rem] border border-gray-100">
+                    <h4 class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-6">Response Analytics (Bar)</h4>
+                    <div class="h-48 w-full">
+                        <canvas id="chartTracerMultiple" data-labels='["Curriculum", "Facilities", "Placement", "Services"]' data-values='[80, 65, 90, 75]'></canvas>
+                    </div>
                 </div>
             </div>
         </div>
