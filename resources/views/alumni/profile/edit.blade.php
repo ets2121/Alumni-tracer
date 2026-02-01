@@ -269,6 +269,68 @@
                                 @error('employment_status') <p class="mt-2 text-sm text-red-600">{{ $message }}</p> @enderror
                             </div>
 
+                            <!-- Extended Professional Details -->
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 p-6 bg-brand-50/50 rounded-3xl border border-brand-100" 
+                                x-show="['Employed', 'Self-employed', 'Underemployed'].includes(document.getElementById('employment_status').value)"
+                                x-transition:enter="transition ease-out duration-300"
+                                x-transition:enter-start="opacity-0 -translate-y-4"
+                                x-transition:enter-end="opacity-100 translate-y-0">
+                                
+                                <div>
+                                    <label for="work_status" class="block text-sm font-medium text-gray-700">Work Status</label>
+                                    <select name="work_status" id="work_status"
+                                        class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-brand-500 focus:border-brand-500 sm:text-sm">
+                                        <option value="">Select Status</option>
+                                        <option value="Permanent" {{ old('work_status', $profile->work_status ?? '') == 'Permanent' ? 'selected' : '' }}>Permanent</option>
+                                        <option value="Contractual" {{ old('work_status', $profile->work_status ?? '') == 'Contractual' ? 'selected' : '' }}>Contractual</option>
+                                        <option value="Job Order" {{ old('work_status', $profile->work_status ?? '') == 'Job Order' ? 'selected' : '' }}>Job Order</option>
+                                    </select>
+                                    @error('work_status') <p class="mt-2 text-sm text-red-600">{{ $message }}</p> @enderror
+                                </div>
+
+                                <div>
+                                    <label for="establishment_type" class="block text-sm font-medium text-gray-700">Establishment Type</label>
+                                    <select name="establishment_type" id="establishment_type"
+                                        class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-brand-500 focus:border-brand-500 sm:text-sm">
+                                        <option value="">Select Type</option>
+                                        <option value="Public" {{ old('establishment_type', $profile->establishment_type ?? '') == 'Public' ? 'selected' : '' }}>Public (Government)</option>
+                                        <option value="Private" {{ old('establishment_type', $profile->establishment_type ?? '') == 'Private' ? 'selected' : '' }}>Private</option>
+                                    </select>
+                                    @error('establishment_type') <p class="mt-2 text-sm text-red-600">{{ $message }}</p> @enderror
+                                </div>
+
+                                <div>
+                                    <label for="work_location" class="block text-sm font-medium text-gray-700">Work Location</label>
+                                    <select name="work_location" id="work_location"
+                                        class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-brand-500 focus:border-brand-500 sm:text-sm">
+                                        <option value="">Select Location</option>
+                                        <option value="Local" {{ old('work_location', $profile->work_location ?? '') == 'Local' ? 'selected' : '' }}>Local (Philippines)</option>
+                                        <option value="Overseas" {{ old('work_location', $profile->work_location ?? '') == 'Overseas' ? 'selected' : '' }}>Overseas (Abroad)</option>
+                                    </select>
+                                    @error('work_location') <p class="mt-2 text-sm text-red-600">{{ $message }}</p> @enderror
+                                </div>
+
+                                <div>
+                                    <label for="field_of_work" class="block text-sm font-medium text-gray-700">Field of Work / Industry</label>
+                                    <input type="text" name="field_of_work" id="field_of_work" value="{{ old('field_of_work', $profile->field_of_work ?? '') }}" list="industries"
+                                        placeholder="e.g. Information Technology"
+                                        class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-brand-500 focus:border-brand-500 sm:text-sm">
+                                    <datalist id="industries">
+                                        <option value="Information Technology">
+                                        <option value="Education">
+                                        <option value="Healthcare">
+                                        <option value="Engineering">
+                                        <option value="Finance & Banking">
+                                        <option value="Business Process Outsourcing (BPO)">
+                                        <option value="Agriculture">
+                                        <option value="Manufacturing">
+                                        <option value="Tourism & Hospitality">
+                                        <option value="Government Service">
+                                    </datalist>
+                                    @error('field_of_work') <p class="mt-2 text-sm text-red-600">{{ $message }}</p> @enderror
+                                </div>
+                            </div>
+
                             <div class="flex justify-between items-center border-b pb-2 mb-4">
                                 <h4 class="text-base font-medium leading-6 text-gray-900">Work History</h4>
                                 <button type="button" @click="openModal()" class="text-sm text-brand-600 hover:text-brand-800 font-medium flex items-center gap-1">

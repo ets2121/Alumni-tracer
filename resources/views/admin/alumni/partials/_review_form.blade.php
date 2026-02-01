@@ -39,6 +39,40 @@
                     <span class="text-gray-400 font-bold text-[10px] uppercase">Graduation Batch</span>
                     <span class="px-3 py-1 bg-brand-50 text-brand-700 rounded-full font-black text-[10px]">{{ $alumni->alumniProfile->batch_year }}</span>
                 </div>
+
+                <div class="pt-4 border-t border-gray-50 space-y-3">
+                    <div class="flex justify-between items-center">
+                        <span class="text-[9px] font-bold text-gray-400 uppercase">Employment</span>
+                        <span class="text-xs font-black text-gray-700">{{ $alumni->alumniProfile->employment_status }}</span>
+                    </div>
+                    @if($alumni->alumniProfile->field_of_work)
+                    <div class="flex justify-between items-center">
+                        <span class="text-[9px] font-bold text-gray-400 uppercase">Field of Work</span>
+                        <span class="text-xs font-black text-gray-700">{{ $alumni->alumniProfile->field_of_work }}</span>
+                    </div>
+                    @endif
+                    @if($alumni->alumniProfile->work_status)
+                    <div class="flex justify-between items-center">
+                        <span class="text-[9px] font-bold text-gray-400 uppercase">Status</span>
+                        <span class="px-2 py-0.5 bg-gray-100 text-gray-600 rounded-md font-bold text-[9px] uppercase">{{ $alumni->alumniProfile->work_status }}</span>
+                    </div>
+                    @endif
+                    @if($alumni->alumniProfile->establishment_type)
+                    <div class="flex justify-between items-center">
+                        <span class="text-[9px] font-bold text-gray-400 uppercase">Sector</span>
+                        <span class="text-xs font-bold text-gray-600">{{ $alumni->alumniProfile->establishment_type }}</span>
+                    </div>
+                    @endif
+                    @if($alumni->alumniProfile->work_location)
+                    <div class="flex justify-between items-center">
+                        <span class="text-[9px] font-bold text-gray-400 uppercase">Location</span>
+                        <span class="flex items-center gap-1 text-xs font-bold text-gray-600">
+                            <svg class="w-3 h-3 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /></svg>
+                            {{ $alumni->alumniProfile->work_location }}
+                        </span>
+                    </div>
+                    @endif
+                </div>
             </div>
             @endif
         </div>

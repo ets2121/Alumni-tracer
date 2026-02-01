@@ -144,20 +144,97 @@
                 @endphp
                <p class="text-4xl font-black text-green-700">{{ $rate }}%</p>
                 <p class="text-[10px] font-bold text-green-600/70 uppercase mt-1">Institutional Employment Rate</p>
-       
-                
             </div>
 
-                                  <div class="bg-white p-6 rounded-[2rem] border border-gray-100 shadow-sm flex items-center gap-6">
-                <div class="flex-1">
+            <!-- Professional Focus (New) -->
+            <div class="bg-indigo-50 p-8 rounded-[2.5rem] border border-indigo-100 md:col-span-1">
+                <h4 class="text-xs font-black text-indigo-900 mb-6 uppercase tracking-tight">Contractual Mix</h4>
+                <div class="h-48 w-full">
+                    <canvas id="chartWorkStatusFocus"
+                        data-labels="{{ json_encode($data['by_work_status']->pluck('work_status')) }}"
+                        data-values="{{ json_encode($data['by_work_status']->pluck('count')) }}"></canvas>
+                </div>
+            </div>
 
-                       
-                        
-         
-                                                          <h5 class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">Social Mobility Index</h5>
+            <div class="bg-purple-50 p-8 rounded-[2.5rem] border border-purple-100 md:col-span-1">
+                <h4 class="text-xs font-black text-purple-900 mb-6 uppercase tracking-tight">Sector & Location Focus</h4>
+                <div class="grid grid-cols-2 gap-4 h-full">
+                    <div class="h-32">
+                        <canvas id="chartEstablishmentFocus"
+                            data-labels="{{ json_encode($data['by_establishment']->pluck('establishment_type')) }}"
+                            data-values="{{ json_encode($data['by_establishment']->pluck('count')) }}"></canvas>
+                    </div>
+                    <div class="h-32">
+                        <canvas id="chartWorkLocationFocus"
+                            data-labels="{{ json_encode($data['by_work_location']->pluck('work_location')) }}"
+                            data-values="{{ json_encode($data['by_work_location']->pluck('count')) }}"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Top Industries Detailed List (Proposed Top 20 Entries) -->
+            <div class="bg-white p-8 rounded-[2.5rem] border border-gray-100 shadow-sm md:col-span-2">
+                <h4 class="text-xs font-black text-gray-900 mb-6 uppercase tracking-tight">Dominant Industries (Top 10)</h4>
+                <div class="h-64 w-full">
+                    <canvas id="chartTopFieldsFocus"
+                        data-labels="{{ json_encode($data['top_fields']->pluck('field_of_work')) }}"
+                        data-values="{{ json_encode($data['top_fields']->pluck('count')) }}"></canvas>
+                </div>
+            </div>
+             
+            <div class="bg-white p-6 rounded-[2rem] border border-gray-100 shadow-sm flex items-center gap-6">
+                <div class="flex-1">
+                    <h5 class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">Social Mobility Index</h5>
                     <p class="text-xs text-gray-500 font-medium leading-relaxed italic">Analysis of career progression and professional transitions within the alumni community based on active registry data.</p>
                  </div>
                  <div class="p-4 bg-gray-50 rounded-2xl"><svg class="w-8 h-8 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" /></svg></div>
+            </div>
+        </div>
+
+        <!-- Professional Data Row (New) -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <!-- Work Status -->
+            <div class="bg-gray-50/50 p-6 rounded-[2rem] border border-gray-100 flex flex-col items-center">
+                <span class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-4">Work Status</span>
+                <div class="h-32 w-32 relative">
+                    <canvas id="chartByWorkStatus"
+                        data-labels="{{ json_encode($data['by_work_status']->pluck('work_status')) }}"
+                        data-values="{{ json_encode($data['by_work_status']->pluck('count')) }}"></canvas>
+                </div>
+                <div class="mt-4 text-[8px] font-bold text-gray-400 uppercase">Contractual Mix</div>
+            </div>
+
+            <!-- Establishment Type -->
+            <div class="bg-gray-50/50 p-6 rounded-[2rem] border border-gray-100 flex flex-col items-center">
+                <span class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-4">Sector Distribution</span>
+                <div class="h-32 w-32 relative">
+                    <canvas id="chartByEstablishment"
+                        data-labels="{{ json_encode($data['by_establishment']->pluck('establishment_type')) }}"
+                        data-values="{{ json_encode($data['by_establishment']->pluck('count')) }}"></canvas>
+                </div>
+                <div class="mt-4 text-[8px] font-bold text-gray-400 uppercase">Public vs Private</div>
+            </div>
+
+            <!-- Work Location -->
+            <div class="bg-gray-50/50 p-6 rounded-[2rem] border border-gray-100 flex flex-col items-center">
+                <span class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-4">Geographic Scope</span>
+                <div class="h-32 w-32 relative">
+                    <canvas id="chartByWorkLocation"
+                        data-labels="{{ json_encode($data['by_work_location']->pluck('work_location')) }}"
+                        data-values="{{ json_encode($data['by_work_location']->pluck('count')) }}"></canvas>
+                </div>
+                <div class="mt-4 text-[8px] font-bold text-gray-400 uppercase">Local vs Overseas</div>
+            </div>
+
+            <!-- Top Industries -->
+            <div class="bg-gray-50/50 p-6 rounded-[2rem] border border-gray-100 flex flex-col items-center">
+                <span class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-4">Industry Pulse</span>
+                <div class="h-32 w-full relative">
+                    <canvas id="chartTopFieldsMatrix"
+                        data-labels="{{ json_encode($data['top_fields']->pluck('field_of_work')) }}"
+                        data-values="{{ json_encode($data['top_fields']->pluck('count')) }}"></canvas>
+                </div>
+                <div class="mt-4 text-[8px] font-bold text-gray-400 uppercase">Field Concentration</div>
             </div>
         </div>
     </div>

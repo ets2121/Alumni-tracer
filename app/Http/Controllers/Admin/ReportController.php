@@ -35,6 +35,20 @@ class ReportController extends Controller
             });
         }
 
+        // New Professional Filters
+        if ($request->query('field_of_work')) {
+            $query->where('field_of_work', $request->query('field_of_work'));
+        }
+        if ($request->query('work_status')) {
+            $query->where('work_status', $request->query('work_status'));
+        }
+        if ($request->query('establishment_type')) {
+            $query->where('establishment_type', $request->query('establishment_type'));
+        }
+        if ($request->query('work_location')) {
+            $query->where('work_location', $request->query('work_location'));
+        }
+
         $data = [];
         $view = '';
 
@@ -64,7 +78,21 @@ class ReportController extends Controller
                     'by_gender' => AlumniProfile::select('gender', DB::raw('count(*) as count'))
                         ->groupBy('gender')->get(),
                     'by_civil_status' => AlumniProfile::select('civil_status', DB::raw('count(*) as count'))
-                        ->groupBy('civil_status')->get()
+                        ->groupBy('civil_status')->get(),
+                    'by_work_status' => AlumniProfile::whereNotNull('work_status')
+                        ->select('work_status', DB::raw('count(*) as count'))
+                        ->groupBy('work_status')->get(),
+                    'by_establishment' => AlumniProfile::whereNotNull('establishment_type')
+                        ->select('establishment_type', DB::raw('count(*) as count'))
+                        ->groupBy('establishment_type')->get(),
+                    'by_work_location' => AlumniProfile::whereNotNull('work_location')
+                        ->select('work_location', DB::raw('count(*) as count'))
+                        ->groupBy('work_location')->get(),
+                    'top_fields' => AlumniProfile::whereNotNull('field_of_work')
+                        ->select('field_of_work', DB::raw('count(*) as count'))
+                        ->groupBy('field_of_work')
+                        ->orderBy('count', 'desc')
+                        ->take(10)->get()
                 ];
                 $view = 'admin.reports.partials._statistical_summary';
                 break;
