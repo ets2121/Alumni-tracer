@@ -76,14 +76,49 @@ class ReportController extends Controller
                 break;
             case 'statistical_summary':
                 // Base data for simple charts
+                $totalAlumni = (clone $query)->count();
+                $employedCount = (clone $query)->where('employment_status', 'Employed')->count();
+                $overseasCount = (clone $query)->where('work_location', 'Overseas')->count();
+                $dominantField = (clone $query)->whereNotNull('field_of_work')
+                    ->select('field_of_work', DB::raw('count(*) as count'))
+                    ->groupBy('field_of_work')
+                    ->orderBy('count', 'desc')
+                    ->first();
+
+                $incompleteProfiles = (clone $query)->where(function ($q) {
+                    $q->whereNull('field_of_work')
+                        ->orWhereNull('work_status')
+                        ->orWhereNull('establishment_type')
+                        ->orWhereNull('work_location');
+                })->count();
+
                 $data = [
                     'all_courses' => Course::all(),
+                    'summary' => [
+                        'total_count' => $totalAlumni,
+                        'employed_count' => $employedCount,
+                        'employment_rate' => $totalAlumni > 0 ? round(($employedCount / $totalAlumni) * 100, 1) : 0,
+                        'overseas_rate' => $employedCount > 0 ? round(($overseasCount / $employedCount) * 100, 1) : 0,
+                        'dominant_field' => $dominantField ? $dominantField->field_of_work : 'None',
+                        'integrity_score' => $totalAlumni > 0 ? round((($totalAlumni - $incompleteProfiles) / $totalAlumni) * 100, 1) : 100
+                    ],
                     'by_course' => Course::withCount([
                         'alumni' => function ($q) use ($request) {
                             if ($request->query('batch_year'))
                                 $q->where('batch_year', $request->query('batch_year'));
                         }
-                    ])->orderBy('alumni_count', 'desc')->take(10)->get(),
+                    ])->get()->map(function ($course) use ($request) {
+                        $baseQ = $course->alumni();
+                        if ($request->query('batch_year'))
+                            $baseQ->where('batch_year', $request->query('batch_year'));
+
+                        return [
+                            'code' => $course->code,
+                            'alumni_count' => $course->alumni_count,
+                            'employed' => (clone $baseQ)->where('employment_status', 'Employed')->count(),
+                            'unemployed' => (clone $baseQ)->where('employment_status', 'Unemployed')->count(),
+                        ];
+                    })->sortByDesc('alumni_count')->take(10)->values(),
 
                     'by_employment' => (clone $query)->select('employment_status', DB::raw('count(*) as count'))
                         ->groupBy('employment_status')->get(),
@@ -135,6 +170,20 @@ class ReportController extends Controller
                         ];
                     }),
 
+                    'establishment_matrix' => Course::with([
+                        'alumni' => function ($q) {
+                            $q->select('course_id', 'establishment_type', DB::raw('count(*) as count'))
+                                ->whereNotNull('establishment_type')
+                                ->groupBy('course_id', 'establishment_type');
+                        }
+                    ])->get()->map(function ($course) {
+                        return [
+                            'program' => $course->code,
+                            'Public' => $course->alumni->where('establishment_type', 'Public')->first()->count ?? 0,
+                            'Private' => $course->alumni->where('establishment_type', 'Private')->first()->count ?? 0,
+                        ];
+                    }),
+
                     'location_matrix' => Course::with([
                         'alumni' => function ($q) {
                             $q->select('course_id', 'work_location', DB::raw('count(*) as count'))
@@ -160,6 +209,10 @@ class ReportController extends Controller
                         ->take(6)->get()
                 ];
                 $view = 'admin.reports.partials._statistical_summary';
+                break;
+            case 'detailed_labor':
+                $data = $query->with('course')->get();
+                $view = 'admin.reports.partials._detailed_labor';
                 break;
             case 'tracer_study':
                 $data = $query->get();
