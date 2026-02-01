@@ -1,0 +1,74 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    html {
+        font-size: 14.5px;
+        /* global zoom out */
+        scroll-behavior: smooth;
+    }
+
+    body {
+        @apply text-gray-800 bg-gray-50;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+        @apply font-bold text-gray-900;
+    }
+
+    /* Custom Scrollbar Global */
+    ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        @apply bg-gray-300 rounded-full border-2 border-transparent bg-clip-content;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+        @apply bg-gray-400;
+    }
+}
+
+@layer components {
+    .modal-backdrop {
+        @apply fixed inset-0 bg-white/60 backdrop-blur-3xl transition-opacity duration-500;
+        background-image: linear-gradient(rgba(255, 255, 255, 0.94), rgba(255, 255, 255, 0.94)), url('/images/logo-2.png');
+        background-size: 30rem;
+        background-position: center;
+        background-repeat: no-repeat;
+    }
+
+    .modal-content-container {
+        @apply inline-block align-bottom bg-white/80 backdrop-blur-3xl rounded-[2.5rem] px-8 pt-8 pb-8 text-left overflow-hidden shadow-morphoric transform transition-all sm:my-8 sm:align-middle sm:p-12 border border-white ring-1 ring-black/5;
+    }
+}
+
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translate3d(0, -20px, 0);
+    }
+
+    to {
+        opacity: 1;
+        transform: translate3d(0, 0, 0);
+    }
+}
+
+.animate-fade-in-down {
+    animation: fadeInDown 0.4s ease-out forwards;
+}
