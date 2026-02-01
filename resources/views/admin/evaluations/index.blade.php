@@ -32,61 +32,72 @@
                     <thead>
                         <tr>
                             <th
-                                class="px-5 py-3 border-b-2 border-gray-200 bg-gray-50 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                                class="px-6 py-4 border-b border-gray-100 bg-gray-50/50 text-left text-xs font-bold text-gray-500 uppercase tracking-wider pl-6 rounded-tl-xl">
                                 Title</th>
                             <th
-                                class="px-5 py-3 border-b-2 border-gray-200 bg-gray-50 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                                class="px-6 py-4 border-b border-gray-100 bg-gray-50/50 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">
                                 Type</th>
                             <th
-                                class="px-5 py-3 border-b-2 border-gray-200 bg-gray-50 text-center text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                                class="px-6 py-4 border-b border-gray-100 bg-gray-50/50 text-center text-xs font-bold text-gray-500 uppercase tracking-wider">
                                 Responses</th>
                             <th
-                                class="px-5 py-3 border-b-2 border-gray-200 bg-gray-50 text-center text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                                class="px-6 py-4 border-b border-gray-100 bg-gray-50/50 text-center text-xs font-bold text-gray-500 uppercase tracking-wider">
                                 Status</th>
                             <th
-                                class="px-5 py-3 border-b-2 border-gray-200 bg-gray-50 text-right text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                                class="px-6 py-4 border-b border-gray-100 bg-gray-50/50 text-right text-xs font-bold text-gray-500 uppercase tracking-wider pr-6 rounded-tr-xl">
                                 Actions</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody class="divide-y divide-gray-50">
                         @forelse($forms as $form)
-                            <tr>
-                                <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                    <p class="text-gray-900 font-bold whitespace-no-wrap">{{ $form->title }}</p>
-                                    <p class="text-gray-400 text-xs">{{ Str::limit($form->description, 50) }}</p>
-                                </td>
-                                <div class="flex flex-col">
-                                    <span
-                                        class="relative inline-block px-3 py-1 font-semibold text-blue-900 leading-tight w-fit">
-                                        <span aria-hidden
-                                            class="absolute inset-0 bg-blue-200 opacity-50 rounded-full"></span>
-                                        <span
-                                            class="relative text-xs uppercase tracking-wide">{{ ucfirst($form->type) }}</span>
-                                    </span>
-                                    <div class="flex gap-2 mt-1">
-                                        <span
-                                            class="text-[10px] bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full border border-gray-200 font-mono">v{{ $form->version }}</span>
-                                        @if($form->is_draft)
-                                            <span
-                                                class="text-[10px] bg-amber-100 text-amber-700 px-2 py-0.5 rounded-full border border-amber-200 font-bold uppercase tracking-wider">Draft</span>
-                                        @endif
+                            <tr class="hover:bg-gray-50/80 transition-colors group">
+                                <td class="px-6 py-5 bg-white text-sm">
+                                    <div class="flex flex-col">
+                                        <p class="text-gray-900 font-bold whitespace-no-wrap text-base">{{ $form->title }}
+                                        </p>
+                                        <p class="text-gray-400 text-xs mt-1 line-clamp-1">
+                                            {{ Str::limit($form->description, 60) }}</p>
                                     </div>
-                                </div>
                                 </td>
-                                <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm text-center">
-                                    <span class="font-bold text-gray-700">{{ $form->responses_count }}</span>
+                                <td class="px-6 py-5 bg-white text-sm">
+                                    <div class="flex flex-col items-start gap-2">
+                                        <span
+                                            class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-blue-50 text-blue-700 border border-blue-100 uppercase tracking-wide">
+                                            {{ ucfirst($form->type) }}
+                                        </span>
+                                        <div class="flex gap-2">
+                                            <span
+                                                class="text-[10px] bg-gray-100 text-gray-500 px-2 py-0.5 rounded border border-gray-200 font-mono">v{{ $form->version }}</span>
+                                            @if($form->is_draft)
+                                                <span
+                                                    class="text-[10px] bg-amber-50 text-amber-600 px-2 py-0.5 rounded border border-amber-100 font-bold uppercase tracking-wider">Draft</span>
+                                            @endif
+                                        </div>
+                                    </div>
                                 </td>
-                                <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm text-center">
-                                    <span
-                                        class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ $form->is_active ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800' }}">
-                                        {{ $form->is_active ? 'Active' : 'Closed' }}
-                                    </span>
+                                <td class="px-6 py-5 bg-white text-sm text-center">
+                                    <span class="font-black text-gray-800 text-lg">{{ $form->responses_count }}</span>
                                 </td>
-                                <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm text-right">
-                                    <div class="flex justify-end gap-2 items-center">
+                                <td class="px-6 py-5 bg-white text-sm text-center">
+                                    @if($form->is_active)
+                                        <span
+                                            class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-100">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                                            Active
+                                        </span>
+                                    @else
+                                        <span
+                                            class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-gray-100 text-gray-500 border border-gray-200">
+                                            Closed
+                                        </span>
+                                    @endif
+                                </td>
+                                <td class="px-6 py-5 bg-white text-sm text-right">
+                                    <div
+                                        class="flex justify-end gap-1 opacity-80 group-hover:opacity-100 transition-opacity">
                                         <!-- Analytics / Results -->
                                         <a href="{{ route('admin.evaluations.show', $form->id) }}"
-                                            class="group relative inline-flex items-center justify-center p-2 rounded-lg bg-brand-50 text-brand-600 hover:bg-brand-600 hover:text-white transition-all duration-200"
+                                            class="p-2 rounded-lg text-brand-600 hover:bg-brand-50 transition-all duration-200"
                                             title="View Analytics">
                                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -106,12 +117,12 @@
 
                                         <!-- Duplicate Action -->
                                         <button type="button" @click="$dispatch('open-confirmation-modal', { 
-                                                    title: 'Duplicate Form', 
-                                                    message: 'Create a draft copy of \'{{ $form->title }}\'?', 
-                                                    action: '{{ route('admin.evaluations.duplicate', $form->id) }}', 
-                                                    method: 'POST', 
-                                                    confirmText: 'Duplicate' 
-                                                })"
+                                                        title: 'Duplicate Form', 
+                                                        message: 'Create a draft copy of \'{{ $form->title }}\'?', 
+                                                        action: '{{ route('admin.evaluations.duplicate', $form->id) }}', 
+                                                        method: 'POST', 
+                                                        confirmText: 'Duplicate' 
+                                                    })"
                                             class="p-2 rounded-lg text-gray-400 hover:text-amber-600 hover:bg-amber-50 transition-colors"
                                             title="Duplicate Form">
                                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -122,13 +133,13 @@
 
                                         <!-- Delete Action -->
                                         <button type="button" @click="$dispatch('open-confirmation-modal', { 
-                                                    title: 'Delete Evaluation Form', 
-                                                    message: 'Are you sure you want to delete \'{{ $form->title }}\'? This will permanently delete all associated questions and responses.', 
-                                                    action: '{{ route('admin.evaluations.destroy', $form->id) }}', 
-                                                    method: 'DELETE', 
-                                                    danger: true,
-                                                    confirmText: 'Delete Form' 
-                                                })"
+                                                        title: 'Delete Evaluation Form', 
+                                                        message: 'Are you sure you want to delete \'{{ $form->title }}\'? This will permanently delete all associated questions and responses.', 
+                                                        action: '{{ route('admin.evaluations.destroy', $form->id) }}', 
+                                                        method: 'DELETE', 
+                                                        danger: true,
+                                                        confirmText: 'Delete Form' 
+                                                    })"
                                             class="p-2 rounded-lg text-gray-400 hover:text-red-600 hover:bg-red-50 transition-colors"
                                             title="Delete Form">
                                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -141,8 +152,21 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="5" class="px-5 py-10 text-center text-gray-500 italic">No evaluation forms
-                                    created yet.</td>
+                                <td colspan="5" class="px-5 py-20 text-center">
+                                    <div class="flex flex-col items-center justify-center">
+                                        <div
+                                            class="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center mb-4">
+                                            <svg class="w-10 h-10 text-gray-300" fill="none" stroke="currentColor"
+                                                viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                            </svg>
+                                        </div>
+                                        <h3 class="text-lg font-bold text-gray-900">No Forms Created</h3>
+                                        <p class="text-gray-500 text-sm mt-1">Get started by creating your first evaluation
+                                            form.</p>
+                                    </div>
+                                </td>
                             </tr>
                         @endforelse
                     </tbody>
