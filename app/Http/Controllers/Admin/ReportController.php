@@ -14,7 +14,8 @@ class ReportController extends Controller
     public function index()
     {
         $courses = Course::all();
-        return view('admin.reports.index', compact('courses'));
+        $fields = AlumniProfile::whereNotNull('field_of_work')->distinct()->pluck('field_of_work');
+        return view('admin.reports.index', compact('courses', 'fields'));
     }
 
     public function generate(Request $request)

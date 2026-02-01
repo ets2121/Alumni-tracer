@@ -294,6 +294,38 @@
                             @endfor
                         </select>
 
+                        <select x-model="reportFilters[currentReportType].fieldOfWork"
+                            class="bg-gray-50 border-gray-100 rounded-2xl text-[10px] font-black uppercase tracking-widest focus:ring-brand-500 h-11 px-6 shadow-sm">
+                            <option value="">All Fields</option>
+                            @foreach($fields as $field)
+                                <option value="{{ $field }}">{{ $field }}</option>
+                            @endforeach
+                        </select>
+
+                        <select x-model="reportFilters[currentReportType].establishmentType"
+                            class="bg-gray-50 border-gray-100 rounded-2xl text-[10px] font-black uppercase tracking-widest focus:ring-brand-500 h-11 px-6 shadow-sm">
+                            <option value="">Sector</option>
+                            <option value="Public">Public</option>
+                            <option value="Private">Private</option>
+                        </select>
+
+                        <select x-model="reportFilters[currentReportType].workLocation"
+                            class="bg-gray-50 border-gray-100 rounded-2xl text-[10px] font-black uppercase tracking-widest focus:ring-brand-500 h-11 px-6 shadow-sm">
+                            <option value="">Location</option>
+                            <option value="Local">Local</option>
+                            <option value="Overseas">Overseas</option>
+                        </select>
+
+                        <div class="h-8 w-px bg-gray-200 mx-2"></div>
+
+                        <button @click="resetFilters()" class="p-3 text-gray-400 hover:text-red-500 transition-colors"
+                            title="Reset Filters">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                            </svg>
+                        </button>
+
                         <button @click="generateReport(currentReportType)"
                             class="px-8 py-3 bg-gray-900 text-white rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-brand-600 active:scale-95 transition-all shadow-xl shadow-gray-200">
                             Update Result
@@ -348,9 +380,9 @@
                 return {
                     // Report-specific independent filter states
                     reportFilters: {
-                        detailed_labor: { fromDate: '', toDate: '', workStatus: '', establishmentType: '', workLocation: '', courseId: '', batchYear: '' },
-                        statistical_summary: { fromDate: '', toDate: '', workStatus: '', establishmentType: '', workLocation: '', courseId: '', batchYear: '' },
-                        tracer_study: { fromDate: '', toDate: '', workStatus: '', establishmentType: '', workLocation: '', courseId: '', batchYear: '' },
+                        detailed_labor: { fromDate: '', toDate: '', workStatus: '', establishmentType: '', workLocation: '', fieldOfWork: '', courseId: '', batchYear: '' },
+                        statistical_summary: { fromDate: '', toDate: '', workStatus: '', establishmentType: '', workLocation: '', fieldOfWork: '', courseId: '', batchYear: '' },
+                        tracer_study: { fromDate: '', toDate: '', workStatus: '', establishmentType: '', workLocation: '', fieldOfWork: '', courseId: '', batchYear: '' },
                     },
                     loading: false,
                     previewOpen: false,
@@ -365,7 +397,7 @@
 
                     resetFilters(type = null) {
                         const target = type || this.currentReportType;
-                        this.reportFilters[target] = { fromDate: '', toDate: '', workStatus: '', establishmentType: '', workLocation: '', courseId: '', batchYear: '' };
+                        this.reportFilters[target] = { fromDate: '', toDate: '', workStatus: '', establishmentType: '', workLocation: '', fieldOfWork: '', courseId: '', batchYear: '' };
                         this.generateReport(target);
                     },
 
@@ -383,6 +415,7 @@
                         if (f.workStatus) url.searchParams.set('work_status', f.workStatus);
                         if (f.establishmentType) url.searchParams.set('establishment_type', f.establishmentType);
                         if (f.workLocation) url.searchParams.set('work_location', f.workLocation);
+                        if (f.fieldOfWork) url.searchParams.set('field_of_work', f.fieldOfWork);
                         if (f.courseId) url.searchParams.set('course_id', f.courseId);
                         if (f.batchYear) url.searchParams.set('batch_year', f.batchYear);
 
@@ -593,40 +626,40 @@
 
                         // Premium Print Header with Logo
                         printWindow.document.write(`
-                                                        <div class="mb-12 pb-8 border-b-4 border-gray-900 flex justify-between items-end">
-                                                            <div class="flex items-center gap-6">
-                                                                <img src="${logoUrl}" class="w-16 h-16 object-contain" alt="Logo">
-                                                                <div class="h-12 w-px bg-gray-200"></div>
-                                                                <div>
-                                                                    <h1 class="text-2xl font-black uppercase tracking-[0.1em] text-gray-900 leading-none">Alumni Management System</h1>
-                                                                    <p class="text-[10px] font-black text-brand-600 uppercase tracking-[0.3em] mt-2">Official Analytical Intelligence Record</p>
+                                                                <div class="mb-12 pb-8 border-b-4 border-gray-900 flex justify-between items-end">
+                                                                    <div class="flex items-center gap-6">
+                                                                        <img src="${logoUrl}" class="w-16 h-16 object-contain" alt="Logo">
+                                                                        <div class="h-12 w-px bg-gray-200"></div>
+                                                                        <div>
+                                                                            <h1 class="text-2xl font-black uppercase tracking-[0.1em] text-gray-900 leading-none">Alumni Management System</h1>
+                                                                            <p class="text-[10px] font-black text-brand-600 uppercase tracking-[0.3em] mt-2">Official Analytical Intelligence Record</p>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="text-right">
+                                                                        <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Document ID: AMS-${Date.now()}</p>
+                                                                        <p class="text-[10px] font-black text-gray-900 uppercase tracking-widest mt-1">Generated: {{ date('F d, Y') }}</p>
+                                                                    </div>
                                                                 </div>
-                                                            </div>
-                                                            <div class="text-right">
-                                                                <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Document ID: AMS-${Date.now()}</p>
-                                                                <p class="text-[10px] font-black text-gray-900 uppercase tracking-widest mt-1">Generated: {{ date('F d, Y') }}</p>
-                                                            </div>
-                                                        </div>
-                                                    `);
+                                                            `);
 
                         printWindow.document.write(clone.innerHTML);
 
                         // Signatory Section for Print
                         printWindow.document.write(`
-                                                        <div class="mt-24 pt-10 border-t border-gray-100 flex justify-between items-start opacity-80">
-                                                            <div class="text-center">
-                                                                <div class="w-48 border-b border-gray-900 mb-2 mx-auto"></div>
-                                                                <p class="text-[9px] font-black uppercase tracking-widest">Verified by Records Office</p>
-                                                            </div>
-                                                            <div class="text-center">
-                                                                <p class="text-[9px] font-black text-gray-300 uppercase tracking-widest italic mb-2">END OF DOCUMENT</p>
-                                                            </div>
-                                                            <div class="text-center">
-                                                                <div class="w-48 border-b border-gray-900 mb-2 mx-auto"></div>
-                                                                <p class="text-[9px] font-black uppercase tracking-widest">Institutional Registrar</p>
-                                                            </div>
-                                                        </div>
-                                                    `);
+                                                                <div class="mt-24 pt-10 border-t border-gray-100 flex justify-between items-start opacity-80">
+                                                                    <div class="text-center">
+                                                                        <div class="w-48 border-b border-gray-900 mb-2 mx-auto"></div>
+                                                                        <p class="text-[9px] font-black uppercase tracking-widest">Verified by Records Office</p>
+                                                                    </div>
+                                                                    <div class="text-center">
+                                                                        <p class="text-[9px] font-black text-gray-300 uppercase tracking-widest italic mb-2">END OF DOCUMENT</p>
+                                                                    </div>
+                                                                    <div class="text-center">
+                                                                        <div class="w-48 border-b border-gray-900 mb-2 mx-auto"></div>
+                                                                        <p class="text-[9px] font-black uppercase tracking-widest">Institutional Registrar</p>
+                                                                    </div>
+                                                                </div>
+                                                            `);
 
                         printWindow.document.write('</body></html>');
                         printWindow.document.close();
