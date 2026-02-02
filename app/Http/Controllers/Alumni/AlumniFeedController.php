@@ -61,10 +61,14 @@ class AlumniFeedController extends Controller
         // Pinned first, then latest
         $posts = $query->orderByDesc('is_pinned')
             ->orderByDesc('created_at')
-            ->paginate(10);
+            ->cursorPaginate(10);
 
         if ($request->ajax()) {
-            return view('alumni.partials._feed_items', compact('posts'))->render();
+            return response()->json([
+                'html' => view('alumni.partials._feed_items', compact('posts'))->render(),
+                'next_cursor' => $posts->nextCursor()?->encode(),
+                'has_more' => $posts->hasMorePages()
+            ]);
         }
 
         return response()->json($posts);

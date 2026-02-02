@@ -25,7 +25,7 @@
 
     <!-- Main Content Wrapper (Scrollable) -->
     <div
-        class="flex-1 flex flex-col relative bg-gray-50 {{ request()->routeIs('chat.*') ? 'overflow-hidden' : 'overflow-y-auto custom-scrollbar' }}">
+        class="flex-1 flex flex-col relative bg-gray-50 {{ request()->routeIs('chat.*', 'dashboard') ? 'overflow-hidden' : 'overflow-y-auto custom-scrollbar' }}">
 
         <!-- Page Heading (Sticky) -->
         @isset($header)
@@ -38,12 +38,12 @@
 
         <!-- Page Content -->
         <main
-            class="flex-grow w-full {{ request()->routeIs('chat.*') ? 'h-full' : 'max-w-7xl mx-auto py-8 sm:px-6 lg:px-8' }}">
+            class="flex-grow w-full {{ request()->routeIs('chat.*', 'dashboard') ? 'h-full' : 'max-w-7xl mx-auto py-8 sm:px-6 lg:px-8' }}">
             {{ $slot }}
         </main>
 
         <!-- Footer -->
-        @unless(request()->routeIs('chat.*'))
+        @unless(request()->routeIs('chat.*', 'dashboard'))
             <footer class="bg-white border-t border-gray-200 mt-auto flex-shrink-0">
                 <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
                     <p class="text-center text-sm text-gray-500">
