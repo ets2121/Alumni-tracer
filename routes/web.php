@@ -66,6 +66,9 @@ Route::middleware(['auth', 'status'])->group(function () {
     Route::get('/news', [App\Http\Controllers\Alumni\NewsEventController::class, 'index'])->name('alumni.news.index');
     Route::get('/news/{news_event}', [App\Http\Controllers\Alumni\NewsEventController::class, 'show'])->name('alumni.news.show');
 
+    // Alumni Feed fetch route
+    Route::get('/feed/fetch', [App\Http\Controllers\Alumni\AlumniFeedController::class, 'fetch'])->name('alumni.feed.fetch');
+
     // Alumni Gallery Routes
     Route::get('/gallery', [App\Http\Controllers\Alumni\GalleryController::class, 'index'])->name('alumni.gallery.index');
     Route::get('/gallery/{album}', [App\Http\Controllers\Alumni\GalleryController::class, 'show'])->name('alumni.gallery.show');
