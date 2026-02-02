@@ -12,6 +12,10 @@
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600,700&display=swap" rel="stylesheet" />
 
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <style>
@@ -216,15 +220,13 @@
                             class="text-[10px] font-bold text-brand-400 hover:text-white uppercase tracking-widest transition-colors mt-0.5 block">My
                             Profile</a>
                     </div>
-                    <button type="button" 
-                        @click="$dispatch('open-confirmation-modal', { 
+                    <button type="button" @click="$dispatch('open-confirmation-modal', { 
                             title: 'Sign Out', 
                             message: 'Are you sure you want to end your session?', 
                             action: '{{ route('logout') }}', 
                             method: 'POST', 
                             confirmText: 'Log Out' 
-                        })"
-                        class="ml-2 flex-shrink-0 text-brand-300 hover:text-white transition-colors"
+                        })" class="ml-2 flex-shrink-0 text-brand-300 hover:text-white transition-colors"
                         title="Log Out">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"

@@ -21,4 +21,6 @@
     <div class="py-6">
         @include('admin.evaluations.partials.analytics_body')
     </div>
+
+    @include('admin.evaluations.partials.analytics_script')
 </x-layouts.admin>x-layouts.admin>

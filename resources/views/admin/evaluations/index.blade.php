@@ -56,7 +56,8 @@
                                         <p class="text-gray-900 font-bold whitespace-no-wrap text-base">{{ $form->title }}
                                         </p>
                                         <p class="text-gray-400 text-xs mt-1 line-clamp-1">
-                                            {{ Str::limit($form->description, 60) }}</p>
+                                            {{ Str::limit($form->description, 60) }}
+                                        </p>
                                     </div>
                                 </td>
                                 <td class="px-6 py-5 bg-white text-sm">
@@ -96,14 +97,17 @@
                                     <div
                                         class="flex justify-end gap-1 opacity-80 group-hover:opacity-100 transition-opacity">
                                         <!-- Analytics / Results -->
-                                        <a href="{{ route('admin.evaluations.show', $form->id) }}"
+                                        <!-- Analytics / Results -->
+                                        <!-- Analytics / Results -->
+                                        <button type="button"
+                                            @click="openAnalyticsModal({{ $form->id }}, '{{ addslashes($form->title) }}')"
                                             class="p-2 rounded-lg text-brand-600 hover:bg-brand-50 transition-all duration-200"
                                             title="View Analytics">
                                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                     d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
                                             </svg>
-                                        </a>
+                                        </button>
 
                                         <!-- Edit -->
                                         <a href="{{ route('admin.evaluations.edit', $form->id) }}"
@@ -117,12 +121,12 @@
 
                                         <!-- Duplicate Action -->
                                         <button type="button" @click="$dispatch('open-confirmation-modal', { 
-                                                        title: 'Duplicate Form', 
-                                                        message: 'Create a draft copy of \'{{ $form->title }}\'?', 
-                                                        action: '{{ route('admin.evaluations.duplicate', $form->id) }}', 
-                                                        method: 'POST', 
-                                                        confirmText: 'Duplicate' 
-                                                    })"
+                                                                                title: 'Duplicate Form', 
+                                                                                message: 'Create a draft copy of \'{{ $form->title }}\'?', 
+                                                                                action: '{{ route('admin.evaluations.duplicate', $form->id) }}', 
+                                                                                method: 'POST', 
+                                                                                confirmText: 'Duplicate' 
+                                                                            })"
                                             class="p-2 rounded-lg text-gray-400 hover:text-amber-600 hover:bg-amber-50 transition-colors"
                                             title="Duplicate Form">
                                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -133,13 +137,13 @@
 
                                         <!-- Delete Action -->
                                         <button type="button" @click="$dispatch('open-confirmation-modal', { 
-                                                        title: 'Delete Evaluation Form', 
-                                                        message: 'Are you sure you want to delete \'{{ $form->title }}\'? This will permanently delete all associated questions and responses.', 
-                                                        action: '{{ route('admin.evaluations.destroy', $form->id) }}', 
-                                                        method: 'DELETE', 
-                                                        danger: true,
-                                                        confirmText: 'Delete Form' 
-                                                    })"
+                                                                                title: 'Delete Evaluation Form', 
+                                                                                message: 'Are you sure you want to delete \'{{ $form->title }}\'? This will permanently delete all associated questions and responses.', 
+                                                                                action: '{{ route('admin.evaluations.destroy', $form->id) }}', 
+                                                                                method: 'DELETE', 
+                                                                                danger: true,
+                                                                                confirmText: 'Delete Form' 
+                                                                            })"
                                             class="p-2 rounded-lg text-gray-400 hover:text-red-600 hover:bg-red-50 transition-colors"
                                             title="Delete Form">
                                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -351,9 +355,66 @@
                 </div>
             </div>
         </div>
+        <!-- Analytics Modal -->
+        <div x-show="analyticsModalOpen" class="fixed inset-0 z-50 overflow-hidden" style="display: none;">
+            <div class="absolute inset-0 bg-gray-900/75 backdrop-blur-sm transition-opacity" x-show="analyticsModalOpen"
+                x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0"
+                x-transition:enter-end="opacity-100" x-transition:leave="ease-in duration-200"
+                x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
+                @click="closeAnalyticsModal()"></div>
+
+            <div class="fixed inset-0 flex items-center justify-center p-4 sm:p-6" x-show="analyticsModalOpen"
+                x-transition:enter="ease-out duration-300"
+                x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100"
+                x-transition:leave="ease-in duration-200"
+                x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
+                x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95">
+
+                <div class="bg-white rounded-2xl shadow-xl w-full max-w-7xl max-h-[90vh] flex flex-col overflow-hidden"
+                    @click.stop @filters-applied.window="handleFilters($event.detail)">
+
+                    <!-- Modal Header -->
+                    <div class="flex justify-between items-center px-8 py-5 border-b border-gray-100 bg-white z-10">
+                        <h3 class="text-xl font-black text-gray-900 uppercase tracking-tight">Evaluation Results</h3>
+                        <button @click="closeAnalyticsModal()"
+                            class="text-gray-400 hover:text-gray-600 hover:bg-gray-100 p-2 rounded-full transition-all">
+                            <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+                    </div>
+
+                    <!-- Modal Content -->
+                    <div class="overflow-y-auto flex-1 p-8 bg-gray-50 custom-scrollbar relative">
+                        <!-- Loading State -->
+                        <div x-show="analyticsLoading"
+                            class="absolute inset-0 bg-white/50 z-20 flex items-center justify-center">
+                            <div class="flex flex-col items-center">
+                                <svg class="animate-spin h-10 w-10 text-brand-600 mb-4"
+                                    xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                                        stroke-width="4"></circle>
+                                    <path class="opacity-75" fill="currentColor"
+                                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                                    </path>
+                                </svg>
+                                <span class="text-sm font-bold text-gray-500 uppercase tracking-widest">Loading
+                                    Data...</span>
+                            </div>
+                        </div>
+
+                        <!-- Dynamic Content -->
+                        <div x-html="analyticsContent" class="h-full"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     @push('scripts')
+        @include('admin.evaluations.partials.analytics_script')
         <script>
             function evaluationManager() {
                 return {
@@ -362,6 +423,13 @@
                         { id: Date.now(), text: '', type: 'text', required: true, options: [''] }
                     ],
 
+                    // Analytics Modal Logic
+                    analyticsModalOpen: false,
+                    analyticsLoading: false,
+                    analyticsContent: '',
+                    currentEvaluationId: null,
+                    currentEvaluationTitle: '',
+
                     openModal() {
                         this.modalOpen = true;
                     },
@@ -369,6 +437,53 @@
                     closeModal() {
                         this.modalOpen = false;
                         // Optional: Confirm if dirty? For now just close.
+                    },
+
+                    openAnalyticsModal(id, title = 'Evaluation Results') {
+                        this.analyticsModalOpen = true;
+                        this.currentEvaluationId = id;
+                        this.currentEvaluationTitle = title;
+                        this.fetchAnalytics(id);
+                    },
+
+                    closeAnalyticsModal() {
+                        this.analyticsModalOpen = false;
+                        this.analyticsContent = '';
+                        this.currentEvaluationId = null;
+                        this.currentEvaluationTitle = '';
+                    },
+
+                    fetchAnalytics(id, params = {}) {
+                        this.analyticsLoading = true;
+
+                        // Construct URL with query parameters
+                        let url = `/admin/evaluations/${id}/analytics`;
+                        const searchParams = new URLSearchParams(params);
+                        if (searchParams.toString()) {
+                            url += `?${searchParams.toString()}`;
+                        }
+
+                        fetch(url, {
+                            headers: {
+                                'X-Requested-With': 'XMLHttpRequest'
+                            }
+                        })
+                            .then(response => response.text())
+                            .then(html => {
+                                this.analyticsContent = html;
+                                this.analyticsLoading = false;
+                            })
+                            .catch(error => {
+                                console.error('Error loading analytics:', error);
+                                this.analyticsContent = '<div class="text-center p-8 text-red-500">Failed to load analytics. Please try again.</div>';
+                                this.analyticsLoading = false;
+                            });
+                    },
+
+                    handleFilters(filters) {
+                        if (this.currentEvaluationId) {
+                            this.fetchAnalytics(this.currentEvaluationId, filters);
+                        }
                     },
 
                     addQuestion() {
@@ -384,4 +499,7 @@
             }
         </script>
     @endpush
+
+
+
 </x-layouts.admin>

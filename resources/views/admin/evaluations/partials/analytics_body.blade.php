@@ -106,23 +106,44 @@
         <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
             <!-- Filtered Responses -->
             <div
-                class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 relative overflow-hidden group hover:shadow-md transition-shadow">
-                <div class="absolute right-0 top-0 h-full w-1/3 bg-gradient-to-l from-brand-50 to-transparent"></div>
+                class="bg-white p-6 rounded-2xl shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] border border-gray-100 relative overflow-hidden group hover:-translate-y-1 transition-all duration-300">
+                <div class="absolute right-0 top-0 h-full w-1/2 bg-gradient-to-l from-brand-50/50 to-transparent"></div>
+                <!-- Decorative Icon -->
+                <div
+                    class="absolute -right-4 -bottom-4 opacity-10 text-brand-600 transform -rotate-12 group-hover:scale-110 transition-transform">
+                    <svg class="w-24 h-24" fill="currentColor" viewBox="0 0 20 20">
+                        <path
+                            d="M7 3a1 1 0 000 2h6a1 1 0 100-2H7zM4 7a1 1 0 011-1h10a1 1 0 110 2H5a1 1 0 01-1-1zM2 11a2 2 0 012-2h12a2 2 0 012 2v4a2 2 0 01-2 2H4a2 2 0 01-2-2v-4z">
+                        </path>
+                    </svg>
+                </div>
+
                 <div class="relative z-10 w-full">
-                    <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Participation</p>
-                    <div class="flex items-end justify-between w-full">
+                    <div class="flex items-center gap-2 mb-2">
+                        <span class="p-1.5 bg-brand-100 text-brand-600 rounded-lg">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0z">
+                                </path>
+                            </svg>
+                        </span>
+                        <p class="text-[11px] font-bold text-gray-400 uppercase tracking-widest">Participation</p>
+                    </div>
+
+                    <div class="flex items-end justify-between w-full mt-2">
                         <div>
                             <h3 class="text-3xl font-black text-gray-900 leading-none">{{ $totalResponses }}</h3>
-                            <p class="text-[10px] text-gray-400 mt-1">out of {{ $overallTotal }} total records</p>
+                            <p class="text-[10px] text-gray-400 mt-1 font-medium">Total Respondents</p>
                         </div>
                         <!-- Percentage Badge -->
                         @php
                             $percentage = $overallTotal > 0 ? round(($totalResponses / $overallTotal) * 100) : 0;
                         @endphp
                         <div class="flex flex-col items-end">
-                            <span class="text-2xl font-black text-brand-600">{{ $percentage }}%</span>
-                            <div class="w-12 h-1 bg-gray-100 rounded-full mt-1 overflow-hidden">
-                                <div class="h-full bg-brand-500 rounded-full" style="width: {{ $percentage }}%"></div>
+                            <span class="text-xl font-black text-brand-600">{{ $percentage }}%</span>
+                            <div class="w-16 h-1.5 bg-gray-100 rounded-full mt-1 overflow-hidden">
+                                <div class="h-full bg-brand-500 rounded-full shadow-[0_0_10px_rgba(79,70,229,0.3)]"
+                                    style="width: {{ $percentage }}%"></div>
                             </div>
                         </div>
                     </div>
@@ -131,101 +152,173 @@
 
             <!-- Top Course -->
             <div
-                class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 relative overflow-hidden group hover:shadow-md transition-shadow">
-                <div class="absolute right-0 top-0 h-full w-1/3 bg-gradient-to-l from-blue-50 to-transparent"></div>
+                class="bg-white p-6 rounded-2xl shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] border border-gray-100 relative overflow-hidden group hover:-translate-y-1 transition-all duration-300">
+                <div class="absolute right-0 top-0 h-full w-1/2 bg-gradient-to-l from-blue-50/50 to-transparent"></div>
+                <div
+                    class="absolute -right-4 -bottom-4 opacity-10 text-blue-600 transform -rotate-12 group-hover:scale-110 transition-transform">
+                    <svg class="w-24 h-24" fill="currentColor" viewBox="0 0 20 20">
+                        <path
+                            d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4-1.714a1 1 0 11.788 1.838L7.667 9.088l1.94.831a1 1 0 00.787 0l7-3a1 1 0 000-1.838l-7-3zM3.31 9.397L5 10.12v4.102a8.969 8.969 0 00-1.05-.174 1 1 0 01-.89-.89 11.115 11.115 0 01.25-3.762zM9.3 16.573A9.026 9.026 0 007 14.935v-3.957l1.818.78a3 3 0 002.364 0l5.508-2.361a11.026 11.026 0 01.25 3.762 1 1 0 01-.89.89 8.968 8.968 0 00-5.35 2.524 1 1 0 01-1.4 0zM6 18a1 1 0 001-1v-2.065a8.935 8.935 0 00-2-.712V17a1 1 0 001 1z">
+                        </path>
+                    </svg>
+                </div>
+
                 <div class="relative z-10">
-                    <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Top Dept/Course</p>
-                    <h3 class="text-xl font-black text-gray-900 line-clamp-1" title="{{ $topCourse }}">{{ $topCourse }}
+                    <div class="flex items-center gap-2 mb-2">
+                        <span class="p-1.5 bg-blue-100 text-blue-600 rounded-lg">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4">
+                                </path>
+                            </svg>
+                        </span>
+                        <p class="text-[11px] font-bold text-gray-400 uppercase tracking-widest">Top Program</p>
+                    </div>
+                    <h3 class="text-lg font-black text-gray-900 line-clamp-2 leading-tight min-h-[3rem]"
+                        title="{{ $topCourse }}">{{ $topCourse ?? 'N/A' }}
                     </h3>
-                    <p class="text-[10px] text-gray-400 mt-1">Highest distinct volume</p>
+                    <p
+                        class="text-[10px] text-blue-600 font-bold mt-1 bg-blue-50 inline-block px-2 py-0.5 rounded-full border border-blue-100">
+                        Most Active</p>
                 </div>
             </div>
 
             <!-- Latest Activity -->
             <div
-                class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 relative overflow-hidden group hover:shadow-md transition-shadow">
-                <div class="absolute right-0 top-0 h-full w-1/3 bg-gradient-to-l from-green-50 to-transparent"></div>
+                class="bg-white p-6 rounded-2xl shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] border border-gray-100 relative overflow-hidden group hover:-translate-y-1 transition-all duration-300">
+                <div class="absolute right-0 top-0 h-full w-1/2 bg-gradient-to-l from-green-50/50 to-transparent"></div>
+                <div
+                    class="absolute -right-4 -bottom-4 opacity-10 text-green-600 transform -rotate-12 group-hover:scale-110 transition-transform">
+                    <svg class="w-24 h-24" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd"
+                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
+                            clip-rule="evenodd"></path>
+                    </svg>
+                </div>
+
                 <div class="relative z-10">
-                    <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Last Submission</p>
-                    <h3 class="text-lg font-black text-gray-900">
-                        {{ $latestResponse ? $latestResponse->created_at->diffForHumans() : 'No data' }}
+                    <div class="flex items-center gap-2 mb-2">
+                        <span class="p-1.5 bg-green-100 text-green-600 rounded-lg">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                        </span>
+                        <p class="text-[11px] font-bold text-gray-400 uppercase tracking-widest">Last Activity</p>
+                    </div>
+                    <h3 class="text-xl font-black text-gray-900">
+                        {{ $latestResponse ? $latestResponse->created_at->diffForHumans() : 'N/A' }}
                     </h3>
+                    <p class="text-[10px] text-gray-400 mt-1 font-medium">
+                        {{ $latestResponse ? $latestResponse->created_at->format('M d, Y h:i A') : 'No submissions yet' }}
+                    </p>
                 </div>
             </div>
 
             <!-- Export Actions -->
-            <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 relative overflow-hidden flex flex-col justify-center items-center gap-2 group hover:shadow-md transition-shadow cursor-pointer"
+            <div class="bg-gray-50 p-6 rounded-2xl border border-gray-100 relative overflow-hidden flex flex-col justify-center items-center gap-3 group hover:bg-white hover:shadow-md transition-all duration-300 cursor-pointer"
                 onclick="window.print()">
                 <div
-                    class="w-10 h-10 bg-gray-50 rounded-full flex items-center justify-center group-hover:bg-brand-50 group-hover:scale-110 transition-all">
-                    <svg class="w-5 h-5 text-gray-400 group-hover:text-brand-600" fill="none" stroke="currentColor"
+                    class="w-12 h-12 bg-white rounded-xl shadow-sm flex items-center justify-center group-hover:bg-brand-600 group-hover:text-white transition-all duration-300 transform group-hover:rotate-3">
+                    <svg class="w-6 h-6 text-gray-400 group-hover:text-white" fill="none" stroke="currentColor"
                         viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
                     </svg>
                 </div>
-                <span
-                    class="text-[10px] font-bold text-gray-500 group-hover:text-brand-600 uppercase tracking-wider">Print
-                    Summary</span>
+                <div class="text-center">
+                    <span
+                        class="block text-xs font-black text-gray-700 group-hover:text-brand-600 uppercase tracking-wider mb-0.5">Print
+                        Report</span>
+                    <span class="text-[10px] text-gray-400">Download PDF</span>
+                </div>
             </div>
         </div>
 
         <!-- Questions Grid -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 print:block print:w-full">
+        <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6 print:block print:w-full">
             <template x-for="(item, index) in analytics" :key="item.id">
-                <div
-                    class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 flex flex-col break-inside-avoid mb-8 h-full">
-                    <!-- Question Header -->
-                    <div class="mb-6">
-                        <span
-                            class="inline-flex items-center px-2.5 py-1 rounded-md text-[10px] font-bold bg-brand-50 text-brand-700 uppercase tracking-wider mb-2">
-                            Question <span x-text="index + 1" class="ml-1"></span>
-                        </span>
-                        <h4 class="font-bold text-gray-900 leading-snug text-base" x-text="item.question"></h4>
-                        <p class="text-xs text-gray-400 mt-1" x-show="item.type === 'scale'">Rating Scale: 1 (Lowest) to
-                            5 (Highest)</p>
-                    </div>
+                <div x-data="{ expanded: true }"
+                    class="bg-white rounded-2xl shadow-[0_2px_10px_-2px_rgba(0,0,0,0.05)] border border-gray-100 flex flex-col break-inside-avoid h-full transition-all duration-300 hover:shadow-md">
 
-                    <!-- Chart / Data Area -->
-                    <div
-                        class="flex-1 min-h-[300px] flex items-center justify-center relative bg-gray-50/30 rounded-xl p-4 border border-gray-50">
-                        <!-- Chart View -->
-                        <div x-show="['radio', 'checkbox', 'scale'].includes(item.type)" class="w-full h-full">
-                            <canvas :id="'chart-' + item.id" class="w-full h-full"></canvas>
-                            <!-- Fallback if no stats -->
-                            <div x-show="!hasStats(item)"
-                                class="absolute inset-0 flex flex-col items-center justify-center text-gray-400">
-                                <svg class="w-10 h-10 opacity-20 mb-2" fill="none" stroke="currentColor"
-                                    viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                                </svg>
-                                <span class="text-xs font-bold uppercase tracking-wider opacity-50">No Data</span>
+                    <!-- Question Header (Click to Toggle) -->
+                    <div @click="expanded = !expanded"
+                        class="p-5 cursor-pointer flex justify-between items-start gap-4 border-b border-gray-50 bg-gray-50/30 rounded-t-2xl">
+                        <div class="flex-1">
+                            <div class="flex items-center gap-2 mb-1.5">
+                                <span
+                                    class="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold bg-brand-50 text-brand-700 uppercase tracking-wider">
+                                    Q<span x-text="index + 1" class="ml-0.5"></span>
+                                </span>
+                                <span x-show="item.type === 'scale' && item.average"
+                                    class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md text-[10px] font-bold bg-yellow-50 text-yellow-700 border border-yellow-100">
+                                    <span x-text="item.average"></span>
+                                    <svg class="w-3 h-3 text-yellow-500 fill-current" viewBox="0 0 20 20">
+                                        <path
+                                            d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                    </svg>
+                                </span>
                             </div>
+                            <h4 class="font-bold text-gray-900 leading-snug text-sm line-clamp-2" x-text="item.question"
+                                :title="item.question"></h4>
                         </div>
 
-                        <!-- Text View -->
-                        <div x-show="!['radio', 'checkbox', 'scale'].includes(item.type)"
-                            class="w-full h-full overflow-hidden flex flex-col">
-                            <ul x-show="item.text_answers && item.text_answers.length > 0"
-                                class="space-y-3 overflow-y-auto max-h-[300px] scrollbar-thin scrollbar-track-transparent scrollbar-thumb-gray-200 pr-2 pb-2">
-                                <template x-for="ans in item.text_answers" :key="ans">
-                                    <li
-                                        class="bg-white p-3.5 rounded-lg text-sm text-gray-600 border border-gray-100 shadow-[0_2px_8px_-2px_rgba(0,0,0,0.05)] relative pl-9 transition-transform hover:scale-[1.01]">
-                                        <svg class="w-4 h-4 absolute left-3 top-3.5 text-brand-300" fill="currentColor"
+                        <!-- Toggle Icon -->
+                        <div class="text-gray-400 transition-transform duration-200"
+                            :class="expanded ? 'rotate-180' : ''">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </div>
+                    </div>
+
+                    <!-- Collapsible Content -->
+                    <div x-show="expanded" x-collapse>
+                        <div class="p-5 pt-4">
+                            <!-- Chart / Data Area -->
+                            <div
+                                class="w-full h-64 flex items-center justify-center relative bg-gray-50/50 rounded-xl p-2 border border-blue-50/50">
+                                <!-- Chart View -->
+                                <div x-show="['radio', 'checkbox', 'scale'].includes(item.type)" class="w-full h-full">
+                                    <canvas :id="'chart-' + item.id" class="w-full h-full"></canvas>
+                                    <!-- Fallback if no stats -->
+                                    <div x-show="!hasStats(item)"
+                                        class="absolute inset-0 flex flex-col items-center justify-center text-gray-400">
+                                        <svg class="w-8 h-8 opacity-20 mb-2" fill="none" stroke="currentColor"
                                             viewBox="0 0 24 24">
-                                            <path
-                                                d="M14.017 21L14.017 18C14.017 16.8954 13.1216 16 12.0171 16H9.9626L11.854 12.2171L12.0494 11.8262H11.6125H7.01714V3H19.0171V21H14.017ZM6.68657 14.8584L4.99614 18.2391L4.65386 18.9237L4.01714 18.6053L2.69539 17.9444L1.31714 17.2553L6.01714 7.85528V3H0.0171415V14.8584H6.68657Z">
-                                            </path>
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
                                         </svg>
-                                        <span x-text="ans"></span>
-                                    </li>
-                                </template>
-                            </ul>
-                            <div x-show="!item.text_answers || item.text_answers.length === 0"
-                                class="flex-1 flex flex-col items-center justify-center text-gray-400">
-                                <span class="text-xs font-bold uppercase tracking-wider opacity-50">No text
-                                    responses</span>
+                                        <span class="text-[10px] font-bold uppercase tracking-wider opacity-50">No
+                                            Data</span>
+                                    </div>
+                                </div>
+
+                                <!-- Text View -->
+                                <div x-show="!['radio', 'checkbox', 'scale'].includes(item.type)"
+                                    class="w-full h-full overflow-hidden flex flex-col">
+                                    <ul x-show="item.text_answers && item.text_answers.length > 0"
+                                        class="space-y-2 overflow-y-auto max-h-full scrollbar-thin scrollbar-track-transparent scrollbar-thumb-gray-200 pr-1">
+                                        <template x-for="ans in item.text_answers" :key="ans">
+                                            <li
+                                                class="bg-white p-2.5 rounded-lg text-xs text-gray-600 border border-gray-100 shadow-sm relative pl-7 hover:bg-gray-50">
+                                                <svg class="w-3 h-3 absolute left-2.5 top-3 text-brand-300"
+                                                    fill="currentColor" viewBox="0 0 24 24">
+                                                    <path
+                                                        d="M14.017 21L14.017 18C14.017 16.8954 13.1216 16 12.0171 16H9.9626L11.854 12.2171L12.0494 11.8262H11.6125H7.01714V3H19.0171V21H14.017ZM6.68657 14.8584L4.99614 18.2391L4.65386 18.9237L4.01714 18.6053L2.69539 17.9444L1.31714 17.2553L6.01714 7.85528V3H0.0171415V14.8584H6.68657Z">
+                                                    </path>
+                                                </svg>
+                                                <span x-text="ans"></span>
+                                            </li>
+                                        </template>
+                                    </ul>
+                                    <div x-show="!item.text_answers || item.text_answers.length === 0"
+                                        class="flex-1 flex flex-col items-center justify-center text-gray-400">
+                                        <span class="text-[10px] font-bold uppercase tracking-wider opacity-50">No text
+                                            responses</span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -262,10 +355,20 @@
 
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
             <!-- Participation by Course -->
-            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
-                <div class="mb-6">
-                    <h4 class="font-black text-gray-900 text-lg uppercase tracking-tight">Program Distribution</h4>
-                    <p class="text-xs text-gray-400 font-medium">Which programs are most active?</p>
+            <div
+                class="bg-white rounded-2xl shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] border border-gray-100 p-8 hover:shadow-lg transition-shadow duration-300">
+                <div class="mb-6 flex justify-between items-start">
+                    <div>
+                        <h4 class="font-black text-gray-900 text-lg uppercase tracking-tight">Program Distribution</h4>
+                        <p class="text-xs text-gray-400 font-medium">Which programs are most active?</p>
+                    </div>
+                    <div class="p-2 bg-blue-50 text-blue-600 rounded-lg">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4">
+                            </path>
+                        </svg>
+                    </div>
                 </div>
                 <div class="relative h-[300px] w-full">
                     <canvas x-ref="courseDistChart"></canvas>
@@ -273,10 +376,19 @@
             </div>
 
             <!-- Participation by Batch -->
-            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
-                <div class="mb-6">
-                    <h4 class="font-black text-gray-900 text-lg uppercase tracking-tight">Batch Demographics</h4>
-                    <p class="text-xs text-gray-400 font-medium">Response breakdown by graduation year</p>
+            <div
+                class="bg-white rounded-2xl shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] border border-gray-100 p-8 hover:shadow-lg transition-shadow duration-300">
+                <div class="mb-6 flex justify-between items-start">
+                    <div>
+                        <h4 class="font-black text-gray-900 text-lg uppercase tracking-tight">Batch Demographics</h4>
+                        <p class="text-xs text-gray-400 font-medium">Response breakdown by graduation year</p>
+                    </div>
+                    <div class="p-2 bg-purple-50 text-purple-600 rounded-lg">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                    </div>
                 </div>
                 <div class="relative h-[300px] w-full">
                     <canvas x-ref="batchDistChart"></canvas>
@@ -286,287 +398,3 @@
     </div>
 
 </div>
-
-<script>
-    document.addEventListener('alpine:init', () => {
-        Alpine.data('analyticsDashboard', (initData) => ({
-            analytics: initData.analytics,
-            trendLabels: initData.trendLabels,
-            trendValues: initData.trendValues,
-            courseDistLabels: initData.courseDistLabels || [],
-            courseDistValues: initData.courseDistValues || [],
-            batchDistLabels: initData.batchDistLabels || [],
-            batchDistValues: initData.batchDistValues || [],
-            activeTab: 'overview', // 'overview' or 'insights'
-
-            init() {
-                this.$watch('activeTab', (value) => {
-                    // Re-render charts when tab switches if needed, 
-                    // but Charts.js usually handles hidden canvases okay if initialized.
-                    // However, initializing them only when visible is safer for sizing.
-                    this.$nextTick(() => {
-                        if (value === 'insights') {
-                            this.initInsightsCharts();
-                        } else {
-                            this.initCharts();
-                        }
-                    });
-                });
-
-                // Initialize default tab
-                this.initCharts();
-                // We also init trend chart in background or when tab 2 is clicked.
-                // Let's init everything but standard charts might need visibility.
-            },
-
-            applyFilters(form) {
-                // Determine if we are in modal or page
-                // If in page, default submit works (remove preventDefault)
-                // If in modal, we need to fetch new partial.
-
-                // For now, let's assume this component handles its own reloading or redirect
-                // If this is inside the report modal, the form action needs to be correct.
-                // Since simpler approach: Just reload the page or trigger the parent to filter.
-
-                // Hack: If we detect we are in a modal (parent has reportManager), we might call that.
-                // Or simpler: Just submit form to current URL (works for standalone).
-                // For modal, we need `generateReport` to accept these params.
-
-                const formData = new FormData(form);
-                const params = new URLSearchParams(formData);
-
-                // Check if `reportManager` is available in specific parent scope? hard to tell.
-                // Easier: Dispatch an event that the parent listens to.
-                this.$dispatch('filters-applied', Object.fromEntries(formData));
-
-                // If standalone (no listener), submit manually
-                if (!window.Alpine.store('modalContext')) {
-                    window.location.search = params.toString();
-                }
-            },
-
-            hasStats(item) {
-                return item.stats && Object.keys(item.stats).length > 0 && Object.values(item.stats).some(v => v > 0);
-            },
-
-            initInsightsCharts() {
-                this.$nextTick(() => {
-                    this.initTrendChart();
-                    this.initCourseDistChart();
-                    this.initBatchDistChart();
-                });
-            },
-
-            initTrendChart() {
-                if (this.trendValues.length === 0 || !this.$refs.trendChart) return;
-
-                // Destroy existing if any? Chart.js 3+ helps, but good practice to check attached instance.
-                // For simplicity assuming fresh init or idempotent.
-
-                const ctx = this.$refs.trendChart.getContext('2d');
-                if (Chart.getChart(ctx)) Chart.getChart(ctx).destroy();
-
-                new Chart(ctx, {
-                    type: 'line',
-                    data: {
-                        labels: this.trendLabels,
-                        datasets: [{
-                            label: 'New Responses',
-                            data: this.trendValues,
-                            borderColor: '#4F46E5',
-                            backgroundColor: (context) => {
-                                const ctx = context.chart.ctx;
-                                const gradient = ctx.createLinearGradient(0, 0, 0, 300);
-                                gradient.addColorStop(0, 'rgba(79, 70, 229, 0.2)');
-                                gradient.addColorStop(1, 'rgba(79, 70, 229, 0)');
-                                return gradient;
-                            },
-                            borderWidth: 3,
-                            fill: true,
-                            tension: 0.4,
-                            pointBackgroundColor: '#FFFFFF',
-                            pointBorderColor: '#4F46E5',
-                            pointRadius: 4,
-                            pointHoverRadius: 6
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: { legend: { display: false } },
-                        scales: {
-                            y: { beginAtZero: true, grid: { borderDash: [2, 4], color: '#F3F4F6' } },
-                            x: { grid: { display: false } }
-                        }
-                    }
-                });
-            },
-
-            initCourseDistChart() {
-                if (!this.$refs.courseDistChart) return;
-                const ctx = this.$refs.courseDistChart.getContext('2d');
-                if (Chart.getChart(ctx)) Chart.getChart(ctx).destroy();
-
-                new Chart(ctx, {
-                    type: 'bar',
-                    data: {
-                        labels: this.courseDistLabels,
-                        datasets: [{
-                            label: 'Responses',
-                            data: this.courseDistValues,
-                            backgroundColor: '#0ea5e9',
-                            borderRadius: 6
-                        }]
-                    },
-                    options: {
-                        indexAxis: 'y',
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: { legend: { display: false } },
-                        scales: {
-                            x: { grid: { display: false } }
-                        }
-                    }
-                });
-            },
-
-            initBatchDistChart() {
-                if (!this.$refs.batchDistChart) return;
-                const ctx = this.$refs.batchDistChart.getContext('2d');
-                if (Chart.getChart(ctx)) Chart.getChart(ctx).destroy();
-
-                new Chart(ctx, {
-                    type: 'doughnut',
-                    data: {
-                        labels: this.batchDistLabels,
-                        datasets: [{
-                            label: 'Responses',
-                            data: this.batchDistValues,
-                            backgroundColor: [
-                                '#6366f1', '#ec4899', '#8b5cf6', '#10b981', '#f59e0b'
-                            ],
-                            borderWidth: 0
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: { legend: { position: 'right' } }
-                    }
-                });
-            },
-
-            initCharts() {
-                Chart.defaults.font.family = "'Inter', sans-serif";
-                Chart.defaults.color = '#6B7280';
-
-                this.$nextTick(() => {
-                    this.analytics.forEach(item => {
-                        if (['radio', 'checkbox', 'scale'].includes(item.type) && this.hasStats(item)) {
-                            const ctx = document.getElementById('chart-' + item.id);
-                            if (!ctx) return;
-
-                            if (Chart.getChart(ctx)) return; // Already exists
-
-                            const labels = Object.keys(item.stats);
-                            const data = Object.values(item.stats);
-
-                            let chartType = 'bar';
-                            let indexAxis = 'x';
-                            let legendDisplay = false;
-
-                            if (item.type === 'radio') {
-                                chartType = 'doughnut';
-                                legendDisplay = true;
-                            }
-                            if (item.type === 'checkbox') {
-                                chartType = 'bar';
-                                indexAxis = 'y'; // Readable long labels
-                            }
-
-                            // Professional Palette
-                            const backgrounds = [
-                                'rgba(79, 70, 229, 0.8)',   // Indigo
-                                'rgba(16, 185, 129, 0.8)',  // Emerald
-                                'rgba(245, 158, 11, 0.8)',  // Amber
-                                'rgba(239, 68, 68, 0.8)',   // Red
-                                'rgba(139, 92, 246, 0.8)',  // Violet
-                                'rgba(236, 72, 153, 0.8)',  // Pink
-                                'rgba(6, 182, 212, 0.8)',   // Cyan
-                            ];
-
-                            new Chart(ctx, {
-                                type: chartType,
-                                data: {
-                                    labels: labels,
-                                    datasets: [{
-                                        label: 'Count',
-                                        data: data,
-                                        backgroundColor: chartType === 'doughnut' ? backgrounds : '#4F46E5',
-                                        borderRadius: 4,
-                                        borderWidth: 0,
-                                        hoverOffset: 4
-                                    }]
-                                },
-                                options: {
-                                    indexAxis: indexAxis,
-                                    responsive: true,
-                                    maintainAspectRatio: false,
-                                    plugins: {
-                                        legend: {
-                                            display: legendDisplay,
-                                            position: 'right',
-                                            labels: {
-                                                usePointStyle: true,
-                                                pointStyle: 'circle',
-                                                padding: 15,
-                                                font: { size: 11, weight: 600 }
-                                            }
-                                        },
-                                        tooltip: {
-                                            backgroundColor: '#1F2937',
-                                            padding: 12,
-                                            cornerRadius: 8,
-                                            callbacks: {
-                                                label: function (context) {
-                                                    let label = context.dataset.label || '';
-                                                    if (label) label += ': ';
-                                                    let value = context.parsed.y !== null ? context.parsed.y : context.parsed;
-                                                    if (indexAxis === 'y') value = context.parsed.x;
-                                                    let total = context.chart._metasets[context.datasetIndex].total;
-                                                    let percentage = Math.round((value / total) * 100) + '%';
-                                                    return label + value + ' (' + percentage + ')';
-                                                }
-                                            }
-                                        }
-                                    },
-                                    scales: chartType !== 'doughnut' ? {
-                                        y: {
-                                            beginAtZero: true,
-                                            grid: { color: '#F3F4F6' },
-                                            ticks: {
-                                                stepSize: 1,
-                                                font: { size: 10, weight: 600 }
-                                            }
-                                        },
-                                        x: {
-                                            grid: { display: false },
-                                            ticks: { font: { size: 10 } }
-                                        }
-                                    } : {
-                                        // Hide scales for doughnut
-                                        x: { display: false },
-                                        y: { display: false }
-                                    },
-                                    layout: {
-                                        padding: chartType === 'doughnut' ? 20 : 0
-                                    }
-                                }
-                            });
-                        }
-                    });
-                });
-            }
-        }));
-    });
-</script>
