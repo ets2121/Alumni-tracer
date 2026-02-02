@@ -29,8 +29,9 @@
 
         <!-- Page Heading (Sticky) -->
         @isset($header)
-            <header class="bg-white/80 backdrop-blur-md shadow-sm border-b border-gray-100 sticky top-0 z-20">
-                <div class="max-w-7xl mx-auto py-5 px-4 sm:px-6 lg:px-8">
+            <header class="bg-white/80 backdrop-blur-md shadow-sm border-b border-gray-100 sticky top-0 z-20 flex-shrink-0">
+                <div
+                    class="{{ request()->routeIs('chat.*', 'dashboard') ? 'max-w-2xl mx-auto py-3 px-4' : 'max-w-7xl mx-auto py-5 px-4 sm:px-6 lg:px-8' }}">
                     {{ $header }}
                 </div>
             </header>
@@ -38,7 +39,7 @@
 
         <!-- Page Content -->
         <main
-            class="flex-grow w-full {{ request()->routeIs('chat.*', 'dashboard') ? 'h-full' : 'max-w-7xl mx-auto py-8 sm:px-6 lg:px-8' }}">
+            class="flex-1 w-full {{ request()->routeIs('chat.*', 'dashboard') ? 'min-h-0 overflow-hidden' : 'max-w-7xl mx-auto py-8 sm:px-6 lg:px-8' }}">
             {{ $slot }}
         </main>
 

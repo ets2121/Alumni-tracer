@@ -1,29 +1,38 @@
 <x-app-layout>
-    <div class="h-full flex flex-col overflow-hidden bg-gray-50" x-data="alumniFeed()"
-        @open-image-modal.window="imageModal.src = $event.detail.src; imageModal.open = true">
-
-        <!-- Tab Navigation (Sub-header) -->
-        <div class="flex-shrink-0 z-20 bg-white/80 backdrop-blur-md border-b border-gray-200">
-            <div class="max-w-2xl mx-auto px-4 py-3">
-                <div class="flex items-center space-x-1 bg-gray-100/50 p-1 rounded-xl">
-                    <button @click="switchTab('all')"
-                        :class="tab === 'all' ? 'bg-white text-brand-600 shadow-sm' : 'text-gray-500 hover:text-gray-900'"
-                        class="flex-1 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-all">All</button>
-                    <button @click="switchTab('news')"
-                        :class="tab === 'news' ? 'bg-white text-brand-600 shadow-sm' : 'text-gray-500 hover:text-gray-900'"
-                        class="flex-1 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-all">News</button>
-                    <button @click="switchTab('event')"
-                        :class="tab === 'event' ? 'bg-white text-brand-600 shadow-sm' : 'text-gray-500 hover:text-gray-900'"
-                        class="flex-1 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-all">Events</button>
-                    <button @click="switchTab('announcement')"
-                        :class="tab === 'announcement' ? 'bg-white text-brand-600 shadow-sm' : 'text-gray-500 hover:text-gray-900'"
-                        class="flex-1 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-all">Prtcl</button>
+    <x-slot name="header">
+        <div class="max-w-2xl mx-auto" x-data="{ currentTab: 'all' }" 
+             @feed-tab-synced.window="currentTab = $event.detail">
+            <div class="flex items-center justify-between mb-3">
+                <h2 class="text-lg font-black text-gray-900 tracking-tight">Community Feed</h2>
+                <div class="flex items-center space-x-2">
+                    <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+                    <span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Live Updates</span>
                 </div>
             </div>
+            <div class="flex items-center space-x-1 bg-gray-100/80 p-1 rounded-xl border border-gray-200/50 shadow-sm">
+                <button @click="currentTab = 'all'; $dispatch('switch-feed-tab', 'all')"
+                    :class="currentTab === 'all' ? 'bg-white text-brand-600 shadow-sm' : 'text-gray-500 hover:text-gray-900'"
+                    class="flex-1 py-1.5 rounded-lg text-[11px] font-bold uppercase tracking-wider transition-all cursor-pointer">All</button>
+                <button @click="currentTab = 'news'; $dispatch('switch-feed-tab', 'news')"
+                    :class="currentTab === 'news' ? 'bg-white text-brand-600 shadow-sm' : 'text-gray-500 hover:text-gray-900'"
+                    class="flex-1 py-1.5 rounded-lg text-[11px] font-bold uppercase tracking-wider transition-all cursor-pointer">News</button>
+                <button @click="currentTab = 'event'; $dispatch('switch-feed-tab', 'event')"
+                    :class="currentTab === 'event' ? 'bg-white text-brand-600 shadow-sm' : 'text-gray-500 hover:text-gray-900'"
+                    class="flex-1 py-1.5 rounded-lg text-[11px] font-bold uppercase tracking-wider transition-all cursor-pointer">Events</button>
+                <button @click="currentTab = 'announcement'; $dispatch('switch-feed-tab', 'announcement')"
+                    :class="currentTab === 'announcement' ? 'bg-white text-brand-600 shadow-sm' : 'text-gray-500 hover:text-gray-900'"
+                    class="flex-1 py-1.5 rounded-lg text-[11px] font-bold uppercase tracking-wider transition-all cursor-pointer">Announcements</button>
+            </div>
         </div>
+    </x-slot>
 
-        <!-- Feed Content (Scrollable) -->
+    <div class="h-full flex flex-col overflow-hidden bg-gray-50" x-data="alumniFeed()"
+        @switch-feed-tab.window="switchTab($event.detail)"
+        @open-image-modal.window="imageModal.src = $event.detail.src; imageModal.open = true">
+
+        <!-- Main Scrollable Area -->
         <div class="flex-1 overflow-y-auto custom-scrollbar pb-12" id="feed-scroll-container">
+
             <div class="max-w-2xl mx-auto px-4 py-6">
                 <div class="space-y-4" id="feed-content">
                     <div x-html="feedHtml"></div>
@@ -121,6 +130,8 @@
                         this.hasMore = true;
                         this.feedHtml = '';
                         this.fetchFeed();
+
+                        this.$dispatch('feed-tab-synced', newTab);
 
                         document.getElementById('feed-scroll-container').scrollTo({
                             top: 0,
