@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
-        <div class="max-w-2xl mx-auto" x-data="{ currentTab: 'all' }" 
-             @feed-tab-synced.window="currentTab = $event.detail">
+        <div class="max-w-2xl mx-auto" x-data="{ currentTab: 'all' }"
+            @feed-tab-synced.window="currentTab = $event.detail">
             <div class="flex items-center justify-between mb-3">
                 <h2 class="text-lg font-black text-gray-900 tracking-tight">Community Feed</h2>
                 <div class="flex items-center space-x-2">
@@ -27,7 +27,7 @@
     </x-slot>
 
     <div class="h-full flex flex-col overflow-hidden bg-gray-50" x-data="alumniFeed()"
-        @switch-feed-tab.window="switchTab($event.detail)"
+        @@switch-feed-tab.window="switchTab($event.detail)"
         @open-image-modal.window="imageModal.src = $event.detail.src; imageModal.open = true">
 
         <!-- Main Scrollable Area -->
