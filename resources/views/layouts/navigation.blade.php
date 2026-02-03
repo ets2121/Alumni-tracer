@@ -1,4 +1,4 @@
-<nav x-data="{ open: false }" class="bg-indigo-600 border-b border-indigo-500">
+<nav x-data="{ open: false }" class="bg-brand-600 dark: border-b border-brand-500 dark:border-brand-950">
     <!-- Primary Navigation Menu -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-16">
@@ -14,24 +14,24 @@
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')"
-                        class="text-indigo-100 hover:text-white hover:border-indigo-200">
+                        class="text-white hover:text-black hover:border-brand-200">
                         {{ __('Dashboard') }}
                     </x-nav-link>
                     <x-nav-link :href="route('alumni.gallery.index')" :active="request()->routeIs('alumni.gallery.*')"
-                        class="text-indigo-100 hover:text-white hover:border-indigo-200">
+                        class="text-white hover:text-black hover:border-brand-200">
                         {{ __('Gallery') }}
                     </x-nav-link>
                     <x-nav-link :href="route('alumni.memos.index')" :active="request()->routeIs('alumni.memos.*')"
-                        class="text-indigo-100 hover:text-white hover:border-indigo-200">
+                        class="text-brand-100 hover:text-white hover:border-brand-200">
                         {{ __('CHED Memos') }}
                     </x-nav-link>
                     <x-nav-link :href="route('chat.index')" :active="request()->routeIs('chat.*')"
-                        class="text-indigo-100 hover:text-white hover:border-indigo-200">
+                        class="text-brand-100 hover:text-white hover:border-brand-200">
                         {{ __('Group Chat') }}
                     </x-nav-link>
                     <x-nav-link :href="route('alumni.evaluations.index')"
                         :active="request()->routeIs('alumni.evaluations.*')"
-                        class="text-indigo-100 hover:text-white hover:border-indigo-200 relative">
+                        class="text-brand-100 hover:text-white hover:border-brand-200 relative">
                         {{ __('Evaluations') }}
                         <!-- Badge -->
                         @if(Auth::user()->status === 'active')
@@ -46,25 +46,27 @@
             </div>
 
             <!-- Settings Dropdown -->
-            <div class="hidden sm:flex sm:items-center sm:ms-6">
+            <div class="hidden sm:flex sm:items-center sm:ms-6 gap-4">
+                <x-theme-toggle />
+
                 <!-- If admin, show admin dashboard link -->
                 @if(Auth::user()->role === 'admin')
                     <a href="{{ route('admin.dashboard') }}"
-                        class="me-4 text-sm font-medium text-indigo-100 hover:text-white px-3 py-2 rounded-md bg-indigo-500/30">
+                        class="me-4 text-sm font-medium text-brand-100 hover:text-white px-3 py-2 rounded-md bg-brand-500/30">
                         Admin Panel
                     </a>
                 @endif
                 <x-dropdown align="right" width="48">
                     <x-slot name="trigger">
                         <button
-                            class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-indigo-100 bg-indigo-600 hover:bg-indigo-700 focus:outline-none transition ease-in-out duration-150">
+                            class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-brand-100 bg-brand-600 hover:bg-brand-700 focus:outline-none transition ease-in-out duration-150">
                             @if(Auth::user()->avatar)
                                 <img src="{{ asset('storage/' . Auth::user()->avatar) }}" alt=""
-                                    class="w-8 h-8 rounded-full object-cover me-2 border border-indigo-400">
+                                    class="w-8 h-8 rounded-full object-cover me-2 border border-brand-400">
                             @else
                                 <div
-                                    class="w-8 h-8 rounded-full bg-indigo-500 flex items-center justify-center me-2 border border-indigo-400">
-                                    <svg class="w-4 h-4 text-indigo-200" fill="currentColor" viewBox="0 0 24 24">
+                                    class="w-8 h-8 rounded-full bg-brand-500 flex items-center justify-center me-2 border border-brand-400">
+                                    <svg class="w-4 h-4 text-brand-200" fill="currentColor" viewBox="0 0 24 24">
                                         <path
                                             d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
                                     </svg>
@@ -110,7 +112,7 @@
             <!-- Hamburger -->
             <div class="-me-2 flex items-center sm:hidden">
                 <button @click="open = ! open"
-                    class="inline-flex items-center justify-center p-2 rounded-md text-indigo-200 hover:text-white hover:bg-indigo-700 focus:outline-none focus:bg-indigo-700 focus:text-white transition duration-150 ease-in-out">
+                    class="inline-flex items-center justify-center p-2 rounded-md text-brand-200 hover:text-white hover:bg-brand-700 focus:outline-none focus:bg-brand-700 focus:text-white transition duration-150 ease-in-out">
                     <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
                         <path :class="{'hidden': open, 'inline-flex': ! open }" class="inline-flex"
                             stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -124,37 +126,37 @@
     </div>
 
     <!-- Responsive Navigation Menu -->
-    <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden bg-indigo-700">
+    <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden bg-brand-700">
         <div class="pt-2 pb-3 space-y-1">
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')"
-                class="text-indigo-100 hover:bg-indigo-600 hover:text-white border-l-4 border-transparent hover:border-indigo-300">
+                class="text-brand-100 hover:bg-brand-600 hover:text-white border-l-4 border-transparent hover:border-brand-300">
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('chat.index')" :active="request()->routeIs('chat.*')"
-                class="text-indigo-100 hover:bg-indigo-600 hover:text-white border-l-4 border-transparent hover:border-indigo-300">
+                class="text-brand-100 hover:bg-brand-600 hover:text-white border-l-4 border-transparent hover:border-brand-300">
                 {{ __('Group Chat') }}
             </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('alumni.evaluations.index')"
                 :active="request()->routeIs('alumni.evaluations.*')"
-                class="text-indigo-100 hover:bg-indigo-600 hover:text-white border-l-4 border-transparent hover:border-indigo-300">
+                class="text-brand-100 hover:bg-brand-600 hover:text-white border-l-4 border-transparent hover:border-brand-300">
                 {{ __('Evaluations') }}
             </x-responsive-nav-link>
         </div>
 
         <!-- Responsive Settings Options -->
-        <div class="pt-4 pb-1 border-t border-indigo-600">
+        <div class="pt-4 pb-1 border-t border-brand-600">
             <div class="px-4">
                 <div class="font-medium text-base text-white">{{ Auth::user()->name }}</div>
-                <div class="font-medium text-sm text-indigo-300">{{ Auth::user()->email }}</div>
+                <div class="font-medium text-sm text-brand-300">{{ Auth::user()->email }}</div>
             </div>
 
             <div class="mt-3 space-y-1">
                 <x-responsive-nav-link :href="route('alumni.profile.edit')"
-                    class="text-indigo-200 hover:text-white hover:bg-indigo-600">
+                    class="text-brand-200 hover:text-white hover:bg-brand-600">
                     {{ __('My Profile') }}
                 </x-responsive-nav-link>
                 <x-responsive-nav-link :href="route('profile.edit')"
-                    class="text-indigo-200 hover:text-white hover:bg-indigo-600">
+                    class="text-brand-200 hover:text-white hover:bg-brand-600">
                     {{ __('Account Settings') }}
                 </x-responsive-nav-link>
 
@@ -163,7 +165,7 @@
                     @csrf
 
                     <x-responsive-nav-link :href="route('logout')"
-                        class="text-indigo-200 hover:text-white hover:bg-indigo-600" onclick="event.preventDefault();
+                        class="text-brand-200 hover:text-white hover:bg-brand-600" onclick="event.preventDefault();
                                         this.closest('form').submit();">
                         {{ __('Log Out') }}
                     </x-responsive-nav-link>

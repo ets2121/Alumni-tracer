@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="h-full bg-gray-50">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="h-full">
 
 <head>
     <meta charset="utf-8">
@@ -18,6 +18,14 @@
 
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+    <script>
+        if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+    </script>
     <style>
         .sidebar-scroll::-webkit-scrollbar {
             width: 4px;
@@ -38,8 +46,8 @@
     </style>
 </head>
 
-<body class="h-full font-sans antialiased text-gray-900 overflow-hidden">
-    <div x-data="{ sidebarOpen: false }" class="h-full flex bg-gray-50">
+<body class="h-full font-sans antialiased text-gray-900 dark:text-gray-100 overflow-hidden">
+    <div x-data="{ sidebarOpen: false }" class="h-full flex bg-gray-50 dark:bg-black">
 
         <!-- Mobile Sidebar Backdrop -->
         <div x-show="sidebarOpen" @click="sidebarOpen = false"
@@ -220,19 +228,22 @@
                             class="text-[10px] font-bold text-brand-400 hover:text-white uppercase tracking-widest transition-colors mt-0.5 block">My
                             Profile</a>
                     </div>
-                    <button type="button" @click="$dispatch('open-confirmation-modal', { 
-                            title: 'Sign Out', 
-                            message: 'Are you sure you want to end your session?', 
-                            action: '{{ route('logout') }}', 
-                            method: 'POST', 
-                            confirmText: 'Log Out' 
-                        })" class="ml-2 flex-shrink-0 text-brand-300 hover:text-white transition-colors"
-                        title="Log Out">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                        </svg>
-                    </button>
+                    <div class="flex items-center gap-2">
+                        <x-theme-toggle />
+                        <button type="button" @click="$dispatch('open-confirmation-modal', { 
+                                title: 'Sign Out', 
+                                message: 'Are you sure you want to end your session?', 
+                                action: '{{ route('logout') }}', 
+                                method: 'POST', 
+                                confirmText: 'Log Out' 
+                            })" class="flex-shrink-0 text-brand-300 hover:text-white transition-colors"
+                            title="Log Out">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                            </svg>
+                        </button>
+                    </div>
                 </div>
             </div>
         </aside>
@@ -241,7 +252,8 @@
         <div class="flex-1 flex flex-col min-w-0 overflow-hidden relative">
 
             <!-- Mobile Header with Toggle -->
-            <header class="bg-white border-b border-gray-200 lg:hidden flex-shrink-0 relative z-20">
+            <header
+                class="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 lg:hidden flex-shrink-0 relative z-20">
                 <div class="px-4 py-3 flex justify-between items-center">
                     <div class="flex items-center gap-3">
                         <button @click="sidebarOpen = true"
@@ -256,6 +268,7 @@
                     </div>
 
                     <div class="flex items-center gap-3">
+                        <x-theme-toggle />
                         <!-- Mobile Notification/Profile placeholder -->
                         <div
                             class="h-8 w-8 bg-brand-100 rounded-full flex items-center justify-center text-brand-700 font-bold text-sm">
@@ -267,13 +280,13 @@
 
             <!-- Scrollable Content Area -->
             <main
-                class="flex-1 relative bg-gray-50 focus:outline-none custom-scrollbar {{ request()->routeIs('admin.chat-management.show') ? 'overflow-hidden flex flex-col' : 'overflow-y-auto' }}">
+                class="flex-1 relative bg-gray-50 dark:bg-black focus:outline-none custom-scrollbar {{ request()->routeIs('admin.chat-management.show') ? 'overflow-hidden flex flex-col' : 'overflow-y-auto' }}">
 
                 <!-- Sticky Page Header -->
                 @if(isset($header) && !request()->routeIs('admin.chat-management.show'))
                     <div
-                        class="sticky top-0 z-10 bg-white/80 backdrop-blur-md border-b border-gray-200 px-6 py-4 shadow-sm">
-                        <h1 class="text-xl font-bold text-gray-900 leading-tight">
+                        class="sticky top-0 z-10 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border-b border-gray-200 dark:border-gray-800 px-6 py-4 shadow-sm">
+                        <h1 class="text-xl font-bold text-gray-900 dark:text-white leading-tight">
                             {{ $header }}
                         </h1>
                     </div>
