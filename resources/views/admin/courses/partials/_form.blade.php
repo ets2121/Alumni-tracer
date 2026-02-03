@@ -9,16 +9,27 @@
     <div class="space-y-4">
         <div>
             <label for="code" class="block text-sm font-medium text-gray-700 mb-1">Course Code</label>
-            <input type="text" name="code" id="code" value="{{ $course->code ?? '' }}" required
-                class="w-full border-gray-300 rounded-md shadow-sm focus:ring-brand-500 focus:border-brand-500 text-sm">
+            <input type="text" name="code" id="code" value="{{ $course->code ?? '' }}" placeholder="eg. BSCS, BSIT"
+                required oninput="this.value = this.value.toUpperCase()"
+                class="w-full border-gray-300 rounded-md shadow-sm focus:ring-brand-500 focus:border-brand-500 text-sm font-bold uppercase">
             <p class="mt-1 text-xs text-red-600 error-message" data-field="code"></p>
         </div>
 
         <div>
             <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Course Name</label>
-            <input type="text" name="name" id="name" value="{{ $course->name ?? '' }}" required
-                class="w-full border-gray-300 rounded-md shadow-sm focus:ring-brand-500 focus:border-brand-500 text-sm">
+            <input type="text" name="name" id="name" value="{{ $course->name ?? '' }}"
+                placeholder="eg. BACHELOR OF SCIENCE IN COMPUTER SCIENCE" required
+                oninput="this.value = this.value.toUpperCase()"
+                class="w-full border-gray-300 rounded-md shadow-sm focus:ring-brand-500 focus:border-brand-500 text-sm uppercase">
             <p class="mt-1 text-xs text-red-600 error-message" data-field="name"></p>
+        </div>
+
+        <div>
+            <label for="department_name" class="block text-sm font-medium text-gray-700 mb-1">Department Name</label>
+            <input type="text" name="department_name" id="department_name" value="{{ $course->department_name ?? '' }}"
+                placeholder="eg.CITCS, CCJE, CTE" required oninput="this.value = this.value.toUpperCase()"
+                class="w-full border-gray-300 rounded-md shadow-sm focus:ring-brand-500 focus:border-brand-500 text-sm font-bold uppercase">
+            <p class="mt-1 text-xs text-red-600 error-message" data-field="department_name"></p>
         </div>
 
         <div>

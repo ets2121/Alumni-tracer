@@ -60,6 +60,17 @@ class ReportController extends Controller
             $query->where('work_location', $request->query('work_location'));
         }
 
+        // Year Range Filters
+        $fromYear = $request->query('from_year');
+        $toYear = $request->query('to_year');
+        if ($fromYear && $toYear) {
+            $query->whereBetween('batch_year', [$fromYear, $toYear]);
+        } elseif ($fromYear) {
+            $query->where('batch_year', '>=', $fromYear);
+        } elseif ($toYear) {
+            $query->where('batch_year', '<=', $toYear);
+        }
+
         $data = [];
         $view = '';
 
@@ -219,6 +230,87 @@ class ReportController extends Controller
             case 'tracer_study':
                 $data = $query->get();
                 $view = 'admin.reports.partials._tracer_study';
+                break;
+            case 'master_list':
+                $subType = $request->query('sub_type', 'all');
+                if ($subType === 'unemployed') {
+                    $query->where('employment_status', 'Unemployed');
+                } elseif ($subType === 'never_employed') {
+                    $query->where('employment_status', 'Unemployed')
+                        ->whereDoesntHave('user.employmentHistories');
+                }
+
+                if ($request->query('search')) {
+                    $search = $request->query('search');
+                    $query->where(function ($q) use ($search) {
+                        $q->where('first_name', 'like', "%{$search}%")
+                            ->orWhere('last_name', 'like', "%{$search}%")
+                            ->orWhereRaw("CONCAT(first_name, ' ', last_name) like ?", ["%{$search}%"]);
+                    });
+                }
+
+                $data = $query->paginate(15)->withQueryString();
+                $view = 'admin.reports.partials._master_list';
+                break;
+            case 'annual_distribution':
+                $subType = $request->query('sub_type', 'by_year');
+                $distributionData = [];
+
+                switch ($subType) {
+                    case 'by_year':
+                        $distributionData = (clone $query)
+                            ->select('batch_year', DB::raw('count(*) as count'))
+                            ->groupBy('batch_year')
+                            ->orderBy('batch_year')
+                            ->get();
+                        break;
+                    case 'by_course':
+                        $distributionData = (clone $query)
+                            ->join('courses', 'alumni_profiles.course_id', '=', 'courses.id')
+                            ->select('courses.code as label', DB::raw('count(*) as count'))
+                            ->groupBy('courses.code')
+                            ->orderBy('count', 'desc')
+                            ->get();
+                        break;
+                    case 'employment_by_year':
+                        $distributionData = (clone $query)
+                            ->select('batch_year', 'employment_status', DB::raw('count(*) as count'))
+                            ->groupBy('batch_year', 'employment_status')
+                            ->orderBy('batch_year')
+                            ->get();
+                        break;
+                    case 'employment_by_course':
+                        $distributionData = (clone $query)
+                            ->join('courses', 'alumni_profiles.course_id', '=', 'courses.id')
+                            ->select('courses.code as label', 'employment_status', DB::raw('count(*) as count'))
+                            ->groupBy('courses.code', 'employment_status')
+                            ->orderBy('label')
+                            ->get();
+                        break;
+                    case 'location_by_year':
+                        $distributionData = (clone $query)
+                            ->select('batch_year', 'work_location', DB::raw('count(*) as count'))
+                            ->groupBy('batch_year', 'work_location')
+                            ->orderBy('batch_year')
+                            ->get();
+                        break;
+                    case 'location_by_course':
+                        $distributionData = (clone $query)
+                            ->join('courses', 'alumni_profiles.course_id', '=', 'courses.id')
+                            ->select('courses.code as label', 'work_location', DB::raw('count(*) as count'))
+                            ->groupBy('courses.code', 'work_location')
+                            ->orderBy('label')
+                            ->get();
+                        break;
+                }
+
+                $data = [
+                    'distribution' => $distributionData,
+                    'sub_type' => $subType,
+                    'chart_type' => $request->query('chart_type', 'bar'),
+                    'total_sample' => $distributionData->sum('count')
+                ];
+                $view = 'admin.reports.partials._annual_distribution';
                 break;
             default:
                 return response()->json(['error' => 'Invalid report type'], 400);

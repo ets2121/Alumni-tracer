@@ -13,7 +13,8 @@ class CourseController extends Controller
         $courses = \App\Models\Course::withCount('alumni')
             ->when($search, function ($q) use ($search) {
                 return $q->where('code', 'like', "%{$search}%")
-                    ->orWhere('name', 'like', "%{$search}%");
+                    ->orWhere('name', 'like', "%{$search}%")
+                    ->orWhere('department_name', 'like', "%{$search}%");
             })->latest()->paginate(15)->withQueryString();
 
         if ($request->ajax()) {
@@ -34,10 +35,11 @@ class CourseController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'code' => 'required|unique:courses,code',
-            'name' => 'required',
+            'code' => 'required|string|max:20|unique:courses,code',
+            'name' => 'required|string|max:255',
+            'department_name' => 'required|string|max:50',
             'category' => 'required|in:Undergraduate,Graduate,Certificate',
-            'description' => 'nullable',
+            'description' => 'nullable|string',
         ]);
 
         \App\Models\Course::create($request->all());
@@ -68,10 +70,11 @@ class CourseController extends Controller
     {
         $course = \App\Models\Course::findOrFail($id);
         $request->validate([
-            'code' => 'required|unique:courses,code,' . $id,
-            'name' => 'required',
+            'code' => 'required|string|max:20|unique:courses,code,' . $id,
+            'name' => 'required|string|max:255',
+            'department_name' => 'required|string|max:50',
             'category' => 'required|in:Undergraduate,Graduate,Certificate',
-            'description' => 'nullable',
+            'description' => 'nullable|string',
         ]);
 
         $course->update($request->all());

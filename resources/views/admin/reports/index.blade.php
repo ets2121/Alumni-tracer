@@ -99,6 +99,122 @@
 
         <!-- Report Control Suite -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+            <!-- Master List Reports -->
+            <div @click="generateReport('master_list')"
+                class="group relative bg-white rounded-[2.5rem] p-1 border border-gray-100 shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 cursor-pointer overflow-hidden">
+                <div
+                    class="absolute inset-0 bg-gradient-to-br from-blue-50/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
+                </div>
+                <div class="relative p-8">
+                    <div
+                        class="w-14 h-14 bg-blue-600 text-white rounded-2xl flex items-center justify-center mb-6 shadow-xl shadow-blue-100 group-hover:scale-110 transition-transform">
+                        <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-black text-gray-900 mb-3 uppercase tracking-tighter">Master List Reports
+                    </h3>
+                    <p class="text-sm text-gray-400 font-medium leading-relaxed mb-6">Detailed registers of alumni by
+                        course, employment status, and filters.</p>
+                    <div class="flex items-center text-[10px] font-black text-blue-600 uppercase tracking-widest">
+                        <span>Launch Registry</span>
+                        <svg class="w-4 h-4 ml-2 group-hover:translate-x-2 transition-transform" fill="none"
+                            stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Annual Distribution Reports -->
+            <div @click="generateReport('annual_distribution')"
+                class="group relative bg-white rounded-[2.5rem] p-1 border border-gray-100 shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 cursor-pointer overflow-hidden lg:col-span-1">
+                <div
+                    class="absolute inset-0 bg-gradient-to-br from-indigo-50/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
+                </div>
+                <div class="relative p-8">
+                    <div
+                        class="w-14 h-14 bg-indigo-600 text-white rounded-2xl flex items-center justify-center mb-6 shadow-xl shadow-indigo-100 group-hover:scale-110 transition-transform">
+                        <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z" />
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-black text-gray-900 mb-3 uppercase tracking-tighter">Annual Distribution
+                    </h3>
+                    <p class="text-sm text-gray-400 font-medium leading-relaxed mb-6">Summarized analytical data and
+                        trends visualized with charts.</p>
+                    <div class="flex items-center text-[10px] font-black text-indigo-600 uppercase tracking-widest">
+                        <span>Launch Analytics</span>
+                        <svg class="w-4 h-4 ml-2 group-hover:translate-x-2 transition-transform" fill="none"
+                            stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Evaluation Intelligence -->
+            <div @click="openEvaluationModal()"
+                class="group relative bg-white rounded-[2.5rem] p-1 border border-gray-100 shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 cursor-pointer overflow-hidden">
+                <div
+                    class="absolute inset-0 bg-gradient-to-br from-pink-50/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
+                </div>
+                <div class="relative p-8">
+                    <div
+                        class="w-14 h-14 bg-pink-600 text-white rounded-2xl flex items-center justify-center mb-6 shadow-xl shadow-pink-100 group-hover:scale-110 transition-transform">
+                        <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-black text-gray-900 mb-3 uppercase tracking-tighter">Evaluation Intel</h3>
+                    <p class="text-sm text-gray-400 font-medium leading-relaxed mb-6">Analyze form responses with visual
+                        summaries and trends.</p>
+                    <div class="flex items-center text-[10px] font-black text-pink-600 uppercase tracking-widest">
+                        <span>Launch Analytics</span>
+                        <svg class="w-4 h-4 ml-2 group-hover:translate-x-2 transition-transform" fill="none"
+                            stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tracer Reports -->
+            <div @click="generateReport('tracer_study')"
+                class="group relative bg-white rounded-[2.5rem] p-1 border border-gray-100 shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 cursor-pointer overflow-hidden">
+                <div
+                    class="absolute inset-0 bg-gradient-to-br from-green-50/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
+                </div>
+                <div class="relative p-8">
+                    <div
+                        class="w-14 h-14 bg-green-600 text-white rounded-2xl flex items-center justify-center mb-6 shadow-xl shadow-green-100 group-hover:scale-110 transition-transform">
+                        <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04M12 2.944a11.955 11.955 0 018.618 3.04M12 21.189c4.736-2.559 8-7.429 8-12.429a11.955 11.955 0 01-8.618-3.04M12 21.189c-4.736-2.559-8-7.429-8-12.429a11.955 11.955 0 018.618-3.04" />
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-black text-gray-900 mb-3 uppercase tracking-tighter">Tracer Reports</h3>
+                    <p class="text-sm text-gray-400 font-medium leading-relaxed mb-6">CHED-compliant graduate monitoring
+                        and sentiment analysis.</p>
+                    <div class="flex items-center text-[10px] font-black text-green-600 uppercase tracking-widest">
+                        <span>Launch Tracer</span>
+                        <svg class="w-4 h-4 ml-2 group-hover:translate-x-2 transition-transform" fill="none"
+                            stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
             <!-- Detailed Alumni Registry -->
             <div @click="generateReport('detailed_labor')"
                 class="group relative bg-white rounded-[2.5rem] p-1 border border-gray-100 shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 cursor-pointer overflow-hidden">
@@ -256,169 +372,249 @@
                 class="absolute inset-0 bg-gray-900/60 backdrop-blur-md transition-opacity"></div>
 
             <div x-show="previewOpen"
-                class="bg-white w-full max-w-7xl h-full rounded-[3rem] shadow-2xl relative overflow-hidden flex flex-col animate-in zoom-in duration-300">
-                <!-- Loading Overlay -->
-                <div x-show="loading"
-                    class="absolute inset-0 z-[110] bg-white/80 backdrop-blur-sm flex items-center justify-center">
-                    <div class="text-center">
-                        <div class="relative w-16 h-16 mx-auto mb-4">
-                            <div class="absolute inset-0 border-4 border-brand-100 rounded-full"></div>
-                            <div
-                                class="absolute inset-0 border-4 border-brand-600 rounded-full border-t-transparent animate-spin">
-                            </div>
+                class="bg-white w-full max-w-[95vw] h-[90vh] rounded-[3rem] shadow-2xl relative overflow-hidden flex flex-col animate-in zoom-in duration-300">
+
+                <!-- Enhanced Header Toolbar -->
+                <div class="bg-white px-10 py-5 border-b border-gray-100 shrink-0 flex items-center justify-between">
+                    <div class="flex items-center gap-5">
+                        <div
+                            class="w-12 h-12 bg-gray-900 text-white rounded-2xl flex items-center justify-center shadow-lg">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                            </svg>
                         </div>
-                        <p class="text-[10px] font-black text-gray-900 uppercase tracking-widest animate-pulse">
-                            Processing Dataset...</p>
+                        <div>
+                            <h3 class="text-xl font-black text-gray-900 uppercase tracking-tighter"
+                                x-text="currentReportTitle"></h3>
+                            <p class="text-[9px] font-black text-brand-600 uppercase tracking-widest mt-0.5">Academic
+                                Intelligence Suite</p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-4">
+                        <button @click="printReport()"
+                            class="flex items-center gap-2 bg-gray-100 hover:bg-gray-200 text-gray-700 px-6 py-2.5 rounded-2xl text-[9px] font-black uppercase tracking-[0.1em] transition-all">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+                            </svg>
+                            Print
+                        </button>
+                        <button @click="exportCSV()"
+                            class="flex items-center gap-2 bg-brand-600 hover:bg-brand-700 text-white px-6 py-2.5 rounded-2xl text-[9px] font-black uppercase tracking-[0.1em] transition-all shadow-lg shadow-brand-100">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                            </svg>
+                            Export
+                        </button>
+                        <div class="h-8 w-px bg-gray-100 mx-2"></div>
+                        <button @click="previewOpen = false" class="text-gray-300 hover:text-red-600 transition-colors">
+                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
                     </div>
                 </div>
 
-                <!-- Header Toolbar -->
-                <div class="bg-white/90 backdrop-blur-md px-10 py-6 border-b border-gray-100 shrink-0">
-                    <div class="flex items-center justify-between mb-6">
-                        <div class="flex items-center gap-5">
-                            <div
-                                class="w-12 h-12 bg-gray-900 text-white rounded-2xl flex items-center justify-center shadow-lg">
-                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <!-- Main Content Body (2-Column) -->
+                <div class="flex-1 overflow-hidden flex">
+
+                    <!-- LEFT SIDEBAR: Filters (30%) -->
+                    <div class="w-80 bg-gray-50/50 border-r border-gray-100 overflow-y-auto p-8 flex flex-col gap-8">
+                        <div>
+                            <h4
+                                class="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-6 flex items-center gap-2">
+                                <svg class="w-3 h-3 text-brand-600" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                        d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
                                 </svg>
+                                Intelligence Filters
+                            </h4>
+
+                            <div class="space-y-6">
+                                <!-- Global Year Range -->
+                                <div class="space-y-3">
+                                    <label class="text-[10px] font-black text-gray-900 uppercase">Year Graduated
+                                        Range</label>
+                                    <div class="grid grid-cols-2 gap-2">
+                                        <select x-model="reportFilters[currentReportType].fromYear"
+                                            @change="generateReport(currentReportType)"
+                                            class="bg-white border-gray-100 rounded-xl text-[10px] font-bold h-10 px-3">
+                                            <option value="">From (All)</option>
+                                            @for($y = date('Y'); $y >= 1990; $y--)
+                                            <option value="{{ $y }}">{{ $y }}</option> @endfor
+                                        </select>
+                                        <select x-model="reportFilters[currentReportType].toYear"
+                                            @change="generateReport(currentReportType)"
+                                            class="bg-white border-gray-100 rounded-xl text-[10px] font-bold h-10 px-3">
+                                            <option value="">To (All)</option>
+                                            @for($y = date('Y'); $y >= 1990; $y--)
+                                            <option value="{{ $y }}">{{ $y }}</option> @endfor
+                                        </select>
+                                    </div>
+                                    <template
+                                        x-if="reportFilters[currentReportType].fromYear && reportFilters[currentReportType].toYear && parseInt(reportFilters[currentReportType].fromYear) > parseInt(reportFilters[currentReportType].toYear)">
+                                        <p class="text-[9px] font-bold text-red-500 mt-1 italic">Range error: "From"
+                                            must be <= "To" </p>
+                                    </template>
+                                </div>
+
+                                <!-- Course Filter -->
+                                <div class="space-y-3">
+                                    <label class="text-[10px] font-black text-gray-900 uppercase">Degree Program</label>
+                                    <select x-model="reportFilters[currentReportType].courseId"
+                                        @change="generateReport(currentReportType)"
+                                        class="w-full bg-white border-gray-100 rounded-xl text-[10px] font-bold h-10 px-4">
+                                        <option value="">All Programs</option>
+                                        @foreach($courses as $course) <option value="{{ $course->id }}">
+                                            {{ $course->code }}
+                                        </option> @endforeach
+                                    </select>
+                                </div>
+
+                                <!-- Employment Options (Visible for relevant reports) -->
+                                <template
+                                    x-if="['master_list', 'detailed_labor', 'statistical_summary'].includes(currentReportType)">
+                                    <div class="space-y-6">
+                                        <div class="space-y-3">
+                                            <label class="text-[10px] font-black text-gray-900 uppercase">Employment
+                                                Status</label>
+                                            <select x-model="reportFilters[currentReportType].workStatus"
+                                                @change="generateReport(currentReportType)"
+                                                class="w-full bg-white border-gray-100 rounded-xl text-[10px] font-bold h-10 px-4">
+                                                <option value="">All Statuses</option>
+                                                <option value="Employed">Employed</option>
+                                                <option value="Unemployed">Unemployed</option>
+                                                <option value="Ongoing Studies">Ongoing Studies</option>
+                                            </select>
+                                        </div>
+                                        <div class="space-y-3">
+                                            <label class="text-[10px] font-black text-gray-900 uppercase">Work
+                                                Location</label>
+                                            <select x-model="reportFilters[currentReportType].workLocation"
+                                                @change="generateReport(currentReportType)"
+                                                class="w-full bg-white border-gray-100 rounded-xl text-[10px] font-bold h-10 px-4">
+                                                <option value="">Global/Local</option>
+                                                <option value="Local">Local</option>
+                                                <option value="Overseas">Overseas</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </template>
+
+                                <!-- Specialized Sub-Type Selectors -->
+                                <template x-if="currentReportType === 'master_list'">
+                                    <div class="space-y-6 pt-6 border-t border-gray-100">
+                                        <div class="space-y-3">
+                                            <label class="text-[10px] font-black text-blue-600 uppercase">Registry
+                                                Type</label>
+                                            <select x-model="reportFilters[currentReportType].subType"
+                                                @change="generateReport(currentReportType)"
+                                                class="w-full bg-blue-50 border-blue-100 text-blue-700 rounded-xl text-[10px] font-black uppercase h-10 px-4">
+                                                <option value="all">Total Alumni List</option>
+                                                <option value="unemployed">Unemployed Alumni</option>
+                                                <option value="never_employed">Never Employed</option>
+                                            </select>
+                                        </div>
+                                        <div class="space-y-3">
+                                            <label class="text-[10px] font-black text-gray-900 uppercase">Search by
+                                                Name</label>
+                                            <input type="text" x-model="reportFilters[currentReportType].search"
+                                                @input.debounce.500ms="generateReport(currentReportType)"
+                                                placeholder="Enter name..."
+                                                class="w-full bg-white border-gray-100 rounded-xl text-[10px] font-bold h-10 px-4">
+                                        </div>
+                                    </div>
+                                </template>
+
+                                <template x-if="currentReportType === 'annual_distribution'">
+                                    <div class="space-y-6 pt-6 border-t border-gray-100">
+                                        <div class="space-y-3">
+                                            <label class="text-[10px] font-black text-indigo-600 uppercase">Analysis
+                                                Matrix</label>
+                                            <select x-model="reportFilters[currentReportType].subType"
+                                                @change="generateReport(currentReportType)"
+                                                class="w-full bg-indigo-50 border-indigo-100 text-indigo-700 rounded-xl text-[10px] font-black uppercase h-10 px-4">
+                                                <option value="by_year">By Graduation Year</option>
+                                                <option value="by_course">By Course/Program</option>
+                                                <option value="employment_by_year">Employment by Year</option>
+                                                <option value="employment_by_course">Employment by Course</option>
+                                                <option value="location_by_year">Location by Year</option>
+                                                <option value="location_by_course">Location by Course</option>
+                                            </select>
+                                        </div>
+                                        <div class="space-y-3">
+                                            <label
+                                                class="text-[10px] font-black text-purple-600 uppercase">Visualization
+                                                Model</label>
+                                            <select x-model="reportFilters[currentReportType].chartType"
+                                                @change="generateReport(currentReportType)"
+                                                class="w-full bg-purple-50 border-purple-100 text-purple-700 rounded-xl text-[10px] font-black uppercase h-10 px-4">
+                                                <option value="bar">Bar Chart</option>
+                                                <option value="line">Line Chart</option>
+                                                <option value="pie">Pie Chart</option>
+                                                <option value="donut">Donut Chart</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </template>
                             </div>
-                            <div>
-                                <h3 class="text-xl font-black text-gray-900 uppercase tracking-tighter"
-                                    x-text="currentReportTitle"></h3>
-                                <div class="flex items-center gap-2 mt-1">
-                                    <span class="text-[9px] font-black text-gray-400 uppercase tracking-widest">Alumni
-                                        Intelligence Suite</span>
-                                    <span class="h-1 w-1 bg-gray-300 rounded-full"></span>
-                                    <span
-                                        class="text-[9px] font-black text-brand-600 uppercase tracking-widest">Independent
-                                        Reporting Node</span>
+                        </div>
+
+                        <!-- Sidebar Actions -->
+                        <div class="mt-auto space-y-3 pt-6 border-t border-gray-100">
+                            <button @click="generateReport(currentReportType)"
+                                :disabled="reportFilters[currentReportType].fromYear && reportFilters[currentReportType].toYear && parseInt(reportFilters[currentReportType].fromYear) > parseInt(reportFilters[currentReportType].toYear)"
+                                class="w-full py-4 bg-gray-900 text-white rounded-[1.25rem] text-[10px] font-black uppercase tracking-widest hover:bg-brand-600 disabled:opacity-50 disabled:bg-gray-400 transition-all shadow-xl shadow-gray-200 flex items-center justify-center gap-2">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                                </svg>
+                                Update Results
+                            </button>
+                            <button @click="resetFilters()"
+                                class="w-full py-3 text-[9px] font-black text-gray-400 uppercase tracking-widest hover:text-red-500 transition-colors">Reset
+                                all filters</button>
+                        </div>
+                    </div>
+
+                    <!-- RIGHT CONTENT: Data Display (70%) -->
+                    <div class="flex-1 bg-white relative flex flex-col">
+                        <!-- Loading Overlay -->
+                        <div x-show="loading"
+                            class="absolute inset-0 z-[110] bg-white/80 backdrop-blur-sm flex flex-col items-center justify-center">
+                            <div class="relative w-24 h-24 mb-6">
+                                <div class="absolute inset-0 border-8 border-brand-100 rounded-full"></div>
+                                <div
+                                    class="absolute inset-0 border-8 border-brand-600 rounded-full border-t-transparent animate-spin">
+                                </div>
+                            </div>
+                            <p class="text-[11px] font-black text-gray-900 uppercase tracking-[0.3em] animate-pulse">
+                                Synchronizing Data Matrix...</p>
+                        </div>
+
+                        <!-- Scrollable Injected Content -->
+                        <div class="flex-1 overflow-y-auto bg-gray-50/30 p-12">
+                            <div id="report-content"
+                                class="bg-white p-12 shadow-2xl rounded-[3.5rem] border border-gray-100 mx-auto max-w-6xl min-h-full relative transition-all duration-500"
+                                :class="loading ? 'opacity-50 blur-sm scale-[0.98]' : 'opacity-100 blur-0 scale-100'">
+                                <div x-show="!loading" id="injected-report-body">
+                                    <!-- AJAX Content will be placed here -->
                                 </div>
                             </div>
                         </div>
 
-                        <div class="flex items-center gap-4">
-                            <button @click="printReport()"
-                                class="flex items-center gap-2 bg-gray-100 hover:bg-gray-200 text-gray-700 px-6 py-3 rounded-2xl text-[10px] font-black uppercase tracking-[0.1em] transition-all">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
-                                </svg>
-                                Print Document
-                            </button>
-                            <button @click="exportCSV()"
-                                class="flex items-center gap-2 bg-brand-600 hover:bg-brand-700 text-white px-6 py-3 rounded-2xl text-[10px] font-black uppercase tracking-[0.1em] transition-all shadow-lg shadow-brand-100">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                                </svg>
-                                Export CSV
-                            </button>
-                            <div class="h-8 w-px bg-gray-100 mx-2"></div>
-                            <button @click="previewOpen = false"
-                                class="text-gray-300 hover:text-red-600 transition-colors">
-                                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M6 18L18 6M6 6l12 12" />
-                                </svg>
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Independent Filter Bar inside Modal -->
-                    <div class="flex flex-wrap items-center gap-3 pt-4 border-t border-gray-100 mt-6">
+                        <!-- Content Footer -->
                         <div
-                            class="flex items-center bg-gray-50 px-4 py-2.5 rounded-2xl border border-gray-100 shadow-inner group transition-all focus-within:ring-2 focus-within:ring-brand-500/20">
-                            <input type="date" x-model="reportFilters[currentReportType].fromDate"
-                                class="bg-transparent border-none focus:ring-0 text-[10px] font-black uppercase text-gray-700 p-0 w-24">
-                            <span class="mx-3 text-gray-300 font-bold">—</span>
-                            <input type="date" x-model="reportFilters[currentReportType].toDate"
-                                class="bg-transparent border-none focus:ring-0 text-[10px] font-black uppercase text-gray-700 p-0 w-24">
+                            class="px-10 py-4 bg-white border-t border-gray-100 flex justify-between items-center text-[9px] font-black uppercase tracking-widest">
+                            <div class="text-gray-400 italic">Report Context: <span class="text-gray-900"
+                                    x-text="currentReportTitle"></span></div>
+                            <div class="text-brand-600">Secure Node Access • Restricted Access</div>
                         </div>
-
-                        <select x-model="reportFilters[currentReportType].workStatus"
-                            class="bg-gray-50 border-gray-100 rounded-2xl text-[10px] font-black uppercase tracking-widest focus:ring-brand-500 h-11 px-6 shadow-sm">
-                            <option value="">Work Status</option>
-                            <option value="Permanent">Permanent</option>
-                            <option value="Contractual">Contractual</option>
-                            <option value="Job Order">Job Order</option>
-                        </select>
-
-                        <select x-model="reportFilters[currentReportType].courseId"
-                            class="bg-gray-50 border-gray-100 rounded-2xl text-[10px] font-black uppercase tracking-widest focus:ring-brand-500 h-11 px-6 shadow-sm">
-                            <option value="">All Programs</option>
-                            @foreach($courses as $course)
-                                <option value="{{ $course->id }}">{{ $course->code }}</option>
-                            @endforeach
-                        </select>
-
-                        <select x-model="reportFilters[currentReportType].batchYear"
-                            class="bg-gray-50 border-gray-100 rounded-2xl text-[10px] font-black uppercase tracking-widest focus:ring-brand-500 h-11 px-6 shadow-sm">
-                            <option value="">All Batches</option>
-                            @for($y = date('Y'); $y >= 1990; $y--)
-                                <option value="{{ $y }}">{{ $y }}</option>
-                            @endfor
-                        </select>
-
-                        <select x-model="reportFilters[currentReportType].fieldOfWork"
-                            class="bg-gray-50 border-gray-100 rounded-2xl text-[10px] font-black uppercase tracking-widest focus:ring-brand-500 h-11 px-6 shadow-sm">
-                            <option value="">All Fields</option>
-                            @foreach($fields as $field)
-                                <option value="{{ $field }}">{{ $field }}</option>
-                            @endforeach
-                        </select>
-
-                        <select x-model="reportFilters[currentReportType].establishmentType"
-                            class="bg-gray-50 border-gray-100 rounded-2xl text-[10px] font-black uppercase tracking-widest focus:ring-brand-500 h-11 px-6 shadow-sm">
-                            <option value="">Sector</option>
-                            <option value="Public">Public</option>
-                            <option value="Private">Private</option>
-                        </select>
-
-                        <select x-model="reportFilters[currentReportType].workLocation"
-                            class="bg-gray-50 border-gray-100 rounded-2xl text-[10px] font-black uppercase tracking-widest focus:ring-brand-500 h-11 px-6 shadow-sm">
-                            <option value="">Location</option>
-                            <option value="Local">Local</option>
-                            <option value="Overseas">Overseas</option>
-                        </select>
-
-                        <div class="h-8 w-px bg-gray-200 mx-2"></div>
-
-                        <button @click="resetFilters()" class="p-3 text-gray-400 hover:text-red-500 transition-colors"
-                            title="Reset Filters">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                            </svg>
-                        </button>
-
-                        <button @click="generateReport(currentReportType)"
-                            class="px-8 py-3 bg-gray-900 text-white rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-brand-600 active:scale-95 transition-all shadow-xl shadow-gray-200">
-                            Update Result
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Scrollable Content Area -->
-                <div class="flex-1 overflow-y-auto bg-gray-50/50 p-12">
-                    <div id="report-content"
-                        class="bg-white p-12 shadow-xl rounded-[3rem] border border-gray-100 mx-auto max-w-5xl min-h-[11in] relative shadow-2xl transition-all duration-500"
-                        :class="loading ? 'opacity-50 blur-sm scale-[0.98]' : 'opacity-100 blur-0 scale-100'">
-                        <div x-show="!loading" id="injected-report-body">
-                            <!-- Report content will be injected here -->
-                        </div>
-                    </div>
-
-                    <div x-show="loading"
-                        class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                        <div class="relative w-24 h-24 mb-6">
-                            <div class="absolute inset-0 border-8 border-brand-100 rounded-full"></div>
-                            <div
-                                class="absolute inset-0 border-8 border-brand-600 rounded-full border-t-transparent animate-spin">
-                            </div>
-                        </div>
-                        <p class="text-[11px] font-black text-gray-900 uppercase tracking-[0.3em] animate-pulse">
-                            Recalculating Matrix...</p>
                     </div>
                 </div>
             </div>
@@ -446,10 +642,13 @@
                 return {
                     // Report-specific independent filter states
                     reportFilters: {
-                        detailed_labor: { fromDate: '', toDate: '', workStatus: '', establishmentType: '', workLocation: '', fieldOfWork: '', courseId: '', batchYear: '' },
-                        statistical_summary: { fromDate: '', toDate: '', workStatus: '', establishmentType: '', workLocation: '', fieldOfWork: '', courseId: '', batchYear: '' },
-                        tracer_study: { fromDate: '', toDate: '', workStatus: '', establishmentType: '', workLocation: '', fieldOfWork: '', courseId: '', batchYear: '' },
+                        detailed_labor: { fromDate: '', toDate: '', fromYear: '', toYear: '', workStatus: '', establishmentType: '', workLocation: '', fieldOfWork: '', courseId: '', batchYear: '' },
+                        statistical_summary: { fromDate: '', toDate: '', fromYear: '', toYear: '', workStatus: '', establishmentType: '', workLocation: '', fieldOfWork: '', courseId: '', batchYear: '' },
+                        tracer_study: { fromDate: '', toDate: '', fromYear: '', toYear: '', workStatus: '', establishmentType: '', workLocation: '', fieldOfWork: '', courseId: '', batchYear: '' },
+                        master_list: { fromDate: '', toDate: '', fromYear: '', toYear: '', workStatus: '', establishmentType: '', workLocation: '', fieldOfWork: '', courseId: '', batchYear: '', subType: 'all', search: '', page: 1 },
+                        annual_distribution: { fromDate: '', toDate: '', fromYear: '', toYear: '', workStatus: '', establishmentType: '', workLocation: '', fieldOfWork: '', courseId: '', batchYear: '', subType: 'by_year', chartType: 'bar' },
                     },
+                    activeCharts: {}, // Store Chart instances
                     loading: false,
                     previewOpen: false,
                     evalModalOpen: false, // New State
@@ -499,7 +698,7 @@
 
                     resetFilters(type = null) {
                         const target = type || this.currentReportType;
-                        this.reportFilters[target] = { fromDate: '', toDate: '', workStatus: '', establishmentType: '', workLocation: '', fieldOfWork: '', courseId: '', batchYear: '' };
+                        this.reportFilters[target] = { fromDate: '', toDate: '', fromYear: '', toYear: '', workStatus: '', establishmentType: '', workLocation: '', fieldOfWork: '', courseId: '', batchYear: '', subType: this.reportFilters[target].subType || 'all', chartType: this.reportFilters[target].chartType || 'bar' };
                         this.generateReport(target);
                     },
 
@@ -522,6 +721,14 @@
                             if (f.fieldOfWork) url.searchParams.set('field_of_work', f.fieldOfWork);
                             if (f.courseId) url.searchParams.set('course_id', f.courseId);
                             if (f.batchYear) url.searchParams.set('batch_year', f.batchYear);
+                            if (f.fromYear) url.searchParams.set('from_year', f.fromYear);
+                            if (f.toYear) url.searchParams.set('to_year', f.toYear);
+
+                            // Specific extensions
+                            if (f.subType) url.searchParams.set('sub_type', f.subType);
+                            if (f.chartType) url.searchParams.set('chart_type', f.chartType);
+                            if (f.search) url.searchParams.set('search', f.search);
+                            if (f.page) url.searchParams.set('page', f.page);
                         }
 
                         try {
@@ -534,7 +741,8 @@
                                 container.closest('.overflow-y-auto').scrollTop = 0;
                             }
 
-                            if (type === 'statistical_summary') {
+                            // Force chart re-initialization if requested or if visualization report
+                            if (type === 'statistical_summary' || type === 'annual_distribution') {
                                 setTimeout(() => this.initCharts(), 100);
                             }
                         } catch (error) {
@@ -545,8 +753,17 @@
                     },
 
                     initCharts() {
+                        // Destroy existing charts to prevent memory leaks and ghosting
+                        Object.values(this.activeCharts).forEach(chart => chart.destroy());
+                        this.activeCharts = {};
+
                         Chart.defaults.font.family = 'Figtree';
-                        const baseConfig = { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } };
+                        const baseConfig = {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            animation: { duration: 400 },
+                            plugins: { legend: { display: false } }
+                        };
 
                         // 1. COMBINED MATRIX CHARTS
                         const ctxCourse = document.getElementById('chartByCourse');
@@ -646,10 +863,68 @@
                         this.createChart('chartTracerLikert', 'bar', baseConfig, { colors: ['#10b981', '#34d399', '#94a3b8', '#f87171', '#ef4444'] });
                         this.createChart('chartTracerMultiple', 'bar', baseConfig, { indexAxis: 'y', colors: ['#6366f1'] });
 
+                        // 3. ANNUAL DISTRIBUTION (DYNAMIC MATRIX)
+                        const ctxDist = document.getElementById('distributionMainChart');
+                        if (ctxDist) {
+                            const chartType = ctxDist.dataset.type || 'bar';
+                            const subType = ctxDist.dataset.subtype;
+                            const labels = JSON.parse(ctxDist.dataset.labels);
+                            const rawData = JSON.parse(ctxDist.dataset.raw);
+                            let datasets = [];
+
+                            if (subType.includes('employment') || subType.includes('location')) {
+                                const keys = [...new Set(rawData.map(d => d.employment_status || d.work_location))];
+                                const colors = ['#6366f1', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6'];
+                                datasets = keys.map((key, i) => {
+                                    const data = labels.map(label => {
+                                        const found = rawData.find(d => (d.batch_year == label || d.label == label) && (d.employment_status == key || d.work_location == key));
+                                        return found ? found.count : 0;
+                                    });
+                                    return {
+                                        label: key,
+                                        data: data,
+                                        backgroundColor: colors[i % colors.length],
+                                        borderColor: colors[i % colors.length],
+                                        borderWidth: 1,
+                                        borderRadius: chartType === 'bar' ? 8 : 0,
+                                    };
+                                });
+                            } else {
+                                datasets = [{
+                                    label: 'Total Alumni',
+                                    data: JSON.parse(ctxDist.dataset.values),
+                                    backgroundColor: ['pie', 'donut', 'doughnut'].includes(chartType) ?
+                                        ['#6366f1', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899'] : '#8b5cf6',
+                                    borderColor: '#8b5cf6',
+                                    borderWidth: 1,
+                                    borderRadius: chartType === 'bar' ? 12 : 0,
+                                }];
+                            }
+
+                            this.activeCharts[ctxDist.id] = new Chart(ctxDist, {
+                                type: chartType === 'stacked' ? 'bar' : (chartType === 'donut' ? 'doughnut' : chartType),
+                                data: { labels, datasets },
+                                options: {
+                                    ...baseConfig,
+                                    plugins: {
+                                        legend: {
+                                            display: datasets.length > 1 || ['pie', 'doughnut'].includes(chartType),
+                                            position: 'bottom',
+                                            labels: { font: { weight: '800', size: 10 }, usePointStyle: true }
+                                        }
+                                    },
+                                    scales: ['pie', 'doughnut', 'donut'].includes(chartType) ? {} : {
+                                        y: { stacked: chartType === 'stacked', grid: { color: 'rgba(0,0,0,0.05)' }, ticks: { font: { weight: '800', size: 9 }, color: '#64748b' } },
+                                        x: { stacked: chartType === 'stacked', grid: { display: false }, ticks: { font: { weight: '800', size: 9 }, color: '#64748b' } }
+                                    }
+                                }
+                            });
+                        }
+
                         // 3. REGISTRATION TREND
                         const ctxTrend = document.getElementById('chartRegistrationTrend');
                         if (ctxTrend) {
-                            new Chart(ctxTrend, {
+                            this.activeCharts[ctxTrend.id] = new Chart(ctxTrend, {
                                 type: 'line',
                                 data: {
                                     labels: JSON.parse(ctxTrend.dataset.labels),
@@ -698,7 +973,7 @@
                             },
                             options: { ...baseConfig, ...options }
                         };
-                        new Chart(ctx, config);
+                        this.activeCharts[id] = new Chart(ctx, config);
                     },
 
                     printReport() {
@@ -731,40 +1006,40 @@
 
                         // Premium Print Header with Logo
                         printWindow.document.write(`
-                                                                        <div class="mb-12 pb-8 border-b-4 border-gray-900 flex justify-between items-end">
-                                                                            <div class="flex items-center gap-6">
-                                                                                <img src="${logoUrl}" class="w-16 h-16 object-contain" alt="Logo">
-                                                                                <div class="h-12 w-px bg-gray-200"></div>
-                                                                                <div>
-                                                                                    <h1 class="text-2xl font-black uppercase tracking-[0.1em] text-gray-900 leading-none">Alumni Management System</h1>
-                                                                                    <p class="text-[10px] font-black text-brand-600 uppercase tracking-[0.3em] mt-2">Official Analytical Intelligence Record</p>
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="text-right">
-                                                                                <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Document ID: AMS-${Date.now()}</p>
-                                                                                <p class="text-[10px] font-black text-gray-900 uppercase tracking-widest mt-1">Generated: {{ date('F d, Y') }}</p>
-                                                                            </div>
-                                                                        </div>
-                                                                    `);
+                                                                                            <div class="mb-12 pb-8 border-b-4 border-gray-900 flex justify-between items-end">
+                                                                                                <div class="flex items-center gap-6">
+                                                                                                    <img src="${logoUrl}" class="w-16 h-16 object-contain" alt="Logo">
+                                                                                                    <div class="h-12 w-px bg-gray-200"></div>
+                                                                                                    <div>
+                                                                                                        <h1 class="text-2xl font-black uppercase tracking-[0.1em] text-gray-900 leading-none">Alumni Management System</h1>
+                                                                                                        <p class="text-[10px] font-black text-brand-600 uppercase tracking-[0.3em] mt-2">Official Analytical Intelligence Record</p>
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                                <div class="text-right">
+                                                                                                    <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Document ID: AMS-${Date.now()}</p>
+                                                                                                    <p class="text-[10px] font-black text-gray-900 uppercase tracking-widest mt-1">Generated: {{ date('F d, Y') }}</p>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        `);
 
                         printWindow.document.write(clone.innerHTML);
 
                         // Signatory Section for Print
                         printWindow.document.write(`
-                                                                        <div class="mt-24 pt-10 border-t border-gray-100 flex justify-between items-start opacity-80">
-                                                                            <div class="text-center">
-                                                                                <div class="w-48 border-b border-gray-900 mb-2 mx-auto"></div>
-                                                                                <p class="text-[9px] font-black uppercase tracking-widest">Verified by Records Office</p>
-                                                                            </div>
-                                                                            <div class="text-center">
-                                                                                <p class="text-[9px] font-black text-gray-300 uppercase tracking-widest italic mb-2">END OF DOCUMENT</p>
-                                                                            </div>
-                                                                            <div class="text-center">
-                                                                                <div class="w-48 border-b border-gray-900 mb-2 mx-auto"></div>
-                                                                                <p class="text-[9px] font-black uppercase tracking-widest">Institutional Registrar</p>
-                                                                            </div>
-                                                                        </div>
-                                                                    `);
+                                                                                            <div class="mt-24 pt-10 border-t border-gray-100 flex justify-between items-start opacity-80">
+                                                                                                <div class="text-center">
+                                                                                                    <div class="w-48 border-b border-gray-900 mb-2 mx-auto"></div>
+                                                                                                    <p class="text-[9px] font-black uppercase tracking-widest">Verified by Records Office</p>
+                                                                                                </div>
+                                                                                                <div class="text-center">
+                                                                                                    <p class="text-[9px] font-black text-gray-300 uppercase tracking-widest italic mb-2">END OF DOCUMENT</p>
+                                                                                                </div>
+                                                                                                <div class="text-center">
+                                                                                                    <div class="w-48 border-b border-gray-900 mb-2 mx-auto"></div>
+                                                                                                    <p class="text-[9px] font-black uppercase tracking-widest">Institutional Registrar</p>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        `);
 
                         printWindow.document.write('</body></html>');
                         printWindow.document.close();
@@ -795,6 +1070,11 @@
                         document.body.appendChild(link);
                         link.click();
                         document.body.removeChild(link);
+                    },
+
+                    changePage(page) {
+                        this.reportFilters[this.currentReportType].page = page;
+                        this.generateReport(this.currentReportType);
                     }
                 }
             }

@@ -13,6 +13,9 @@
                     Category</th>
                 <th
                     class="px-5 py-3 border-b-2 border-gray-200 bg-gray-50 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                    Department</th>
+                <th
+                    class="px-5 py-3 border-b-2 border-gray-200 bg-gray-50 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
                     Alumni Count</th>
                 <th
                     class="px-5 py-3 border-b-2 border-gray-200 bg-gray-50 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
@@ -32,8 +35,14 @@
                     <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                         <span
                             class="px-2 py-1 text-[10px] font-bold rounded-full 
-                                    {{ $course->category === 'Graduate' ? 'bg-purple-100 text-purple-700' : ($course->category === 'Certificate' ? 'bg-amber-100 text-amber-700' : 'bg-blue-100 text-blue-700') }}">
+                                        {{ $course->category === 'Graduate' ? 'bg-purple-100 text-purple-700' : ($course->category === 'Certificate' ? 'bg-amber-100 text-amber-700' : 'bg-blue-100 text-blue-700') }}">
                             {{ $course->category }}
+                        </span>
+                    </td>
+                    <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                        <span
+                            class="text-[11px] font-black text-gray-900 border border-gray-900 px-2 py-0.5 rounded italic">
+                            {{ $course->department_name }}
                         </span>
                     </td>
                     <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm text-gray-600 font-bold">
@@ -44,20 +53,20 @@
                             <button @click="openModal('{{ route('admin.courses.edit', $course->id) }}', 'Edit Course')"
                                 class="text-brand-600 hover:text-brand-900 font-bold text-xs uppercase transition-colors">Edit</button>
                             <button @click="$dispatch('open-confirmation-modal', { 
-                                        title: 'Delete Program', 
-                                        message: 'Are you sure you want to delete {{ $course->name }}? Programs with alumni records cannot be deleted.', 
-                                        action: '{{ route('admin.courses.destroy', $course->id) }}', 
-                                        method: 'DELETE', 
-                                        danger: true, 
-                                        confirmText: 'Delete' 
-                                    })"
+                                            title: 'Delete Program', 
+                                            message: 'Are you sure you want to delete {{ $course->name }}? Programs with alumni records cannot be deleted.', 
+                                            action: '{{ route('admin.courses.destroy', $course->id) }}', 
+                                            method: 'DELETE', 
+                                            danger: true, 
+                                            confirmText: 'Delete' 
+                                        })"
                                 class="text-red-500 hover:text-red-700 font-bold text-xs uppercase transition-colors">Delete</button>
                         </div>
                     </td>
                 </tr>
             @empty
                 <tr>
-                    <td colspan="5"
+                    <td colspan="6"
                         class="px-5 py-10 border-b border-gray-200 bg-white text-sm text-center text-gray-500 italic">
                         No courses found matching your criteria.
                     </td>
