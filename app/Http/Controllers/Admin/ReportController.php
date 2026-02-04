@@ -76,15 +76,19 @@ class ReportController extends Controller
 
         switch ($type) {
             case 'graduates_by_course':
-                $data = $query->orderBy('course_id')->orderBy('batch_year')->get();
+                $data = $query->orderBy('course_id')->orderBy('batch_year')->paginate(50)->withQueryString();
                 $view = 'admin.reports.partials._graduates_by_course';
                 break;
             case 'employment_status':
-                $data = $query->get()->groupBy('employment_status');
+                $data = (clone $query)->select('employment_status', DB::raw('count(*) as count'))
+                    ->groupBy('employment_status')
+                    ->get();
                 $view = 'admin.reports.partials._employment_status';
                 break;
             case 'location':
-                $data = $query->get()->groupBy('address');
+                $data = (clone $query)->select('address', DB::raw('count(*) as count'))
+                    ->groupBy('address')
+                    ->get();
                 $view = 'admin.reports.partials._location';
                 break;
             case 'statistical_summary':
@@ -224,7 +228,7 @@ class ReportController extends Controller
                 $view = 'admin.reports.partials._statistical_summary';
                 break;
             case 'detailed_labor':
-                $data = $query->with('course')->get();
+                $data = $query->with('course')->paginate(50)->withQueryString();
                 $view = 'admin.reports.partials._detailed_labor';
                 break;
             case 'tracer_study':

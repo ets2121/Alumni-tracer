@@ -5,20 +5,26 @@
             class="sticky top-0 z-10 bg-gray-50/95 backdrop-blur-sm py-4 mb-4 flex flex-col md:flex-row md:items-center md:justify-between gap-4 border-b border-gray-200/50">
             <h2 class="text-xl font-bold text-gray-800">Alumni Records</h2>
 
-            <!-- Search Form -->
-            <div class="relative max-w-sm w-full">
-                <div class="flex items-center gap-2">
-                    <div class="relative flex-1">
-                        <input type="text" x-model.debounce.300ms="search" placeholder="Search alumni..."
-                            class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-brand-500 focus:border-brand-500 text-sm shadow-sm transition-all hover:bg-white">
-                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                            <svg class="h-4 w-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                            </svg>
-                        </div>
+            <!-- Actions -->
+            <div class="flex items-center gap-3 w-full md:w-auto">
+                <div class="relative flex-1 md:w-64">
+                    <input type="text" x-model.debounce.300ms="search" placeholder="Search alumni..."
+                        class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-brand-500 focus:border-brand-500 text-sm shadow-sm transition-all hover:bg-white">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <svg class="h-4 w-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                        </svg>
                     </div>
                 </div>
+
+                <button @click="openModal('{{ route('admin.alumni.create') }}', 'Register New Alumni')"
+                    class="flex items-center gap-2 px-4 py-2 bg-brand-600 text-white rounded-lg hover:bg-brand-700 transition-colors shadow-sm text-sm font-medium whitespace-nowrap">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                    </svg>
+                    Add Alumni
+                </button>
             </div>
         </div>
 
@@ -137,6 +143,43 @@
                         const flash = document.getElementById('flash-message');
                         flash.innerHTML = `<div class="bg-brand-600/90 backdrop-blur-md text-white px-6 py-4 rounded-2xl mb-6 shadow-xl flex items-center gap-3 animate-fade-in-down"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg><span class="font-bold">${message}</span></div>`;
                         setTimeout(() => flash.innerHTML = '', 4000);
+                    },
+
+                    async submitAlumniForm(event) {
+                        const form = event.target;
+                        const formData = new FormData(form);
+                        const submitBtn = form.querySelector('button[type="submit"]');
+                        const originalText = submitBtn.innerText;
+
+                        submitBtn.disabled = true;
+                        submitBtn.innerText = 'Registering...';
+
+                        try {
+                            const response = await fetch(form.action, {
+                                method: 'POST',
+                                body: formData,
+                                headers: {
+                                    'X-Requested-With': 'XMLHttpRequest',
+                                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                                }
+                            });
+                            
+                            const data = await response.json();
+
+                            if (data.success) {
+                                this.showFlash('Alumni registered successfully!');
+                                this.closeModal();
+                                this.fetchData();
+                            } else {
+                                alert('Error: ' + JSON.stringify(data));
+                            }
+                        } catch (error) {
+                            console.error('Error:', error);
+                            alert('An error occurred. Please check your inputs.');
+                        } finally {
+                            submitBtn.disabled = false;
+                            submitBtn.innerText = originalText;
+                        }
                     }
                 }
             }

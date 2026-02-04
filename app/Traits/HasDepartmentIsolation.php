@@ -70,7 +70,10 @@ trait HasDepartmentIsolation
                             });
                     });
                 } else {
-                    $builder->where($table . '.department_name', $ctx['dept']);
+                    $builder->where(function ($q) use ($table, $ctx) {
+                        $q->where($table . '.department_name', $ctx['dept'])
+                            ->orWhereNull($table . '.department_name');
+                    });
                 }
             }
         });
