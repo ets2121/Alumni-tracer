@@ -62,11 +62,11 @@ trait HasDepartmentIsolation
 
                 if ($table === 'users') {
                     // Optimized direct column filtering (O(log n) with index)
-                    $builder->where(function ($q) use ($ctx) {
-                        $q->where('id', $ctx['id'])
-                            ->orWhere(function ($sq) use ($ctx) {
-                                $sq->where('role', 'alumni')
-                                    ->where('department_name', $ctx['dept']);
+                    $builder->where(function ($q) use ($ctx, $table) {
+                        $q->where($table . '.id', $ctx['id'])
+                            ->orWhere(function ($sq) use ($ctx, $table) {
+                                $sq->where($table . '.role', 'alumni')
+                                    ->where($table . '.department_name', $ctx['dept']);
                             });
                     });
                 } else {

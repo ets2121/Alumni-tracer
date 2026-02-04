@@ -33,6 +33,12 @@ Route::middleware(['auth', 'status'])->group(function () {
         Route::resource('memos', App\Http\Controllers\Admin\ChedMemoController::class);
         Route::get('/reports', [App\Http\Controllers\Admin\ReportController::class, 'index'])->name('reports.index');
         Route::get('/reports/generate', [App\Http\Controllers\Admin\ReportController::class, 'generate'])->name('reports.generate');
+
+        // Chat Management & Banned Words
+        Route::get('chat-management/banned-words', [App\Http\Controllers\Admin\ChatManagementController::class, 'bannedWords'])->name('chat-management.banned-words.index');
+        Route::post('chat-management/banned-words', [App\Http\Controllers\Admin\ChatManagementController::class, 'storeBannedWord'])->name('chat-management.banned-words.store');
+        Route::delete('chat-management/banned-words/{bannedWord}', [App\Http\Controllers\Admin\ChatManagementController::class, 'destroyBannedWord'])->name('chat-management.banned-words.destroy');
+
         Route::resource('chat-management', App\Http\Controllers\Admin\ChatManagementController::class);
         Route::post('chat-management/{group}/message', [App\Http\Controllers\Admin\ChatManagementController::class, 'storeMessage'])->name('chat-management.store-message');
         Route::delete('chat-management/message/{message}', [App\Http\Controllers\Admin\ChatManagementController::class, 'deleteMessage'])->name('chat-management.delete-message');

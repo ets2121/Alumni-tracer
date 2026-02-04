@@ -11,11 +11,17 @@ class ChatGroup extends Model
 {
     use HasFactory, HasDepartmentIsolation;
 
+    const TYPE_GENERAL = 'general';
+    const TYPE_BATCH = 'batch';
+    const TYPE_COURSE = 'course';
+    const TYPE_DEPT_ADMIN = 'dept_admin';
+
     protected $fillable = [
         'name',
         'type',
         'batch_year',
         'course_id',
+        'department_name',
         'description',
         'cover_image',
         'is_private',
