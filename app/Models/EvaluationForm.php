@@ -5,9 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+use App\Traits\HasDepartmentIsolation;
+
 class EvaluationForm extends Model
 {
-    use HasFactory;
+    use HasFactory, HasDepartmentIsolation;
 
     protected $fillable = ['title', 'description', 'type', 'is_active', 'version', 'parent_form_id', 'is_draft'];
 

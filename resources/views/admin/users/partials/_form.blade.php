@@ -1,0 +1,77 @@
+<form @submit.prevent="saveForm()" class="space-y-4">
+    <div class="grid grid-cols-1 gap-4">
+        <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+            <input type="text" x-model="formData.name" required
+                class="w-full border-gray-300 rounded-md shadow-sm focus:ring-brand-500 focus:border-brand-500 text-sm">
+            <p class="mt-1 text-xs text-red-600 error-message" data-field="name"></p>
+        </div>
+
+        <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
+            <input type="email" x-model="formData.email" required
+                class="w-full border-gray-300 rounded-md shadow-sm focus:ring-brand-500 focus:border-brand-500 text-sm">
+            <p class="mt-1 text-xs text-red-600 error-message" data-field="email"></p>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Role</label>
+                <select x-model="formData.role" required
+                    class="w-full border-gray-300 rounded-md shadow-sm focus:ring-brand-500 focus:border-brand-500 text-sm">
+                    <option value="admin">System Administrator</option>
+                    <option value="dept_admin">Department Administrator</option>
+                </select>
+                <p class="mt-1 text-xs text-red-600 error-message" data-field="role"></p>
+            </div>
+
+            <div x-show="formData.role === 'dept_admin'">
+                <label class="block text-sm font-medium text-gray-700 mb-1">Assigned Department</label>
+                <select x-model="formData.department_name" :required="formData.role === 'dept_admin'"
+                    class="w-full border-gray-300 rounded-md shadow-sm focus:ring-brand-500 focus:border-brand-500 text-sm tracking-tight font-bold italic uppercase">
+                    <option value="">Select Department...</option>
+                    @foreach($departments as $dept)
+                        <option value="{{ $dept }}">{{ $dept }}</option>
+                    @endforeach
+                </select>
+                <p class="mt-1 text-xs text-red-600 error-message" data-field="department_name"></p>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1"
+                    x-text="editMode ? 'New Password (Optional)' : 'Password'"></label>
+                <input type="password" x-model="formData.password" :required="!editMode"
+                    class="w-full border-gray-300 rounded-md shadow-sm focus:ring-brand-500 focus:border-brand-500 text-sm">
+                <p class="mt-1 text-xs text-red-600 error-message" data-field="password"></p>
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Confirm Password</label>
+                <input type="password" x-model="formData.password_confirmation" :required="!editMode"
+                    class="w-full border-gray-300 rounded-md shadow-sm focus:ring-brand-500 focus:border-brand-500 text-sm">
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-8 flex justify-end gap-3">
+        <button type="button" @click="closeModal()"
+            class="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none">
+            Cancel
+        </button>
+        <button type="submit"
+            class="px-4 py-2 bg-brand-600 border border-transparent rounded-md shadow-sm text-sm font-medium text-white hover:bg-brand-700 focus:outline-none flex items-center gap-2">
+            <span x-show="!saving" x-text="editMode ? 'Update Account' : 'Create Account'"></span>
+            <span x-show="saving" class="flex items-center gap-2">
+                <svg class="animate-spin h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                    </path>
+                </svg>
+                Saving...
+            </span>
+        </button>
+    </div>
+</form>

@@ -7,10 +7,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
+use App\Traits\HasDepartmentIsolation;
+
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, HasDepartmentIsolation;
 
     /**
      * The attributes that are mass assignable.
@@ -24,7 +26,23 @@ class User extends Authenticatable
         'role',
         'status',
         'avatar',
+        'department_name',
     ];
+
+    public function isSystemAdmin()
+    {
+        return $this->role === 'admin';
+    }
+
+    public function isDepartmentAdmin()
+    {
+        return $this->role === 'dept_admin';
+    }
+
+    public function isAdmin()
+    {
+        return in_array($this->role, ['admin', 'dept_admin']);
+    }
 
     protected $hidden = [
         'password',

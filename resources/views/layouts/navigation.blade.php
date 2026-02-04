@@ -49,8 +49,8 @@
             <div class="hidden sm:flex sm:items-center sm:ms-6 gap-4">
                 <x-theme-toggle />
 
-                <!-- If admin, show admin dashboard link -->
-                @if(Auth::user()->role === 'admin')
+                <!-- If admin or dept_admin, show admin dashboard link -->
+                @if(Auth::user()->isAdmin())
                     <a href="{{ route('admin.dashboard') }}"
                         class="me-4 text-sm font-medium text-brand-100 hover:text-white px-3 py-2 rounded-md bg-brand-500/30">
                         Admin Panel

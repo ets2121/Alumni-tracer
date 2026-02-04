@@ -1,0 +1,35 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration {
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        $tables = ['news_events', 'gallery_albums', 'ched_memos', 'evaluation_forms', 'chat_groups', 'activity_logs'];
+
+        foreach ($tables as $tableName) {
+            Schema::table($tableName, function (Blueprint $table) {
+                $table->string('department_name')->nullable()->after('id');
+            });
+        }
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        $tables = ['news_events', 'gallery_albums', 'ched_memos', 'evaluation_forms', 'chat_groups', 'activity_logs'];
+
+        foreach ($tables as $tableName) {
+            Schema::table($tableName, function (Blueprint $table) {
+                $table->dropColumn('department_name');
+            });
+        }
+    }
+};

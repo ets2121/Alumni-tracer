@@ -6,8 +6,31 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\User;
 use App\Models\Course;
 
+use App\Traits\HasDepartmentIsolation;
+
 class AlumniProfile extends Model
 {
+    use HasDepartmentIsolation;
+
+    protected static function booted()
+    {
+        static::saving(function ($profile) {
+            if ($profile->course_id) {
+                $course = Course::find($profile->course_id);
+                if ($course) {
+                    $profile->department_name = $course->department_name;
+
+                    // Sync to parent User record for indexed performance filtering
+                    if ($profile->user_id) {
+                        \App\Models\User::withoutGlobalScopes()
+                            ->where('id', $profile->user_id)
+                            ->update(['department_name' => $course->department_name]);
+                    }
+                }
+            }
+        });
+    }
+
     protected $fillable = [
         'user_id',
         'first_name',
@@ -28,7 +51,8 @@ class AlumniProfile extends Model
         'company_name',
         'position',
         'work_address',
-        'proof_path'
+        'proof_path',
+        'department_name'
     ];
 
     public function user()

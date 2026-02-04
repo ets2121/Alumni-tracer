@@ -20,6 +20,7 @@ Route::middleware(['auth', 'status'])->group(function () {
         Route::get('/dashboard', [App\Http\Controllers\AdminController::class, 'index'])->name('dashboard');
         Route::get('/pre-registration', [App\Http\Controllers\Admin\PreRegistrationController::class, 'index'])->name('pre-registration.index');
         Route::resource('alumni', App\Http\Controllers\Admin\AlumniController::class);
+        Route::resource('users', App\Http\Controllers\Admin\UserManagementController::class);
         Route::resource('courses', App\Http\Controllers\Admin\CourseController::class);
         Route::get('news_events/gallery-photos', [App\Http\Controllers\Admin\NewsEventController::class, 'getGalleryPhotos'])->name('news_events.gallery_photos');
         Route::get('news_events/{news_event}/broadcast', [App\Http\Controllers\Admin\NewsEventController::class, 'broadcastForm'])->name('news_events.broadcast.form');

@@ -5,9 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
+use App\Traits\HasDepartmentIsolation;
+
 class ChatGroup extends Model
 {
-    use HasFactory;
+    use HasFactory, HasDepartmentIsolation;
 
     protected $fillable = [
         'name',

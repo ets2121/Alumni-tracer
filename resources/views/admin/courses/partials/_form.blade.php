@@ -27,7 +27,7 @@
         <div>
             <label for="department_name" class="block text-sm font-medium text-gray-700 mb-1">Department Name</label>
             <input type="text" name="department_name" id="department_name" value="{{ $course->department_name ?? '' }}"
-                placeholder="eg.CITCS, CCJE, CTE" required oninput="this.value = this.value.toUpperCase()"
+                placeholder="eg.CITCS, CCHE, CTE" required oninput="this.value = this.value.toUpperCase()"
                 class="w-full border-gray-300 rounded-md shadow-sm focus:ring-brand-500 focus:border-brand-500 text-sm font-bold uppercase">
             <p class="mt-1 text-xs text-red-600 error-message" data-field="department_name"></p>
         </div>
