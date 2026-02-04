@@ -13,7 +13,14 @@ class ReportController extends Controller
 {
     public function index()
     {
-        $courses = Course::all();
+        $coursesQuery = Course::query();
+        $user = auth()->user();
+
+        if ($user->role === 'dept_admin' && $user->department_name) {
+            $coursesQuery->where('department_name', $user->department_name);
+        }
+
+        $courses = $coursesQuery->get();
         $fields = AlumniProfile::whereNotNull('field_of_work')->distinct()->pluck('field_of_work');
         $evaluations = \App\Models\EvaluationForm::select('id', 'title')->get();
         return view('admin.reports.index', compact('courses', 'fields', 'evaluations'));
