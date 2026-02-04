@@ -3,6 +3,24 @@
         Banned Words Management
     </x-slot>
 
+    <div class="mb-6 bg-white dark:bg-gray-800 shadow rounded-lg p-6 flex items-center justify-between">
+        <div>
+            <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100">Feature Status</h3>
+            <p class="text-sm text-gray-500 dark:text-gray-400">Enable or disable the banned words filter globally.</p>
+        </div>
+        <form action="{{ route('admin.chat-management.banned-words.toggle') }}" method="POST">
+            @csrf
+            <label class="inline-flex items-center cursor-pointer">
+                <input type="checkbox" name="enabled" value="1" class="sr-only peer" onchange="this.form.submit()" {{ $isEnabled ? 'checked' : '' }}>
+                <div
+                    class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600">
+                </div>
+                <span
+                    class="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">{{ $isEnabled ? 'Enabled' : 'Disabled' }}</span>
+            </label>
+        </form>
+    </div>
+
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <!-- Add New Word -->
         <div class="lg:col-span-1">
@@ -16,11 +34,7 @@
                         <input type="text" name="word" id="word" required
                             class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-700 dark:bg-gray-900 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
                         <p class="mt-1 text-xs text-gray-500">
-                            @if(auth()->user()->role === 'admin')
-                                Global Ban (affecting all departments)
-                            @else
-                                Department Ban ({{ auth()->user()->department_name }})
-                            @endif
+                            Global Ban (affecting all messages across the system)
                         </p>
                     </div>
                     <div class="flex justify-end">

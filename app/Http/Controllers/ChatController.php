@@ -12,37 +12,61 @@ class ChatController extends Controller
 {
     public function index()
     {
-        $this->syncUserGroups();
         return view('chat.index');
     }
 
     public function getGroups()
     {
         $user = Auth::user();
-        if (!$user->alumniProfile) {
+
+        // 1. System Admin: See EVERYTHING
+        if ($user->role === 'admin') {
+            return response()->json(ChatGroup::with(['latestMessage.user'])->get());
+        }
+
+        // 2. Department Admin: See Dept groups + All Admin Dept groups
+        if ($user->role === 'dept_admin') {
+            $groups = ChatGroup::where('department_name', $user->department_name)
+                ->orWhere('type', 'admin_dept')
+                ->with(['latestMessage.user'])
+                ->get();
+            return response()->json($groups);
+        }
+
+        // 3. Alumni: Strict eligible groups
+        $profile = $user->alumniProfile;
+        if (!$profile) {
             return response()->json([]);
         }
 
-        $profile = $user->alumniProfile;
-
-        // Optimized filtering: Strict Dept Isolation
-        // 1. General groups MUST belong to their Department
-        // 2. Batch/Course groups strictly isolate via relationships naturally, 
-        //    but we add dept check to be safe against data integrity issues.
         $groups = ChatGroup::where(function ($query) use ($profile) {
+            // Must NEVER see 'admin_dept'
+            $query->where('type', '!=', 'admin_dept');
+
             $query->where(function ($q) use ($profile) {
+                // A. Dept Name Only (General) Group
                 $q->where('type', 'general')
                     ->where('department_name', $profile->department_name);
             })
                 ->orWhere(function ($q) use ($profile) {
+                    // B. Batch-Based Group
                     $q->where('type', 'batch')
                         ->where('batch_year', $profile->batch_year)
-                        ->where('department_name', $profile->department_name);
+                        ->where(function ($sq) use ($profile) {
+                        // Scoped to Dept OR Global (created by Sys Admin)
+                        $sq->where('department_name', $profile->department_name)
+                            ->orWhereNull('department_name');
+                    });
                 })
                 ->orWhere(function ($q) use ($profile) {
+                    // C. Course-Based Group
                     $q->where('type', 'course')
                         ->where('course_id', $profile->course_id)
-                        ->where('department_name', $profile->department_name);
+                        ->where(function ($sq) use ($profile) {
+                        // Scoped to Dept OR Global (created by Sys Admin)
+                        $sq->where('department_name', $profile->department_name)
+                            ->orWhereNull('department_name');
+                    });
                 });
         })
             ->with(['latestMessage.user'])
@@ -53,63 +77,7 @@ class ChatController extends Controller
 
     public function getMessages(ChatGroup $group)
     {
-        $user = Auth::user();
-
-        // Admin Bypass
-        if ($user->role === 'admin') {
-            // Admin has global access
-        }
-        // Dept Admin Access
-        elseif ($user->role === 'dept_admin') {
-            if ($user->department_name !== $group->department_name) {
-                // Check if group is global? Dept admin shouldn't see global groups unless authorized?
-                // Actually, general groups might have NULL department_name. 
-                // If group->department_name is NULL (Global), Dept Admin can see it? Setup says strict isolation.
-                // Let's assume strict isolation: Dept Admin only sees their Dept groups.
-
-                // However, "General Group" might be Department-Specific General Group.
-
-                // Let's use the Scope Trait logic essentially.
-                if ($group->department_name && $group->department_name !== $user->department_name) {
-                    return response()->json(['error' => 'Access Denied: Different Department.'], 403);
-                }
-                // If group is Global (NULL), Dept Admin can access if it's meant for them (e.g. Dept Admin Group).
-                // For now, allow if department matches OR if group is scoped to them via relationship manually.
-            }
-        }
-        // Alumni Access
-        else {
-            $profile = $user->alumniProfile;
-
-            if (!$profile) {
-                return response()->json(['error' => 'Alumni profile required'], 403);
-            }
-
-            // CRITICAL: Strict Department Isolation
-            if ($group->department_name && $group->department_name !== $profile->department_name) {
-                return response()->json(['error' => 'Access Denied: Different Department.'], 403);
-            }
-
-            // Strict Access Control: Prevent jumping into other batch/course rooms
-            $isAuthorized = false;
-            // ... (rest of alumni logic)
-            if ($group->type === 'general') {
-                $isAuthorized = true;
-            } elseif ($group->type === 'batch' && $group->batch_year == $profile->batch_year) {
-                $isAuthorized = true;
-            } elseif ($group->type === 'course' && $group->course_id == $profile->course_id) {
-                $isAuthorized = true;
-            } else {
-                // Check if user is attached to group manually
-                if ($group->users()->where('user_id', $user->id)->exists()) {
-                    $isAuthorized = true;
-                }
-            }
-
-            if (!$isAuthorized) {
-                return response()->json(['error' => 'Access Denied: You do not belong to this group.'], 403);
-            }
-        }
+        $this->checkGroupAccess($group);
 
         $messages = $group->messages()
             ->with('user:id,name,avatar,role')
@@ -122,6 +90,8 @@ class ChatController extends Controller
 
     public function sendMessage(Request $request, ChatGroup $group, \App\Services\MessageFilterService $filterService)
     {
+        $this->checkGroupAccess($group);
+
         $request->validate(['content' => 'required|string']);
 
         $user = Auth::user();
@@ -141,48 +111,51 @@ class ChatController extends Controller
         return response()->json($message->load('user:id,name,avatar,role'));
     }
 
-    public function syncUserGroups()
+    private function checkGroupAccess(ChatGroup $group)
     {
         $user = Auth::user();
-        if (!$user->alumniProfile)
+
+        // 1. System Admin: Global Access
+        if ($user->role === 'admin') {
             return;
-
-        $profile = $user->alumniProfile;
-
-        // 1. Ensure General Chat exists and user is in it
-        $generalChat = ChatGroup::firstOrCreate(
-            ['type' => 'general'],
-            ['name' => 'General Alumni Chat', 'description' => 'World-wide alumni discussion.']
-        );
-        $this->joinGroupIfNotMember($user, $generalChat);
-
-        // 2. Batch Group
-        if ($profile->batch_year) {
-            $batchName = "Batch " . $profile->batch_year;
-            $batchChat = ChatGroup::firstOrCreate(
-                ['type' => 'batch', 'batch_year' => $profile->batch_year],
-                ['name' => $batchName, 'description' => "Official room for {$batchName} alumni."]
-            );
-            $this->joinGroupIfNotMember($user, $batchChat);
         }
 
-        // 3. Course Group
-        if ($profile->course_id) {
-            $course = Course::find($profile->course_id);
-            if ($course) {
-                $courseChat = ChatGroup::firstOrCreate(
-                    ['type' => 'course', 'course_id' => $profile->course_id],
-                    ['name' => $course->code . " Alumni", 'description' => "Graduates of {$course->name}."]
-                );
-                $this->joinGroupIfNotMember($user, $courseChat);
+        // 2. Dept Admin: Dept scoped + Admin Dept
+        if ($user->role === 'dept_admin') {
+            if ($group->type !== 'admin_dept' && $group->department_name !== $user->department_name) {
+                abort(403, 'Access Denied: Different Department.');
             }
+            return;
         }
-    }
 
-    public function joinGroupIfNotMember($user, $group)
-    {
-        if (!$group->users()->where('user_id', $user->id)->exists()) {
-            $group->users()->attach($user->id, ['role' => 'member']);
+        // 3. Alumni: Strict access matching
+        $profile = $user->alumniProfile;
+        if (!$profile) {
+            abort(403, 'Alumni profile required');
+        }
+
+        // Hard Block: Admin Dept
+        if ($group->type === 'admin_dept') {
+            abort(403, 'Access Denied: Admin Room.');
+        }
+
+        // Scoping: If group is department-scoped, it must match user's department
+        if ($group->department_name && $group->department_name !== $profile->department_name) {
+            abort(403, 'Access Denied: Different Department.');
+        }
+
+        // Strict Access Control: Prevent jumping into other batch/course rooms
+        $isAuthorized = false;
+        if ($group->type === 'general') {
+            $isAuthorized = true;
+        } elseif ($group->type === 'batch' && $group->batch_year == $profile->batch_year) {
+            $isAuthorized = true;
+        } elseif ($group->type === 'course' && $group->course_id == $profile->course_id) {
+            $isAuthorized = true;
+        }
+
+        if (!$isAuthorized) {
+            abort(403, 'Access Denied: You do not meet the group criteria.');
         }
     }
 }

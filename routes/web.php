@@ -36,6 +36,7 @@ Route::middleware(['auth', 'status'])->group(function () {
 
         // Chat Management & Banned Words
         Route::get('chat-management/banned-words', [App\Http\Controllers\Admin\ChatManagementController::class, 'bannedWords'])->name('chat-management.banned-words.index');
+        Route::post('chat-management/banned-words/toggle', [App\Http\Controllers\Admin\ChatManagementController::class, 'toggleBannedWords'])->name('admin.chat-management.banned-words.toggle');
         Route::post('chat-management/banned-words', [App\Http\Controllers\Admin\ChatManagementController::class, 'storeBannedWord'])->name('chat-management.banned-words.store');
         Route::delete('chat-management/banned-words/{bannedWord}', [App\Http\Controllers\Admin\ChatManagementController::class, 'destroyBannedWord'])->name('chat-management.banned-words.destroy');
 

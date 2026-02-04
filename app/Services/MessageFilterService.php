@@ -17,10 +17,16 @@ class MessageFilterService
      */
     public function validateConfirmed(string $content, User $user)
     {
+        // 0. Check if feature is enabled globally
+        $isEnabled = \App\Models\SystemSetting::where('key', 'banned_words_enabled')->value('value') === '1';
+        if (!$isEnabled) {
+            return;
+        }
+
         // 1. Get Global Banned Words
         $globalWords = BannedWord::whereNull('department_name')->pluck('word')->toArray();
 
-        // 2. Get Department Banned Words (if user belongs to one)
+        // 2. Get Department Banned Words (if any exist for this user's department)
         $deptWords = [];
         if ($user->department_name) {
             $deptWords = BannedWord::where('department_name', $user->department_name)->pluck('word')->toArray();

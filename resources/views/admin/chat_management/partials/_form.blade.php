@@ -4,7 +4,8 @@
     @csrf
     @if(isset($group)) @method('PUT') @endif
 
-    <div class="space-y-5" x-data="{ type: '{{ $group->type ?? 'general' }}' }">
+    <div class="space-y-5"
+        x-data="{ type: '{{ $group->type ?? (auth()->user()->role === 'admin' ? 'admin_dept' : 'general') }}' }">
         <!-- Name -->
         <div>
             <label class="block text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-2 px-1">Room
@@ -13,29 +14,22 @@
                 class="w-full px-5 py-4 rounded-[20px] bg-gray-50 border-transparent focus:bg-white focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-all font-bold text-gray-900 shadow-sm">
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <div class="grid grid-cols-1 gap-5">
             <!-- Type -->
             <div>
                 <label
                     class="block text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-2 px-1">Classification</label>
                 <select name="type" required x-model="type"
                     class="w-full px-5 py-4 rounded-[20px] bg-gray-50 border-transparent focus:bg-white focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-all font-bold text-gray-900 shadow-sm">
-                    <option value="general">🌍 General Chat</option>
-                    <option value="batch">🎓 Batch Group</option>
-                    <option value="course">📚 Course Group</option>
-                </select>
-            </div>
-
-            <!-- Visibility -->
-            <div>
-                <label class="block text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-2 px-1">Privacy
-                    Level</label>
-                <select name="is_private"
-                    class="w-full px-5 py-4 rounded-[20px] bg-gray-50 border-transparent focus:bg-white focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-all font-bold text-gray-900 shadow-sm">
-                    <option value="0" {{ (isset($group) && !$group->is_private) ? 'selected' : '' }}>🔓 Public Access
-                    </option>
-                    <option value="1" {{ (isset($group) && $group->is_private) ? 'selected' : '' }}>🔒 Private/Moderated
-                    </option>
+                    @if(auth()->user()->role === 'admin')
+                        <option value="admin_dept">🏢 Admin Department Only (Staff Coordination)</option>
+                        <option value="batch">🎓 Batch-Based Group (Global/Admins + Batch)</option>
+                        <option value="course">📚 Course-Based Group (Global/Admins + Course)</option>
+                    @else
+                        <option value="general">🏛️ Department Name Only ({{ auth()->user()->department_name }})</option>
+                        <option value="batch">🎓 Batch-Based ({{ auth()->user()->department_name }} Scoped)</option>
+                        <option value="course">📚 Course-Based ({{ auth()->user()->department_name }} Scoped)</option>
+                    @endif
                 </select>
             </div>
         </div>

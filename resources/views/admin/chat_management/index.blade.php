@@ -13,14 +13,16 @@
             </div>
 
             <div class="flex gap-4">
-                <a href="{{ route('admin.chat-management.banned-words.index') }}"
-                    class="bg-white hover:bg-gray-50 text-gray-700 font-bold py-3 px-6 rounded-2xl transition-all shadow-sm border border-gray-200 flex items-center justify-center gap-2 transform hover:-translate-y-0.5 active:scale-95">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
-                            d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
-                    </svg>
-                    Banned Words
-                </a>
+                @if(auth()->user()->role === 'admin')
+                    <a href="{{ route('admin.chat-management.banned-words.index') }}"
+                        class="bg-white hover:bg-gray-50 text-gray-700 font-bold py-3 px-6 rounded-2xl transition-all shadow-sm border border-gray-200 flex items-center justify-center gap-2 transform hover:-translate-y-0.5 active:scale-95">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                                d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
+                        </svg>
+                        Banned Words
+                    </a>
+                @endif
 
                 <button @click="openModal('{{ route('admin.chat-management.create') }}', 'Create New Group')"
                     class="bg-brand-600 hover:bg-brand-700 text-white font-bold py-3 px-8 rounded-2xl transition-all shadow-xl shadow-brand-100 flex items-center justify-center gap-2 transform hover:-translate-y-0.5 active:scale-95">
@@ -46,11 +48,16 @@
             </div>
 
             <div class="flex gap-2 min-w-max">
-                <template x-for="type in ['all', 'general', 'batch', 'course']">
+                @php
+                    $types = auth()->user()->role === 'admin'
+                        ? ['all', 'admin_dept', 'batch', 'course']
+                        : ['all', 'general', 'batch', 'course'];
+                @endphp
+                <template x-for="type in {{ json_encode($types) }}">
                     <button @click="filterType = type"
                         :class="filterType === type ? 'bg-brand-600 text-white shadow-lg shadow-brand-100' : 'bg-gray-50 text-gray-500 hover:bg-gray-100'"
                         class="px-5 py-3 rounded-2xl text-xs font-black uppercase tracking-widest transition-all"
-                        x-text="type">
+                        x-text="type === 'admin_dept' ? 'Admin Only' : type">
                     </button>
                 </template>
             </div>
@@ -210,14 +217,14 @@
                         this.modalTitle = title;
                         this.modalOpen = true;
                         document.getElementById('modal-content').innerHTML = `
-                            <div class="flex flex-col items-center justify-center py-20 text-center">
-                                <div class="relative w-16 h-16 mb-4">
-                                    <div class="absolute inset-0 border-4 border-brand-100 rounded-full"></div>
-                                    <div class="absolute inset-0 border-4 border-brand-600 rounded-full border-t-transparent animate-spin"></div>
+                                <div class="flex flex-col items-center justify-center py-20 text-center">
+                                    <div class="relative w-16 h-16 mb-4">
+                                        <div class="absolute inset-0 border-4 border-brand-100 rounded-full"></div>
+                                        <div class="absolute inset-0 border-4 border-brand-600 rounded-full border-t-transparent animate-spin"></div>
+                                    </div>
+                                    <p class="text-sm font-black text-gray-400 uppercase tracking-widest">Loading Configuration...</p>
                                 </div>
-                                <p class="text-sm font-black text-gray-400 uppercase tracking-widest">Loading Configuration...</p>
-                            </div>
-                        `;
+                            `;
                         try {
                             const response = await fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' } });
                             document.getElementById('modal-content').innerHTML = await response.text();

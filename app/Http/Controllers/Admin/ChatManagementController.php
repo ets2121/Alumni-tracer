@@ -51,7 +51,14 @@ class ChatManagementController extends Controller
 
     public function create(Request $request)
     {
-        $courses = Course::all();
+        $user = auth()->user();
+
+        $coursesQuery = Course::query();
+        if ($user->role === 'dept_admin') {
+            $coursesQuery->where('department_name', $user->department_name);
+        }
+        $courses = $coursesQuery->get();
+
         $batchYears = \App\Models\AlumniProfile::distinct()
             ->whereNotNull('batch_year')
             ->orderBy('batch_year', 'desc')
@@ -131,18 +138,42 @@ class ChatManagementController extends Controller
 
     public function bannedWords()
     {
-        // System Admin sees all (or filtered), Dept Admin sees only theirs
+        if (auth()->user()->role !== 'admin') {
+            abort(403, 'Unauthorized. Only System Administrators can manage banned words.');
+        }
+
         $words = \App\Models\BannedWord::with('creator')->latest()->paginate(20);
-        return view('admin.chat_management.banned_words', compact('words'));
+        $isEnabled = \App\Models\SystemSetting::where('key', 'banned_words_enabled')->value('value') === '1';
+
+        return view('admin.chat_management.banned_words', compact('words', 'isEnabled'));
+    }
+
+    public function toggleBannedWords(Request $request)
+    {
+        if (auth()->user()->role !== 'admin') {
+            abort(403, 'Unauthorized.');
+        }
+
+        $isEnabled = $request->has('enabled') ? '1' : '0';
+        \App\Models\SystemSetting::updateOrCreate(
+            ['key' => 'banned_words_enabled'],
+            ['value' => $isEnabled]
+        );
+
+        return back()->with('success', 'Banned words feature updated.');
     }
 
     public function storeBannedWord(Request $request)
     {
-        $request->validate(['word' => 'required|string|max:50|unique:banned_words,word,NULL,id,department_name,' . (auth()->user()->department_name ?? 'NULL')]);
+        if (auth()->user()->role !== 'admin') {
+            abort(403, 'Unauthorized.');
+        }
+
+        $request->validate(['word' => 'required|string|max:50|unique:banned_words,word']);
 
         \App\Models\BannedWord::create([
             'word' => $request->word,
-            'department_name' => auth()->user()->department_name, // NULL for System Admin, 'Dept' for Dept Admin
+            'department_name' => null, // Always Global for System Admin
             'created_by' => auth()->id()
         ]);
 
@@ -151,32 +182,46 @@ class ChatManagementController extends Controller
 
     public function destroyBannedWord(\App\Models\BannedWord $bannedWord)
     {
-        // Policy check usually goes here, but for now rely on Scope/Trait
-        if (auth()->user()->role !== 'admin' && $bannedWord->department_name !== auth()->user()->department_name) {
-            abort(403);
+        if (auth()->user()->role !== 'admin') {
+            abort(403, 'Unauthorized.');
         }
+
         $bannedWord->delete();
         return back()->with('success', 'Banned word removed.');
     }
 
     public function store(Request $request)
     {
+        $user = auth()->user();
+
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'type' => 'required|in:batch,course,general,dept_admin',
+            'type' => 'required|in:admin_dept,general,batch,course',
             'description' => 'nullable|string',
             'batch_year' => 'required_if:type,batch|nullable|integer',
             'course_id' => 'required_if:type,course|nullable|exists:courses,id',
-            'is_private' => 'boolean'
         ]);
 
-        if ($validated['type'] === 'dept_admin' && auth()->user()->role !== 'admin') {
-            abort(403, 'Only System Administrators can create Department Admin groups.');
-        }
+        // Role-Based Validation & Scoping
+        if ($user->role === 'dept_admin') {
+            // Dept Admin Restrictions
+            if ($validated['type'] === 'admin_dept') {
+                abort(403, 'Unauthorized. Dept Admins cannot create Admin Department groups.');
+            }
 
-        // Explicitly enforce department isolation for Dept Admins
-        if (auth()->user()->role === 'dept_admin') {
-            $validated['department_name'] = auth()->user()->department_name;
+            // Force scoped to their department
+            $validated['department_name'] = $user->department_name;
+
+            // If course-based, verify course belongs to their department
+            if ($validated['type'] === 'course') {
+                $course = Course::find($validated['course_id']);
+                if ($course->department_name !== $user->department_name) {
+                    return back()->with('error', 'Unauthorized course selecion.')->withInput();
+                }
+            }
+        } else {
+            // System Admin: Global (or optionally scoped if we added a field, but for now NULL)
+            $validated['department_name'] = null;
         }
 
         ChatGroup::create($validated);
