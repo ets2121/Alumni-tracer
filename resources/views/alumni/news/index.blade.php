@@ -78,6 +78,11 @@
                             class="flex-1 py-2 px-4 rounded-lg text-sm transition-all whitespace-nowrap">
                             Announcements
                         </button>
+                        <button @click="setCategory('job')"
+                            :class="category === 'job' ? 'bg-blue-50 text-blue-700 font-bold' : 'text-gray-500 hover:bg-gray-50'"
+                            class="flex-1 py-2 px-4 rounded-lg text-sm transition-all whitespace-nowrap">
+                            Career
+                        </button>
                     </div>
 
                     <!-- Feed Content -->

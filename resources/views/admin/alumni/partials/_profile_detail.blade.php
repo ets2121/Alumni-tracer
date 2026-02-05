@@ -202,6 +202,66 @@
         </div>
     </div>
 
+    <!-- RELEVANT CAREER OPPORTUNITIES -->
+    <div class="bg-white p-6 rounded-[1.5rem] border border-gray-100 shadow-sm">
+        <div class="flex items-center justify-between mb-6 border-b pb-4">
+            <div class="flex items-center gap-3">
+                <div class="p-2 bg-blue-50 text-blue-600 rounded-lg">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                    </svg>
+                </div>
+                <h5 class="font-black text-gray-900 uppercase tracking-tight">Matching Job Postings</h5>
+            </div>
+            <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Based on Course</span>
+        </div>
+
+        @php
+            $relevantJobs = \App\Models\NewsEvent::where('type', 'job')
+                ->where(function ($query) use ($alumni) {
+                    $profile = $alumni->alumniProfile;
+                    $query->where('target_type', 'all')
+                        ->orWhere(function ($q) use ($profile) {
+                            $q->where('target_type', 'course')
+                                ->where('target_course_id', $profile->course_id ?? null);
+                        })
+                        ->orWhere(function ($q) use ($profile) {
+                            $q->where('target_type', 'batch_course')
+                                ->where('target_course_id', $profile->course_id ?? null);
+                        });
+                })
+                ->where(function ($q) {
+                    $q->whereNull('job_deadline')
+                        ->orWhere('job_deadline', '>=', now());
+                })
+                ->latest()
+                ->take(3)
+                ->get();
+        @endphp
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            @forelse($relevantJobs as $job)
+                <div class="p-4 bg-gray-50 rounded-2xl border border-gray-100 hover:border-blue-200 transition-colors">
+                    <h6 class="text-xs font-black text-gray-900 truncate uppercase tracking-tight mb-1">{{ $job->title }}
+                    </h6>
+                    <p class="text-[10px] font-bold text-brand-600 uppercase mb-2">{{ $job->job_company }}</p>
+                    <div class="flex items-center justify-between mt-2">
+                        <span
+                            class="text-[9px] font-black text-gray-400 uppercase tracking-wider">{{ $job->job_salary ?: 'Competitive' }}</span>
+                        <a href="{{ route('admin.news_events.show', $job->id) }}"
+                            class="text-[9px] font-black text-blue-600 uppercase hover:underline">View Post →</a>
+                    </div>
+                </div>
+            @empty
+                <div class="col-span-full py-4 text-center bg-gray-50 rounded-2xl border border-dashed border-gray-200">
+                    <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">No matching job postings found
+                    </p>
+                </div>
+            @endforelse
+        </div>
+    </div>
+
     <!-- Footer Actions -->
     <div class="flex justify-end gap-3 pt-6 border-t">
         <button @click="closeModal()"

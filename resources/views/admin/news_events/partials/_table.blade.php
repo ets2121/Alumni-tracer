@@ -72,6 +72,10 @@
                         @elseif($post->type === 'announcement')
                             <span
                                 class="px-2.5 py-0.5 text-[10px] font-bold rounded-full bg-amber-50 text-amber-600 border border-amber-100 uppercase tracking-wide">Announce</span>
+                        @elseif($post->type === 'job')
+                            <span
+                                class="px-2.5 py-0.5 text-[10px] font-bold rounded-full bg-blue-50 text-blue-600 border border-blue-100 uppercase tracking-wide">Job
+                                Post</span>
                         @endif
                     </td>
                     <td class="px-5 py-4 bg-white text-sm text-center">
@@ -115,6 +119,19 @@
                                     </svg>
                                     {{ $post->author }}
                                 </div>
+                            @elseif($post->type === 'job')
+                                <div class="flex items-center text-[10px] text-blue-600 font-bold uppercase tracking-tight">
+                                    {{ $post->job_company ?: 'Hiring Now' }}
+                                </div>
+                                @if($post->job_deadline)
+                                    <div class="flex items-center text-[9px] text-gray-400 font-medium">
+                                        <svg class="w-2.5 h-2.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                        </svg>
+                                        Due: {{ $post->job_deadline->format('M d, Y') }}
+                                    </div>
+                                @endif
                             @else
                                 <span class="text-[10px] text-gray-400">-</span>
                             @endif
@@ -186,13 +203,13 @@
                                 </svg>
                             </button>
                             <button @click="$dispatch('open-confirmation-modal', { 
-                                                    title: 'Delete Publication', 
-                                                    message: 'Are you sure you want to delete {{ addslashes($post->title) }}? This action cannot be undone.', 
-                                                    action: '{{ route('admin.news_events.destroy', $post->id) }}', 
-                                                    method: 'DELETE', 
-                                                    danger: true, 
-                                                    confirmText: 'Delete' 
-                                                })"
+                                                        title: 'Delete Publication', 
+                                                        message: 'Are you sure you want to delete {{ addslashes($post->title) }}? This action cannot be undone.', 
+                                                        action: '{{ route('admin.news_events.destroy', $post->id) }}', 
+                                                        method: 'DELETE', 
+                                                        danger: true, 
+                                                        confirmText: 'Delete' 
+                                                    })"
                                 class="p-1.5 text-gray-400 hover:bg-red-50 hover:text-red-600 rounded-lg transition-colors"
                                 title="Delete">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

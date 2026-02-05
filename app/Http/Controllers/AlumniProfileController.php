@@ -15,7 +15,28 @@ class AlumniProfileController extends Controller
         $profile = $user->alumniProfile;
         $courses = Course::all();
 
-        return view('alumni.profile.edit', compact('user', 'profile', 'courses'));
+        // Fetch relevant job postings
+        $relevantJobs = \App\Models\NewsEvent::where('type', 'job')
+            ->where(function ($query) use ($profile) {
+                $query->where('target_type', 'all')
+                    ->orWhere(function ($q) use ($profile) {
+                        $q->where('target_type', 'course')
+                            ->where('target_course_id', $profile->course_id ?? null);
+                    })
+                    ->orWhere(function ($q) use ($profile) {
+                        $q->where('target_type', 'batch_course')
+                            ->where('target_course_id', $profile->course_id ?? null);
+                    });
+            })
+            ->where(function ($q) {
+                $q->whereNull('job_deadline')
+                    ->orWhere('job_deadline', '>=', now());
+            })
+            ->latest()
+            ->take(3)
+            ->get();
+
+        return view('alumni.profile.edit', compact('user', 'profile', 'courses', 'relevantJobs'));
     }
 
     public function update(Request $request)

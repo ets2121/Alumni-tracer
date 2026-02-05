@@ -3,6 +3,10 @@ export default function moderationDashboard(config = {}) {
         tab: 'post',
         postId: config.postId,
 
+        // Insights state
+        insights: null,
+        loadingInsights: false,
+
         // Reactions state
         reactions: [],
         reactionsPage: 1,
@@ -32,6 +36,23 @@ export default function moderationDashboard(config = {}) {
             }
             if (newTab === 'comments' && this.comments.length === 0) {
                 this.loadMoreComments();
+            }
+            if (newTab === 'insights' && !this.insights) {
+                this.fetchInsights();
+            }
+        },
+
+        async fetchInsights() {
+            if (this.loadingInsights) return;
+            this.loadingInsights = true;
+
+            try {
+                const response = await axios.get(`/admin/news_events/${this.postId}/insights`);
+                this.insights = response.data;
+            } catch (e) {
+                console.error('Failed to fetch insights', e);
+            } finally {
+                this.loadingInsights = false;
             }
         },
 

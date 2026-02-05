@@ -28,6 +28,7 @@ Route::middleware(['auth', 'status'])->group(function () {
         Route::get('news_events/{news_event}/moderate', [App\Http\Controllers\Admin\NewsEventController::class, 'moderate'])->name('news_events.moderate');
         Route::get('news_events/{news_event}/reactions', [App\Http\Controllers\Admin\NewsEventController::class, 'getReactions'])->name('news_events.reactions');
         Route::get('news_events/{news_event}/comments', [App\Http\Controllers\Admin\NewsEventController::class, 'getComments'])->name('news_events.comments');
+        Route::get('news_events/{news_event}/insights', [App\Http\Controllers\Admin\NewsEventController::class, 'getInsights'])->name('news_events.insights');
         Route::post('news_events/comments/{comment}/reply', [App\Http\Controllers\Admin\NewsEventController::class, 'replyComment'])->name('news_events.comments.reply');
         Route::delete('news_events/comments/{comment}', [App\Http\Controllers\Admin\NewsEventController::class, 'destroyComment'])->name('news_events.comments.destroy');
         Route::resource('news_events', App\Http\Controllers\Admin\NewsEventController::class);

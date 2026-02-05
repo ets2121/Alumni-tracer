@@ -46,6 +46,13 @@ class AlumniFeedController extends Controller
                             ->orWhere('expires_at', '>', now());
                     });
                 break;
+            case 'job':
+                $query->where('type', 'job')
+                    ->where(function ($q) {
+                        $q->whereNull('job_deadline')
+                            ->orWhere('job_deadline', '>=', now());
+                    });
+                break;
         }
 
         // Global Announcement/Pinned Logic

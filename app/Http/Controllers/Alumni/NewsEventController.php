@@ -42,7 +42,7 @@ class NewsEventController extends Controller
             ->when($type, function ($q) use ($type) {
                 if ($type === 'pinned') {
                     $q->where('is_pinned', true);
-                } elseif (in_array($type, ['news', 'event', 'announcement'])) {
+                } elseif (in_array($type, ['news', 'event', 'announcement', 'job'])) {
                     $q->where('type', $type);
                 }
             })

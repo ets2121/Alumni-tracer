@@ -22,6 +22,9 @@
                 <button @click="currentTab = 'announcement'; $dispatch('switch-feed-tab', 'announcement')"
                     :class="currentTab === 'announcement' ? 'bg-white text-brand-600 shadow-sm' : 'text-gray-500 hover:text-gray-900'"
                     class="flex-1 py-1.5 rounded-lg text-[11px] font-bold uppercase tracking-wider transition-all cursor-pointer">Announcements</button>
+                <button @click="currentTab = 'job'; $dispatch('switch-feed-tab', 'job')"
+                    :class="currentTab === 'job' ? 'bg-white text-brand-600 shadow-sm' : 'text-gray-500 hover:text-gray-900'"
+                    class="flex-1 py-1.5 rounded-lg text-[11px] font-bold uppercase tracking-wider transition-all cursor-pointer">Jobs</button>
             </div>
         </div>
     </x-slot>

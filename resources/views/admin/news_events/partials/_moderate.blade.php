@@ -33,6 +33,15 @@
                 <span
                     class="bg-blue-50 text-blue-600 px-1.5 py-0.5 rounded-full text-[10px]">{{ $news_event->comments_count ?? 0 }}</span>
             </button>
+            <button @click="setTab('insights')"
+                :class="tab === 'insights' ? 'border-brand-600 text-brand-600' : 'border-transparent text-gray-400 hover:text-gray-600'"
+                class="py-4 border-b-2 font-bold text-sm transition-all flex items-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                </svg>
+                Insights & Engagement
+            </button>
         </div>
     </div>
 
@@ -347,6 +356,143 @@
                     <p class="text-sm italic">No comments yet</p>
                 </div>
             </div>
+        </div>
+
+        <!-- Tab: Insights & Engagement -->
+        <div x-show="tab === 'insights'" class="p-6 h-full flex flex-col overflow-y-auto">
+            <template x-if="loadingInsights && !insights">
+                <div class="flex-1 flex items-center justify-center py-20">
+                    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-600"></div>
+                </div>
+            </template>
+
+            <template x-if="insights">
+                <div class="max-w-5xl mx-auto w-full space-y-8 pb-20">
+                    <!-- Metrics Overview -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm">
+                            <div class="flex items-center gap-4 mb-2">
+                                <div class="p-2 bg-red-50 text-red-500 rounded-xl">
+                                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+                                    </svg>
+                                </div>
+                                <span class="text-xs font-black text-gray-400 uppercase tracking-widest">Total Reactions</span>
+                            </div>
+                            <div class="text-3xl font-black text-gray-900" x-text="insights.metrics.total_reactions"></div>
+                        </div>
+
+                        <div class="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm">
+                            <div class="flex items-center gap-4 mb-2">
+                                <div class="p-2 bg-blue-50 text-blue-500 rounded-xl">
+                                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v10z" />
+                                    </svg>
+                                </div>
+                                <span class="text-xs font-black text-gray-400 uppercase tracking-widest">Total Comments</span>
+                            </div>
+                            <div class="text-3xl font-black text-gray-900" x-text="insights.metrics.total_comments"></div>
+                        </div>
+
+                        <div class="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm">
+                            <div class="flex items-center gap-4 mb-2">
+                                <div class="p-2 bg-purple-50 text-purple-600 rounded-xl">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                                    </svg>
+                                </div>
+                                <span class="text-xs font-black text-gray-400 uppercase tracking-widest">Alumni Engaged</span>
+                            </div>
+                            <div class="text-3xl font-black text-gray-900" x-text="insights.metrics.unique_interactors"></div>
+                        </div>
+                    </div>
+
+                    <!-- Demographic Breakdown -->
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        <!-- Reactions by Department -->
+                        <div class="bg-white p-8 rounded-[2.5rem] border border-gray-100 shadow-sm">
+                            <h4 class="text-sm font-black text-gray-900 uppercase tracking-widest mb-6">Reactions by Department</h4>
+                            <div class="space-y-4">
+                                <template x-for="dept in insights.demographics.reactions">
+                                    <div>
+                                        <div class="flex justify-between items-center mb-1.5">
+                                            <span class="text-[11px] font-bold text-gray-600 uppercase" x-text="dept.department_name || 'Others'"></span>
+                                            <span class="text-xs font-black text-gray-900" x-text="dept.count"></span>
+                                        </div>
+                                        <div class="w-full bg-gray-50 rounded-full h-2 overflow-hidden">
+                                            <div class="bg-red-500 h-full rounded-full transition-all duration-1000" 
+                                                :style="'width: ' + (dept.count / (insights.metrics.total_reactions || 1) * 100) + '%'"></div>
+                                        </div>
+                                    </div>
+                                </template>
+                                <template x-if="insights.demographics.reactions.length === 0">
+                                    <div class="text-center py-10">
+                                        <p class="text-xs text-gray-400 font-bold uppercase tracking-widest">No reaction data yet</p>
+                                    </div>
+                                </template>
+                            </div>
+                        </div>
+
+                        <!-- Comments by Department -->
+                        <div class="bg-white p-8 rounded-[2.5rem] border border-gray-100 shadow-sm">
+                            <h4 class="text-sm font-black text-gray-900 uppercase tracking-widest mb-6">Comments by Department</h4>
+                            <div class="space-y-4">
+                                <template x-for="dept in insights.demographics.comments">
+                                    <div>
+                                        <div class="flex justify-between items-center mb-1.5">
+                                            <span class="text-[11px] font-bold text-gray-600 uppercase" x-text="dept.department_name || 'Others'"></span>
+                                            <span class="text-xs font-black text-gray-900" x-text="dept.count"></span>
+                                        </div>
+                                        <div class="w-full bg-gray-50 rounded-full h-2 overflow-hidden">
+                                            <div class="bg-blue-500 h-full rounded-full transition-all duration-1000" 
+                                                :style="'width: ' + (dept.count / (insights.metrics.total_comments || 1) * 100) + '%'"></div>
+                                        </div>
+                                    </div>
+                                </template>
+                                <template x-if="insights.demographics.comments.length === 0">
+                                    <div class="text-center py-10">
+                                        <p class="text-xs text-gray-400 font-bold uppercase tracking-widest">No comment data yet</p>
+                                    </div>
+                                </template>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Activity -->
+                    <div class="bg-gray-900 p-8 rounded-[3rem] text-white">
+                        <h4 class="text-xs font-black uppercase tracking-[0.3em] text-brand-400 mb-6">Recent Peak Engagement</h4>
+                        <div class="divide-y divide-white/5">
+                            <template x-for="activity in insights.recent_activity">
+                                <div class="py-4 flex items-center justify-between group">
+                                    <div class="flex items-center gap-4">
+                                        <div class="w-10 h-10 rounded-2xl bg-white/5 flex items-center justify-center text-lg font-black text-brand-500 group-hover:bg-brand-500 group-hover:text-white transition-all">
+                                            <template x-if="activity.user.avatar">
+                                                <img :src="'/storage/' + activity.user.avatar" class="w-full h-full object-cover rounded-2xl">
+                                            </template>
+                                            <template x-if="!activity.user.avatar">
+                                                <span x-text="activity.user.name.charAt(0)"></span>
+                                            </template>
+                                        </div>
+                                        <div>
+                                            <div class="text-sm font-black" x-text="activity.user.name"></div>
+                                            <div class="text-[10px] text-white/50 font-bold uppercase tracking-widest" x-text="activity.user.department_name || 'Alumni'"></div>
+                                        </div>
+                                    </div>
+                                    <div class="text-right">
+                                        <div class="text-[10px] font-black text-brand-400 uppercase tracking-widest">Reacted</div>
+                                        <div class="text-[9px] text-white/30" x-text="formatDate(activity.created_at)"></div>
+                                    </div>
+                                </div>
+                            </template>
+                            <template x-if="insights.recent_activity.length === 0">
+                                <div class="text-center py-10 text-white/20">
+                                    <p class="text-xs font-bold uppercase tracking-[0.2em]">Still waiting for first interaction</p>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+                </div>
+            </template>
         </div>
     </div>
 

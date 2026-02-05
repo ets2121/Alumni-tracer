@@ -31,7 +31,7 @@ class NewsEventController extends Controller
         }
 
         // Type Filter
-        if ($type && in_array($type, ['news', 'event', 'announcement'])) {
+        if ($type && in_array($type, ['news', 'event', 'announcement', 'job'])) {
             $query->where('type', $type);
         }
 
@@ -454,5 +454,46 @@ class NewsEventController extends Controller
     {
         $comment->delete();
         return response()->json(['success' => 'Comment deleted successfully.']);
+    }
+
+    public function getInsights(NewsEvent $news_event)
+    {
+        $reactionsByDept = \App\Models\NewsEventReaction::where('news_event_id', $news_event->id)
+            ->join('users', 'news_event_reactions.user_id', '=', 'users.id')
+            ->select('users.department_name', \DB::raw('count(*) as count'))
+            ->groupBy('users.department_name')
+            ->get();
+
+        $commentsByDept = \App\Models\NewsEventComment::where('news_event_id', $news_event->id)
+            ->join('users', 'news_event_comments.user_id', '=', 'users.id')
+            ->select('users.department_name', \DB::raw('count(*) as count'))
+            ->groupBy('users.department_name')
+            ->get();
+
+        // Calculate unique interactors
+        $interactorIds = \DB::table('news_event_reactions')
+            ->where('news_event_id', $news_event->id)
+            ->select('user_id')
+            ->pluck('user_id')
+            ->merge(
+                \DB::table('news_event_comments')
+                    ->where('news_event_id', $news_event->id)
+                    ->select('user_id')
+                    ->pluck('user_id')
+            )
+            ->unique();
+
+        return response()->json([
+            'metrics' => [
+                'total_reactions' => $news_event->reactions()->count(),
+                'total_comments' => $news_event->comments()->count(),
+                'unique_interactors' => $interactorIds->count(),
+            ],
+            'demographics' => [
+                'reactions' => $reactionsByDept,
+                'comments' => $commentsByDept,
+            ],
+            'recent_activity' => $news_event->reactions()->with('user')->latest()->take(5)->get()
+        ]);
     }
 }
