@@ -35,7 +35,8 @@
             </div>
             <div class="min-w-0">
                 <h4 class="text-[13px] font-bold text-gray-900 truncate tracking-tight">
-                    {{ $post->author ?? 'System Admin' }}</h4>
+                    {{ $post->author ?? 'System Admin' }}
+                </h4>
                 <p class="text-[10px] text-gray-400 font-medium">{{ $post->created_at->diffForHumans() }}</p>
             </div>
         </div>
@@ -53,10 +54,51 @@
 
     <!-- Card Content -->
     <div class="px-4 py-3">
+        @if($post->type === 'job')
+            <div class="mb-3 p-3 bg-blue-50/50 rounded-xl border border-blue-100/50">
+                <div class="flex items-center gap-3">
+                    <div
+                        class="w-10 h-10 bg-white rounded-lg border border-blue-100 flex items-center justify-center text-blue-600 shadow-sm">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path
+                                d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <h4 class="text-sm font-black text-gray-900 truncate uppercase tracking-tight">
+                            {{ $post->job_company ?? 'Hiring Now' }}
+                        </h4>
+                        <div class="flex items-center gap-2 mt-0.5">
+                            <span
+                                class="text-[10px] font-bold text-blue-600 bg-blue-100/50 px-1.5 py-0.5 rounded uppercase tracking-tighter">{{ $post->job_salary ?? 'Competitive Salary' }}</span>
+                            <span
+                                class="text-[10px] font-bold text-gray-400 uppercase tracking-tighter">{{ $post->job_location ?? $post->location ?? 'Remote / On-site' }}</span>
+                        </div>
+                    </div>
+                    @if($post->job_link)
+                        <a href="{{ Str::startsWith($post->job_link, 'http') ? $post->job_link : 'mailto:' . $post->job_link }}"
+                            target="_blank"
+                            class="px-3 py-2 bg-blue-600 text-white rounded-lg text-[10px] font-black uppercase tracking-widest hover:bg-blue-700 transition-all shadow-lg shadow-blue-100">Apply</a>
+                    @endif
+                </div>
+                @if($post->job_deadline)
+                    <div class="mt-2 pt-2 border-t border-blue-100/50 flex items-center gap-1.5">
+                        <svg class="w-3 h-3 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" stroke-width="2" />
+                        </svg>
+                        <p class="text-[9px] font-bold text-gray-500 uppercase tracking-widest">Deadline:
+                            {{ \Carbon\Carbon::parse($post->job_deadline)->format('M d, Y') }}
+                        </p>
+                    </div>
+                @endif
+            </div>
+        @endif
+
         <h3 class="text-sm font-bold text-gray-900 mb-1.5 leading-snug tracking-tight">{{ $post->title }}</h3>
-        <p class="text-gray-600 text-[13px] mb-3 leading-relaxed">
-            {!! nl2br(e(Str::limit($post->content, 150))) !!}
-        </p>
+        <div class="text-gray-600 text-[13px] mb-3 leading-relaxed prose prose-sm max-w-none prose-p:my-1">
+            {!! $post->content !!}
+        </div>
 
         @if($post->image_path)
             <div class="rounded-lg overflow-hidden mb-3 border border-gray-100 bg-gray-50 aspect-video relative group">
@@ -64,6 +106,23 @@
                     class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 cursor-pointer"
                     loading="lazy"
                     @click="$dispatch('open-image-modal', { src: '{{ asset('storage/' . $post->image_path) }}' })">
+            </div>
+        @endif
+
+        @if($post->photos && $post->photos->count() > 0)
+            <div class="grid grid-cols-2 gap-2 mb-3">
+                @foreach($post->photos->take(4) as $photo)
+                    <div class="aspect-square rounded-lg overflow-hidden border border-gray-100 bg-gray-50 relative group cursor-pointer"
+                        @click="$dispatch('open-image-modal', { src: '{{ asset('storage/' . $photo->image_path) }}' })">
+                        <img src="{{ asset('storage/' . $photo->image_path) }}"
+                            class="w-full h-full object-cover transition-transform group-hover:scale-110">
+                        @if($loop->index === 3 && $post->photos->count() > 4)
+                            <div class="absolute inset-0 bg-black/50 flex items-center justify-center">
+                                <span class="text-white text-xs font-black">+{{ $post->photos->count() - 3 }}</span>
+                            </div>
+                        @endif
+                    </div>
+                @endforeach
             </div>
         @endif
 
@@ -78,7 +137,8 @@
                 </div>
                 <div class="flex-1 min-w-0">
                     <p class="text-[13px] font-bold text-gray-900 truncate leading-none mb-1">
-                        {{ $post->location ?? 'Virtual Event' }}</p>
+                        {{ $post->location ?? 'Virtual Event' }}
+                    </p>
                     <p class="text-[11px] text-gray-500 font-medium">{{ $post->event_date->format('l, h:i A') }}</p>
                 </div>
                 @if($post->registration_link)
@@ -92,29 +152,56 @@
     </div>
 
     <!-- Card Footer -->
-    <div class="px-3 py-2 bg-gray-50/50 border-t border-gray-100 flex items-center justify-between">
-        <div class="flex items-center space-x-3">
-            <button class="flex items-center space-x-1 text-gray-400 hover:text-brand-600 transition-colors group">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <div x-data="{ 
+        likesCount: {{ $post->reactions_count ?? 0 }}, 
+        isLiked: {{ $post->userReaction ? 'true' : 'false' }},
+        commentsCount: {{ $post->comments_count ?? 0 }},
+        async toggleLike() {
+            try {
+                const response = await fetch('{{ route('news.react', $post) }}', {
+                    method: 'POST',
+                    headers: { 
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}', 
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    }
+                });
+                const data = await response.json();
+                this.isLiked = data.action === 'added' || data.action === 'updated';
+                this.likesCount = data.count;
+            } catch (e) { console.error(e); }
+        }
+    }" @comment-added.window="if($event.detail.postId === {{ $post->id }}) commentsCount = $event.detail.count"
+        @reaction-toggled.window="if($event.detail.postId === {{ $post->id }}) { likesCount = $event.detail.count; isLiked = $event.detail.userReacted; }">
+        <div class="px-3 py-2 bg-gray-50/50 border-t border-gray-100 flex items-center justify-between">
+            <div class="flex items-center space-x-4">
+                <button @click="toggleLike()" :class="isLiked ? 'text-red-600' : 'text-gray-400'"
+                    class="flex items-center space-x-1.5 hover:text-red-600 transition-all group">
+                    <svg class="w-4 h-4" :fill="isLiked ? 'currentColor' : 'none'" stroke="currentColor"
+                        viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                    </svg>
+                    <span class="text-[11px] font-black uppercase tracking-widest" x-text="likesCount"></span>
+                </button>
+                <button @click="openDiscussion({{ $post->id }})"
+                    class="flex items-center space-x-1.5 text-gray-400 hover:text-blue-600 transition-all group">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.827-1.233L3 20l1.341-5.022A9 9 0 1121 12z" />
+                    </svg>
+                    <span class="text-[11px] font-black uppercase tracking-widest" x-text="commentsCount"></span>
+                </button>
+            </div>
+            <button @click="openDiscussion({{ $post->id }})"
+                class="text-[10px] font-black text-brand-600 bg-brand-50 px-2.5 py-1 rounded-lg uppercase tracking-widest hover:bg-brand-100 transition-all flex items-center gap-1">
+                Discuss
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                        d="M17 8l4 4m0 0l-4 4m4-4H3" />
                 </svg>
-                <span class="text-[11px] font-semibold">Interest</span>
-            </button>
-            <button class="flex items-center space-x-1 text-gray-400 hover:text-blue-600 transition-colors group">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.827-1.233L3 20l1.341-5.022A9 9 0 1121 12z" />
-                </svg>
-                <span class="text-[11px] font-semibold">Comment</span>
             </button>
         </div>
-        <a href="{{ route('alumni.news.show', $post) }}"
-            class="text-[11px] font-bold text-gray-400 hover:text-brand-600 transition-colors flex items-center tracking-tight">
-            Details
-            <svg class="w-2.5 h-2.5 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-            </svg>
-        </a>
     </div>
+</div>
 </div>

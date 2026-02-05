@@ -25,6 +25,11 @@ Route::middleware(['auth', 'status'])->group(function () {
         Route::get('news_events/gallery-photos', [App\Http\Controllers\Admin\NewsEventController::class, 'getGalleryPhotos'])->name('news_events.gallery_photos');
         Route::get('news_events/{news_event}/broadcast', [App\Http\Controllers\Admin\NewsEventController::class, 'broadcastForm'])->name('news_events.broadcast.form');
         Route::post('news_events/{news_event}/broadcast', [App\Http\Controllers\Admin\NewsEventController::class, 'broadcast'])->name('news_events.broadcast');
+        Route::get('news_events/{news_event}/moderate', [App\Http\Controllers\Admin\NewsEventController::class, 'moderate'])->name('news_events.moderate');
+        Route::get('news_events/{news_event}/reactions', [App\Http\Controllers\Admin\NewsEventController::class, 'getReactions'])->name('news_events.reactions');
+        Route::get('news_events/{news_event}/comments', [App\Http\Controllers\Admin\NewsEventController::class, 'getComments'])->name('news_events.comments');
+        Route::post('news_events/comments/{comment}/reply', [App\Http\Controllers\Admin\NewsEventController::class, 'replyComment'])->name('news_events.comments.reply');
+        Route::delete('news_events/comments/{comment}', [App\Http\Controllers\Admin\NewsEventController::class, 'destroyComment'])->name('news_events.comments.destroy');
         Route::resource('news_events', App\Http\Controllers\Admin\NewsEventController::class);
         Route::resource('gallery', App\Http\Controllers\Admin\GalleryController::class);
         Route::post('gallery/{gallery}/upload', [App\Http\Controllers\Admin\GalleryController::class, 'uploadPhotos'])->name('gallery.upload');
@@ -88,6 +93,13 @@ Route::middleware(['auth', 'status'])->group(function () {
     Route::get('/evaluations', [App\Http\Controllers\Alumni\EvaluationController::class, 'index'])->name('alumni.evaluations.index');
     Route::get('/evaluations/{evaluation}', [App\Http\Controllers\Alumni\EvaluationController::class, 'show'])->name('alumni.evaluations.show');
     Route::post('/evaluations/{evaluation}', [App\Http\Controllers\Alumni\EvaluationController::class, 'store'])->name('alumni.evaluations.store');
+
+    // Interactivity Routes (Reactions & Comments)
+    Route::post('/news/{news_event}/react', [App\Http\Controllers\NewsEventReactionController::class, 'toggle'])->name('news.react');
+    Route::get('/news/{news_event}/comments', [App\Http\Controllers\NewsEventCommentController::class, 'index'])->name('news.comments.index');
+    Route::get('/news/{news_event}/discussion', [App\Http\Controllers\NewsEventCommentController::class, 'getDiscussionModal'])->name('news.discussion_modal');
+    Route::post('/news/{news_event}/comment', [App\Http\Controllers\NewsEventCommentController::class, 'store'])->name('news.comment.store');
+    Route::delete('/news/comment/{comment}', [App\Http\Controllers\NewsEventCommentController::class, 'destroy'])->name('news.comment.destroy');
 
     // Group Chat Routes
     Route::get('/chat', [App\Http\Controllers\ChatController::class, 'index'])->name('chat.index');

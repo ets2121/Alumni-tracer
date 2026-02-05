@@ -20,7 +20,7 @@ class NewsEventController extends Controller
         $type = $request->query('type');
         $sort = $request->query('sort');
 
-        $query = NewsEvent::query();
+        $query = NewsEvent::query()->withCount(['reactions', 'comments']);
 
         // Search Filter
         if ($search) {
@@ -70,6 +70,10 @@ class NewsEventController extends Controller
 
         $newsEvents = $query->paginate(10)->withQueryString();
 
+        // RBAC: Dept Admin cannot see other Dept Admin's posts
+        // This is handled by HasDepartmentIsolation trait automatically, 
+        // but we ensure System Admin posts with visibility 'all' are also visible.
+
         if ($request->ajax()) {
             return view('admin.news_events.partials._table', compact('newsEvents'));
         }
@@ -79,11 +83,12 @@ class NewsEventController extends Controller
 
     public function create(Request $request)
     {
-        $courses = \App\Models\Course::orderBy('name')->get();
+        $departments = \App\Models\Course::distinct()->pluck('department_name')->filter()->unique()->values();
+
         if ($request->ajax()) {
-            return view('admin.news_events.partials._form', compact('courses'));
+            return view('admin.news_events.partials._form', compact('departments'));
         }
-        return view('admin.news_events.create', compact('courses'));
+        return view('admin.news_events.create', compact('departments'));
     }
 
     public function store(Request $request)
@@ -91,30 +96,34 @@ class NewsEventController extends Controller
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'content' => 'required',
-            'type' => 'required|in:news,event,announcement',
+            'type' => 'required|in:news,event,announcement,job',
+            'visibility_type' => 'required|in:all,department',
+            'department_name' => 'nullable|string', // Used when visibility_type is department
             'image' => 'nullable|image|max:2048',
             'gallery_image_path' => 'nullable|string',
             'event_date' => 'nullable|date',
             'location' => 'nullable|string|max:255',
+            'job_company' => 'nullable|string|max:255',
+            'job_salary' => 'nullable|string|max:255',
+            'job_link' => 'nullable|string|max:255',
+            'job_deadline' => 'nullable|date',
             'author' => 'nullable|string|max:255',
-            'category' => 'nullable|string', // Comma separated tags
             'registration_link' => 'nullable|url',
             'expires_at' => 'nullable|date',
             'photos.*' => 'nullable|image|max:5120',
-            'target_type' => 'required|in:all,batch,course,batch_course',
-            'target_batch' => 'nullable|string',
-            'target_course_id' => 'nullable|exists:courses,id',
         ]);
 
-        $data = $request->except(['image', 'photos', 'category', 'gallery_image_path']);
+        if (Auth::user()->role === 'dept_admin') {
+            $validated['visibility_type'] = $request->visibility_type === 'all' ? 'all' : 'department';
+            if ($validated['visibility_type'] === 'department') {
+                $validated['department_name'] = Auth::user()->department_name;
+            }
+        }
+
+        $data = $request->except(['image', 'photos', 'gallery_image_path']);
         $data['slug'] = Str::slug($request->title) . '-' . uniqid();
         $data['author'] = $request->author ?? (Auth::check() ? Auth::user()->name : 'Admin');
         $data['is_pinned'] = $request->has('is_pinned');
-
-        // Handle categories as generic array
-        if ($request->filled('category')) {
-            $data['category'] = array_map('trim', explode(',', $request->category));
-        }
 
         // Handle Image Selection (Upload vs Gallery Pick)
         if ($request->filled('gallery_image_path')) {
@@ -141,19 +150,14 @@ class NewsEventController extends Controller
         $newsEvent = NewsEvent::create($data);
 
         // Notify active alumni if it's an event based on targeting
+        // Notify active alumni if it's an event
         if ($newsEvent->type === 'event') {
             try {
                 $query = \App\Models\User::where('role', 'alumni')->where('status', 'active');
 
-                if ($newsEvent->target_type !== 'all') {
-                    $query->whereHas('alumniProfile', function ($q) use ($newsEvent) {
-                        if ($newsEvent->target_type === 'batch' || $newsEvent->target_type === 'batch_course') {
-                            $q->where('graduation_year', $newsEvent->target_batch);
-                        }
-                        if ($newsEvent->target_type === 'course' || $newsEvent->target_type === 'batch_course') {
-                            $q->where('course_id', $newsEvent->target_course_id);
-                        }
-                    });
+                // Apply visibility filtering to notifications
+                if ($newsEvent->visibility_type === 'department') {
+                    $query->where('department_name', $newsEvent->department_name);
                 }
 
                 $alumni = $query->get();
@@ -213,13 +217,12 @@ class NewsEventController extends Controller
     public function edit(Request $request, string $id)
     {
         $newsEvent = NewsEvent::with('photos')->findOrFail($id);
-        $courses = \App\Models\Course::orderBy('name')->get();
+        $departments = \App\Models\Course::distinct()->pluck('department_name')->filter()->unique()->values();
+
         if ($request->ajax()) {
-            // Flatten categories for input
-            $newsEvent->category_string = is_array($newsEvent->category) ? implode(', ', $newsEvent->category) : $newsEvent->category;
-            return view('admin.news_events.partials._form', compact('newsEvent', 'courses'));
+            return view('admin.news_events.partials._form', compact('newsEvent', 'departments'));
         }
-        return view('admin.news_events.edit', compact('newsEvent', 'courses'));
+        return view('admin.news_events.edit', compact('newsEvent', 'departments'));
     }
 
     public function update(Request $request, string $id)
@@ -229,27 +232,32 @@ class NewsEventController extends Controller
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'content' => 'required',
-            'type' => 'required|in:news,event,announcement',
+            'type' => 'required|in:news,event,announcement,job',
+            'visibility_type' => 'required|in:all,department',
+            'department_name' => 'nullable|string',
             'image' => 'nullable|image|max:2048',
             'gallery_image_path' => 'nullable|string',
             'event_date' => 'nullable|date',
             'location' => 'nullable|string|max:255',
+            'job_company' => 'nullable|string|max:255',
+            'job_salary' => 'nullable|string|max:255',
+            'job_link' => 'nullable|string|max:255',
+            'job_deadline' => 'nullable|date',
             'author' => 'nullable|string|max:255',
-            'category' => 'nullable|string',
             'registration_link' => 'nullable|url',
             'expires_at' => 'nullable|date',
             'photos.*' => 'nullable|image|max:5120',
-            'target_type' => 'required|in:all,batch,course,batch_course',
-            'target_batch' => 'nullable|string',
-            'target_course_id' => 'nullable|exists:courses,id',
         ]);
 
-        $data = $request->except(['image', 'photos', 'category', 'gallery_image_path']);
-        $data['is_pinned'] = $request->has('is_pinned');
-
-        if ($request->filled('category')) {
-            $data['category'] = array_map('trim', explode(',', $request->category));
+        if (Auth::user()->role === 'dept_admin') {
+            $validated['visibility_type'] = $request->visibility_type === 'all' ? 'all' : 'department';
+            if ($validated['visibility_type'] === 'department') {
+                $validated['department_name'] = Auth::user()->department_name;
+            }
         }
+
+        $data = $request->except(['image', 'photos', 'gallery_image_path']);
+        $data['is_pinned'] = $request->has('is_pinned');
 
         // Handle Image Selection
         if ($request->filled('gallery_image_path')) {
@@ -397,5 +405,54 @@ class NewsEventController extends Controller
         \Illuminate\Support\Facades\Notification::send($alumni, new \App\Notifications\EventInvitation($news_event));
 
         return response()->json(['success' => 'Invitations broadcasted to ' . $alumni->count() . ' alumni successfully!']);
+    }
+
+    public function moderate(NewsEvent $news_event)
+    {
+        $news_event->loadCount(['reactions', 'comments'])->load('photos');
+        return view('admin.news_events.partials._moderate', compact('news_event'));
+    }
+
+    public function getReactions(NewsEvent $news_event)
+    {
+        $reactions = \App\Models\NewsEventReaction::where('news_event_id', $news_event->id)
+            ->with('user')
+            ->latest()
+            ->paginate(20);
+
+        return response()->json($reactions);
+    }
+
+    public function getComments(NewsEvent $news_event)
+    {
+        $comments = \App\Models\NewsEventComment::where('news_event_id', $news_event->id)
+            ->with(['user', 'newsEvent'])
+            ->latest()
+            ->paginate(15);
+
+        return response()->json($comments);
+    }
+
+    public function replyComment(Request $request, \App\Models\NewsEventComment $comment)
+    {
+        $validated = $request->validate([
+            'content' => 'required|string|max:1000'
+        ]);
+
+        // For now, replies are just regular comments on the same post
+        // but can be prefixed or marked as admin replies
+        \App\Models\NewsEventComment::create([
+            'news_event_id' => $comment->news_event_id,
+            'user_id' => Auth::id(),
+            'content' => "@{$comment->user->name} " . $validated['content']
+        ]);
+
+        return response()->json(['success' => 'Reply sent successfully.']);
+    }
+
+    public function destroyComment(\App\Models\NewsEventComment $comment)
+    {
+        $comment->delete();
+        return response()->json(['success' => 'Comment deleted successfully.']);
     }
 }

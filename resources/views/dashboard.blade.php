@@ -92,6 +92,23 @@
             </button>
             <img :src="imageModal.src" class="max-w-full max-h-[90vh] rounded-lg shadow-2xl object-contain">
         </div>
+
+        <!-- Discussion Modal -->
+        <div x-show="discussionModal.open" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0"
+            x-transition:enter-end="opacity-100" x-transition:leave="ease-in duration-200"
+            x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
+            @keydown.escape.window="discussionModal.open = false"
+            class="fixed inset-0 z-50 overflow-hidden flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm" x-cloak>
+            <div @click.away="discussionModal.open = false" class="bg-white w-full max-w-2xl h-[90vh] rounded-3xl overflow-hidden shadow-2xl relative">
+                <button @click="discussionModal.open = false"
+                    class="absolute top-4 right-4 text-gray-400 hover:text-gray-900 transition-colors bg-gray-100 p-2 rounded-full z-20">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+                <div class="h-full" x-html="discussionModal.html" x-ref="discussionModalContent"></div>
+            </div>
+        </div>
     </div>
 
     @push('scripts')
@@ -107,6 +124,11 @@
                         open: false,
                         src: ''
                     },
+                    discussionModal: {
+                        open: false,
+                        postId: null,
+                        html: ''
+                    },
 
                     init() {
                         this.fetchFeed();
@@ -121,6 +143,28 @@
                         });
 
                         observer.observe(this.$refs.sentinel);
+                    },
+
+                    async openDiscussion(postId) {
+                        this.discussionModal.postId = postId;
+                        this.discussionModal.open = true;
+                        this.discussionModal.html = '<div class="h-full flex items-center justify-center"><div class="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-600"></div></div>';
+
+                        try {
+                            const response = await fetch(`/news/${postId}/discussion`, {
+                                headers: {
+                                    'X-Requested-With': 'XMLHttpRequest'
+                                }
+                            });
+                            this.discussionModal.html = await response.text();
+                            this.$nextTick(() => {
+                                if (this.$refs.discussionModalContent) {
+                                    Alpine.initTree(this.$refs.discussionModalContent);
+                                }
+                            });
+                        } catch (e) {
+                            this.discussionModal.html = '<div class="p-10 text-center text-red-500 font-bold italic">Failed to load discussion. Please try again.</div>';
+                        }
                     },
 
                     switchTab(newTab) {

@@ -15,6 +15,9 @@
                     class="px-5 py-3 border-b-2 border-gray-200 bg-gray-50 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">
                     Details</th>
                 <th
+                    class="px-5 py-3 border-b-2 border-gray-200 bg-gray-50 text-center text-xs font-bold text-gray-500 uppercase tracking-wider">
+                    Engagement</th>
+                <th
                     class="px-5 py-3 border-b-2 border-gray-200 bg-gray-50 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">
                     Posted</th>
                 <th
@@ -117,6 +120,31 @@
                             @endif
                         </div>
                     </td>
+                    <td class="px-5 py-4 bg-white text-sm">
+                        <div class="flex items-center justify-center gap-4">
+                            <div class="flex items-center gap-1.5"
+                                title="{{ number_format($post->reactions_count) }} Reactions">
+                                <div class="w-7 h-7 rounded-lg bg-red-50 flex items-center justify-center text-red-500">
+                                    <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
+                                        <path
+                                            d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+                                    </svg>
+                                </div>
+                                <span
+                                    class="text-xs font-bold text-gray-700">{{ number_format($post->reactions_count) }}</span>
+                            </div>
+                            <div class="flex items-center gap-1.5"
+                                title="{{ number_format($post->comments_count) }} Comments">
+                                <div class="w-7 h-7 rounded-lg bg-blue-50 flex items-center justify-center text-blue-500">
+                                    <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v10z" />
+                                    </svg>
+                                </div>
+                                <span
+                                    class="text-xs font-bold text-gray-700">{{ number_format($post->comments_count) }}</span>
+                            </div>
+                        </div>
+                    </td>
                     <td class="px-5 py-4 bg-white text-sm text-gray-500 whitespace-nowrap">
                         <div class="flex flex-col">
                             <span
@@ -139,6 +167,15 @@
                                     </svg>
                                 </button>
                             @endif
+                            <button
+                                @click="openModal('{{ route('admin.news_events.moderate', $post->id) }}', 'Moderate Publication', 'max-w-6xl')"
+                                class="p-1.5 text-gray-400 hover:text-purple-600 hover:bg-purple-50 rounded-lg transition-colors"
+                                title="Moderate & Insights">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                                </svg>
+                            </button>
                             <button @click="openModal('{{ route('admin.news_events.edit', $post->id) }}', 'Edit Content')"
                                 class="p-1.5 text-gray-400 hover:text-brand-600 hover:bg-brand-50 rounded-lg transition-colors"
                                 title="Edit">
@@ -149,13 +186,13 @@
                                 </svg>
                             </button>
                             <button @click="$dispatch('open-confirmation-modal', { 
-                                        title: 'Delete Publication', 
-                                        message: 'Are you sure you want to delete {{ addslashes($post->title) }}? This action cannot be undone.', 
-                                        action: '{{ route('admin.news_events.destroy', $post->id) }}', 
-                                        method: 'DELETE', 
-                                        danger: true, 
-                                        confirmText: 'Delete' 
-                                    })"
+                                                    title: 'Delete Publication', 
+                                                    message: 'Are you sure you want to delete {{ addslashes($post->title) }}? This action cannot be undone.', 
+                                                    action: '{{ route('admin.news_events.destroy', $post->id) }}', 
+                                                    method: 'DELETE', 
+                                                    danger: true, 
+                                                    confirmText: 'Delete' 
+                                                })"
                                 class="p-1.5 text-gray-400 hover:bg-red-50 hover:text-red-600 rounded-lg transition-colors"
                                 title="Delete">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -169,7 +206,7 @@
                 </tr>
             @empty
                 <tr>
-                    <td colspan="5" class="px-5 py-20 border-b border-gray-100 bg-white text-center">
+                    <td colspan="6" class="px-5 py-20 border-b border-gray-100 bg-white text-center">
                         <div class="flex flex-col items-center justify-center text-gray-500">
                             <div class="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mb-4">
                                 <svg class="w-8 h-8 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">

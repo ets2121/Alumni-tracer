@@ -14,9 +14,15 @@ class NewsEvent extends Model
         'slug',
         'content',
         'type',
+        'visibility_type',
         'image_path',
         'event_date',
         'location',
+        'job_company',
+        'job_location',
+        'job_salary',
+        'job_link',
+        'job_deadline',
         'author',
         'category',
         'registration_link',
@@ -25,11 +31,13 @@ class NewsEvent extends Model
         'target_type',
         'target_batch',
         'target_course_id',
+        'department_name',
     ];
 
     protected $casts = [
         'event_date' => 'datetime',
         'expires_at' => 'datetime',
+        'job_deadline' => 'datetime',
         'category' => 'array',
         'is_pinned' => 'boolean',
         'target_course_id' => 'integer',
@@ -43,5 +51,20 @@ class NewsEvent extends Model
     public function photos()
     {
         return $this->hasMany(NewsEventPhoto::class);
+    }
+
+    public function reactions()
+    {
+        return $this->hasMany(NewsEventReaction::class);
+    }
+
+    public function comments()
+    {
+        return $this->hasMany(NewsEventComment::class);
+    }
+
+    public function userReaction()
+    {
+        return $this->hasOne(NewsEventReaction::class)->where('user_id', auth()->id());
     }
 }

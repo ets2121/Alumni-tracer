@@ -18,21 +18,12 @@ class AlumniFeedController extends Controller
 
         $query = NewsEvent::query();
 
-        // Targeting Logic
-        $query->where(function ($q) use ($profile) {
-            $q->where('target_type', 'all')
-                ->orWhere(function ($sq) use ($profile) {
-                    $sq->where('target_type', 'batch')
-                        ->where('target_batch', $profile->graduation_year);
-                })
-                ->orWhere(function ($sq) use ($profile) {
-                    $sq->where('target_type', 'course')
-                        ->where('target_course_id', $profile->course_id);
-                })
-                ->orWhere(function ($sq) use ($profile) {
-                    $sq->where('target_type', 'batch_course')
-                        ->where('target_batch', $profile->graduation_year)
-                        ->where('target_course_id', $profile->course_id);
+        // Simplified Visibility Logic
+        $query->where(function ($q) use ($user) {
+            $q->where('visibility_type', 'all')
+                ->orWhere(function ($sq) use ($user) {
+                    $sq->where('visibility_type', 'department')
+                        ->where('department_name', $user->department_name);
                 });
         });
 
@@ -59,7 +50,9 @@ class AlumniFeedController extends Controller
 
         // Global Announcement/Pinned Logic
         // Pinned first, then latest
-        $posts = $query->orderByDesc('is_pinned')
+        $posts = $query->withCount(['reactions', 'comments'])
+            ->with(['userReaction', 'photos'])
+            ->orderByDesc('is_pinned')
             ->orderByDesc('created_at')
             ->cursorPaginate(10);
 
