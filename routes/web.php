@@ -39,6 +39,7 @@ Route::middleware(['auth', 'status'])->group(function () {
         Route::resource('memos', App\Http\Controllers\Admin\ChedMemoController::class);
         Route::get('/reports', [App\Http\Controllers\Admin\ReportController::class, 'index'])->name('reports.index');
         Route::get('/reports/generate', [App\Http\Controllers\Admin\ReportController::class, 'generate'])->name('reports.generate');
+        Route::get('/reports/export', [App\Http\Controllers\Admin\ReportController::class, 'export'])->name('reports.export');
 
         // Chat Management & Banned Words
         Route::get('chat-management/banned-words', [App\Http\Controllers\Admin\ChatManagementController::class, 'bannedWords'])->name('chat-management.banned-words.index');

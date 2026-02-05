@@ -240,14 +240,65 @@
                             </svg>
                             Print
                         </button>
-                        <button @click="exportCSV()"
-                            class="flex items-center gap-2 bg-brand-600 hover:bg-brand-700 text-white px-6 py-2.5 rounded-2xl text-[9px] font-black uppercase tracking-[0.1em] transition-all shadow-lg shadow-brand-100">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                            </svg>
-                            Export
-                        </button>
+                        <!-- Dropdown Export Menu -->
+                        <div class="relative" x-data="{ open: false }" @click.away="open = false">
+                            <button @click="open = !open"
+                                class="flex items-center gap-2 bg-brand-600 hover:bg-brand-700 text-white px-6 py-2.5 rounded-2xl text-[9px] font-black uppercase tracking-[0.1em] transition-all shadow-lg shadow-brand-100">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                                </svg>
+                                Export
+                                <svg class="w-3 h-3 transition-transform duration-300" :class="open ? 'rotate-180' : ''"
+                                    fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M19 9l-7 7-7-7" />
+                                </svg>
+                            </button>
+
+                            <!-- Dropdown List -->
+                            <div x-show="open" x-transition:enter="transition ease-out duration-200"
+                                x-transition:enter-start="opacity-0 translate-y-2"
+                                x-transition:enter-end="opacity-100 translate-y-0"
+                                class="absolute right-0 mt-3 w-48 bg-white rounded-[1.5rem] shadow-2xl border border-gray-100 overflow-hidden z-[120] backdrop-blur-xl bg-white/90">
+                                <div class="p-2 space-y-1">
+                                    <button @click="exportReport('excel'); open = false"
+                                        class="w-full text-left px-4 py-3 text-[10px] font-black text-gray-700 uppercase tracking-widest hover:bg-brand-50 hover:text-brand-600 rounded-xl transition-all flex items-center gap-3">
+                                        <div
+                                            class="w-8 h-8 bg-green-50 text-green-600 rounded-lg flex items-center justify-center">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                            </svg>
+                                        </div>
+                                        Export as Excel
+                                    </button>
+                                    <button @click="exportReport('csv'); open = false"
+                                        class="w-full text-left px-4 py-3 text-[10px] font-black text-gray-700 uppercase tracking-widest hover:bg-brand-50 hover:text-brand-600 rounded-xl transition-all flex items-center gap-3">
+                                        <div
+                                            class="w-8 h-8 bg-blue-50 text-blue-600 rounded-lg flex items-center justify-center">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                            </svg>
+                                        </div>
+                                        Export as CSV
+                                    </button>
+                                    <div class="h-px bg-gray-50 mx-2 my-1"></div>
+                                    <button @click="printReport(); open = false"
+                                        class="w-full text-left px-4 py-3 text-[10px] font-black text-gray-700 uppercase tracking-widest hover:bg-brand-50 hover:text-brand-600 rounded-xl transition-all flex items-center gap-3">
+                                        <div
+                                            class="w-8 h-8 bg-purple-50 text-purple-600 rounded-lg flex items-center justify-center">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+                                            </svg>
+                                        </div>
+                                        Print / Save PDF
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
                         <div class="h-8 w-px bg-gray-100 mx-2"></div>
                         <button @click="previewOpen = false" class="text-gray-300 hover:text-red-600 transition-colors">
                             <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -840,45 +891,47 @@
                         printWindow.document.write('<html><head><title>Academic Intelligence Report</title>');
                         printWindow.document.write('<link href="https://fonts.bunny.net/css?family=figtree:400,500,600,700,800,900&display=swap" rel="stylesheet" />');
                         printWindow.document.write('<script src="https://cdn.tailwindcss.com"><\/script>');
-                        printWindow.document.write('<style>@media print { .no-print { display: none; } } body { font-family: "Figtree", sans-serif; }</style>');
+                        printWindow.document.write('<style>@media print { .no-print { display: none; } } body { font-family: "Figtree", sans-serif; } table { border-collapse: collapse; width: 100%; margin-bottom: 2rem; } th, td { border: 1px solid #e2e8f0; padding: 12px; text-align: left; } th { background-color: #f8fafc !important; -webkit-print-color-adjust: exact; } .bg-brand-50 { background-color: #f0fdf4 !important; } .text-brand-700 { color: #15803d !important; }</style>');
                         printWindow.document.write('</head><body class="p-16 bg-white min-h-screen">');
 
                         // Premium Print Header with Logo
                         printWindow.document.write(`
-                                                                                                    <div class="mb-12 pb-8 border-b-4 border-gray-900 flex justify-between items-end">
-                                                                                                        <div class="flex items-center gap-6">
-                                                                                                            <img src="${logoUrl}" class="w-16 h-16 object-contain" alt="Logo">
-                                                                                                            <div class="h-12 w-px bg-gray-200"></div>
-                                                                                                            <div>
-                                                                                                                <h1 class="text-2xl font-black uppercase tracking-[0.1em] text-gray-900 leading-none">Alumni Management System</h1>
-                                                                                                                <p class="text-[10px] font-black text-brand-600 uppercase tracking-[0.3em] mt-2">Official Analytical Intelligence Record</p>
-                                                                                                            </div>
-                                                                                                        </div>
-                                                                                                        <div class="text-right">
-                                                                                                            <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Document ID: AMS-${Date.now()}</p>
-                                                                                                            <p class="text-[10px] font-black text-gray-900 uppercase tracking-widest mt-1">Generated: {{ date('F d, Y') }}</p>
-                                                                                                        </div>
-                                                                                                    </div>
-                                                                                                `);
+                                <div class="mb-12 pb-8 border-b-4 border-gray-900 flex justify-between items-end">
+                                    <div class="flex items-center gap-6">
+                                        <img src="${logoUrl}" class="w-20 h-20 object-contain" alt="Logo">
+                                        <div class="h-16 w-px bg-gray-200"></div>
+                                        <div>
+                                            <h1 class="text-3xl font-black uppercase tracking-tight text-gray-900 leading-none">{{ config('app.university_name', 'ACADEMIC INSTITUTION') }}</h1>
+                                            <p class="text-[11px] font-black text-brand-600 uppercase tracking-[0.3em] mt-3">Alumni Management & Intelligence System</p>
+                                            <p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest mt-1">Official Analytical Intelligence Record</p>
+                                        </div>
+                                    </div>
+                                    <div class="text-right">
+                                        <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Document ID: AMS-${Date.now()}</p>
+                                        <p class="text-[10px] font-black text-gray-900 uppercase tracking-widest mt-1">Generated: {{ date('F d, Y') }}</p>
+                                        <p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest mt-1">Security: OFFICE OF THE REGISTRAR</p>
+                                    </div>
+                                </div>
+                            `);
 
                         printWindow.document.write(clone.innerHTML);
 
                         // Signatory Section for Print
                         printWindow.document.write(`
-                                                                                                    <div class="mt-24 pt-10 border-t border-gray-100 flex justify-between items-start opacity-80">
-                                                                                                        <div class="text-center">
-                                                                                                            <div class="w-48 border-b border-gray-900 mb-2 mx-auto"></div>
-                                                                                                            <p class="text-[9px] font-black uppercase tracking-widest">Verified by Records Office</p>
-                                                                                                        </div>
-                                                                                                        <div class="text-center">
-                                                                                                            <p class="text-[9px] font-black text-gray-300 uppercase tracking-widest italic mb-2">END OF DOCUMENT</p>
-                                                                                                        </div>
-                                                                                                        <div class="text-center">
-                                                                                                            <div class="w-48 border-b border-gray-900 mb-2 mx-auto"></div>
-                                                                                                            <p class="text-[9px] font-black uppercase tracking-widest">Institutional Registrar</p>
-                                                                                                        </div>
-                                                                                                    </div>
-                                                                                                `);
+                                                                                                            <div class="mt-24 pt-10 border-t border-gray-100 flex justify-between items-start opacity-80">
+                                                                                                                <div class="text-center">
+                                                                                                                    <div class="w-48 border-b border-gray-900 mb-2 mx-auto"></div>
+                                                                                                                    <p class="text-[9px] font-black uppercase tracking-widest">Verified by Records Office</p>
+                                                                                                                </div>
+                                                                                                                <div class="text-center">
+                                                                                                                    <p class="text-[9px] font-black text-gray-300 uppercase tracking-widest italic mb-2">END OF DOCUMENT</p>
+                                                                                                                </div>
+                                                                                                                <div class="text-center">
+                                                                                                                    <div class="w-48 border-b border-gray-900 mb-2 mx-auto"></div>
+                                                                                                                    <p class="text-[9px] font-black uppercase tracking-widest">Institutional Registrar</p>
+                                                                                                                </div>
+                                                                                                            </div>
+                                                                                                        `);
 
                         printWindow.document.write('</body></html>');
                         printWindow.document.close();
@@ -889,26 +942,29 @@
                         }, 1200);
                     },
 
-                    exportCSV() {
-                        const table = document.querySelector('#report-content table');
-                        if (!table) return alert('No tabular dataset found for export.');
+                    exportReport(format) {
+                        const type = this.currentReportType;
+                        const f = this.reportFilters[type];
+                        const url = new URL('{{ route('admin.reports.export') }}');
+                        url.searchParams.set('type', type);
+                        url.searchParams.set('format', format);
 
-                        let csv = [];
-                        const rows = table.querySelectorAll('tr');
-                        for (let i = 0; i < rows.length; i++) {
-                            const cols = rows[i].querySelectorAll('td, th');
-                            let row = [];
-                            for (let j = 0; j < cols.length; j++) row.push('"' + cols[j].innerText.trim().replace(/"/g, '""') + '"');
-                            csv.push(row.join(','));
+                        if (f) {
+                            if (f.fromDate) url.searchParams.set('from_date', f.fromDate);
+                            if (f.toDate) url.searchParams.set('to_date', f.toDate);
+                            if (f.workStatus) url.searchParams.set('work_status', f.workStatus);
+                            if (f.establishmentType) url.searchParams.set('establishment_type', f.establishmentType);
+                            if (f.workLocation) url.searchParams.set('work_location', f.workLocation);
+                            if (f.fieldOfWork) url.searchParams.set('field_of_work', f.fieldOfWork);
+                            if (f.courseId) url.searchParams.set('course_id', f.courseId);
+                            if (f.batchYear) url.searchParams.set('batch_year', f.batchYear);
+                            if (f.fromYear) url.searchParams.set('from_year', f.fromYear);
+                            if (f.toYear) url.searchParams.set('to_year', f.toYear);
+                            if (f.subType) url.searchParams.set('sub_type', f.subType);
+                            if (f.search) url.searchParams.set('search', f.search);
                         }
 
-                        const blob = new Blob([csv.join('\n')], { type: 'text/csv;charset=utf-8;' });
-                        const link = document.createElement('a');
-                        link.href = URL.createObjectURL(blob);
-                        link.setAttribute('download', `AA_REPORT_${this.currentReportType}_${new Date().getTime()}.csv`);
-                        document.body.appendChild(link);
-                        link.click();
-                        document.body.removeChild(link);
+                        window.location.href = url.toString();
                     },
 
                     changePage(page) {

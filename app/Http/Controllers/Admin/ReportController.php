@@ -26,7 +26,7 @@ class ReportController extends Controller
         return view('admin.reports.index', compact('courses', 'fields', 'evaluations'));
     }
 
-    public function generate(Request $request)
+    private function buildReportQuery(Request $request)
     {
         $type = $request->query('type');
         $fromDate = $request->query('from_date');
@@ -67,6 +67,26 @@ class ReportController extends Controller
             $query->where('work_location', $request->query('work_location'));
         }
 
+        // Search and Subtype Logic
+        if ($type === 'master_list' || $type === 'detailed_labor') {
+            $subType = $request->query('sub_type', 'all');
+            if ($subType === 'unemployed') {
+                $query->where('employment_status', 'Unemployed');
+            } elseif ($subType === 'never_employed') {
+                $query->where('employment_status', 'Unemployed')
+                    ->whereDoesntHave('user.employmentHistories');
+            }
+
+            if ($request->query('search')) {
+                $search = $request->query('search');
+                $query->where(function ($q) use ($search) {
+                    $q->where('first_name', 'like', "%{$search}%")
+                        ->orWhere('last_name', 'like', "%{$search}%")
+                        ->orWhereRaw("CONCAT(first_name, ' ', last_name) like ?", ["%{$search}%"]);
+                });
+            }
+        }
+
         // Year Range Filters
         $fromYear = $request->query('from_year');
         $toYear = $request->query('to_year');
@@ -77,6 +97,14 @@ class ReportController extends Controller
         } elseif ($toYear) {
             $query->where('batch_year', '<=', $toYear);
         }
+
+        return $query;
+    }
+
+    public function generate(Request $request)
+    {
+        $type = $request->query('type');
+        $query = $this->buildReportQuery($request);
 
         $data = [];
         $view = '';
@@ -243,23 +271,6 @@ class ReportController extends Controller
                 $view = 'admin.reports.partials._tracer_study';
                 break;
             case 'master_list':
-                $subType = $request->query('sub_type', 'all');
-                if ($subType === 'unemployed') {
-                    $query->where('employment_status', 'Unemployed');
-                } elseif ($subType === 'never_employed') {
-                    $query->where('employment_status', 'Unemployed')
-                        ->whereDoesntHave('user.employmentHistories');
-                }
-
-                if ($request->query('search')) {
-                    $search = $request->query('search');
-                    $query->where(function ($q) use ($search) {
-                        $q->where('first_name', 'like', "%{$search}%")
-                            ->orWhere('last_name', 'like', "%{$search}%")
-                            ->orWhereRaw("CONCAT(first_name, ' ', last_name) like ?", ["%{$search}%"]);
-                    });
-                }
-
                 $data = $query->paginate(15)->withQueryString();
                 $view = 'admin.reports.partials._master_list';
                 break;
@@ -332,5 +343,128 @@ class ReportController extends Controller
         }
 
         return view($view, compact('data'));
+    }
+
+    public function export(Request $request)
+    {
+        $type = $request->query('type');
+        $format = $request->query('format', 'csv');
+        $query = $this->buildReportQuery($request);
+
+        // Fetch all data for export (no pagination)
+        $data = $query->get();
+
+        if ($format === 'csv') {
+            return $this->exportCSV($data, $type);
+        } elseif ($format === 'excel') {
+            return $this->exportExcel($data, $type);
+        }
+
+        return response()->json(['error' => 'Invalid export format'], 400);
+    }
+
+    private function exportCSV($data, $type)
+    {
+        $filename = "AA_REPORT_{$type}_" . time() . ".csv";
+        $handle = fopen('php://output', 'w');
+
+        header('Content-Type: text/csv');
+        header("Content-Disposition: attachment; filename=\"$filename\"");
+
+        // Headers based on type
+        $headers = $this->getExportHeaders($type);
+        fputcsv($handle, $headers);
+
+        foreach ($data as $alumnus) {
+            fputcsv($handle, $this->formatAlumnusForExport($alumnus, $type));
+        }
+
+        fclose($handle);
+        exit;
+    }
+
+    private function exportExcel($data, $type)
+    {
+        $filename = "AA_REPORT_{$type}_" . time() . ".xls";
+
+        header("Content-Type: application/vnd.ms-excel");
+        header("Content-Disposition: attachment; filename=\"$filename\"");
+
+        $headers = $this->getExportHeaders($type);
+
+        echo "<html><body><table border='1'>";
+        echo "<tr>";
+        foreach ($headers as $header) {
+            echo "<th style='background-color: #f3f4f6; padding: 10px;'>$header</th>";
+        }
+        echo "</tr>";
+
+        foreach ($data as $alumnus) {
+            echo "<tr>";
+            $row = $this->formatAlumnusForExport($alumnus, $type);
+            foreach ($row as $cell) {
+                echo "<td style='padding: 5px;'>$cell</td>";
+            }
+            echo "</tr>";
+        }
+
+        echo "</table></body></html>";
+        exit;
+    }
+
+    private function getExportHeaders($type)
+    {
+        $headers = [
+            'Alumni Name',
+            'Program',
+            'Batch',
+            'Email',
+            'Gender',
+            'Civil Status',
+            'Employment Status'
+        ];
+
+        // Add specific headers for deeper reports
+        if (in_array($type, ['detailed_labor', 'tracer_study', 'master_list'])) {
+            $headers = array_merge($headers, [
+                'Work Status',
+                'Establishment Type',
+                'Work Location',
+                'Field of Work',
+                'Company Name',
+                'Position',
+                'Work Address'
+            ]);
+        }
+
+        return $headers;
+    }
+
+    private function formatAlumnusForExport($alumnus, $type)
+    {
+        $row = [
+            $alumnus->full_name,
+            $alumnus->course->code ?? 'N/A',
+            $alumnus->batch_year,
+            $alumnus->user->email ?? 'N/A',
+            $alumnus->gender,
+            $alumnus->civil_status,
+            $alumnus->employment_status
+        ];
+
+        // Fill specific data for deeper reports
+        if (in_array($type, ['detailed_labor', 'tracer_study', 'master_list'])) {
+            $row = array_merge($row, [
+                $alumnus->work_status ?? 'N/A',
+                $alumnus->establishment_type ?? 'N/A',
+                $alumnus->work_location ?? 'N/A',
+                $alumnus->field_of_work ?? 'N/A',
+                $alumnus->company_name ?? 'N/A',
+                $alumnus->position ?? 'N/A',
+                $alumnus->work_address ?? 'N/A'
+            ]);
+        }
+
+        return $row;
     }
 }
