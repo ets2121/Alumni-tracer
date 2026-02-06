@@ -10,6 +10,10 @@ class EvaluationAnalyticsController extends Controller
 {
     public function show(Request $request, EvaluationForm $evaluation)
     {
+        if ($evaluation->type === 'tracer') {
+            abort(404, 'Tracer Survey analytics are handled separately.');
+        }
+
         $evaluation->load(['questions', 'responses.answers']); // Eager load for base stats
 
         // Filters

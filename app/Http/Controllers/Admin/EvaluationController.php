@@ -16,6 +16,7 @@ class EvaluationController extends Controller
         // For simplicity: Show all forms, but grouped if they have parents. 
         // Better approach: Show "Active" and "Draft" forms.
         $forms = EvaluationForm::withCount('responses')
+            ->where('type', '!=', 'tracer') // Exclude Tracer Surveys
             ->orderByRaw('parent_form_id IS NULL DESC') // Parents first
             ->orderBy('id', 'desc')
             ->get();

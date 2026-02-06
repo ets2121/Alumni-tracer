@@ -41,6 +41,14 @@ Route::middleware(['auth', 'status'])->group(function () {
         Route::get('/reports/generate', [App\Http\Controllers\Admin\ReportController::class, 'generate'])->name('reports.generate');
         Route::get('/reports/export', [App\Http\Controllers\Admin\ReportController::class, 'export'])->name('reports.export');
 
+        // Tracer Survey (GTS)
+        Route::get('/tracer-survey/export', [App\Http\Controllers\Admin\TracerSurveyController::class, 'export'])->name('tracer.export');
+        Route::get('/tracer-survey/{response}/pdf', [App\Http\Controllers\Admin\TracerSurveyController::class, 'exportPdf'])->name('tracer.pdf');
+        Route::get('/tracer-survey/{response}/export', [App\Http\Controllers\Admin\TracerSurveyController::class, 'exportIndividual'])->name('tracer.export.individual');
+        Route::get('/tracer-survey', [App\Http\Controllers\Admin\TracerSurveyController::class, 'index'])->name('tracer.index');
+        Route::get('/tracer-survey/{response}', [App\Http\Controllers\Admin\TracerSurveyController::class, 'show'])->name('tracer.show');
+        Route::delete('/tracer-survey/{response}', [App\Http\Controllers\Admin\TracerSurveyController::class, 'destroy'])->name('tracer.destroy');
+
         // Chat Management & Banned Words
         Route::get('chat-management/banned-words', [App\Http\Controllers\Admin\ChatManagementController::class, 'bannedWords'])->name('chat-management.banned-words.index');
         Route::post('chat-management/banned-words/toggle', [App\Http\Controllers\Admin\ChatManagementController::class, 'toggleBannedWords'])->name('admin.chat-management.banned-words.toggle');
@@ -92,9 +100,14 @@ Route::middleware(['auth', 'status'])->group(function () {
     Route::get('/memos', [App\Http\Controllers\Alumni\ChedMemoController::class, 'index'])->name('alumni.memos.index');
 
     // Alumni Evaluation Routes
+    // Alumni Evaluation Routes
     Route::get('/evaluations', [App\Http\Controllers\Alumni\EvaluationController::class, 'index'])->name('alumni.evaluations.index');
     Route::get('/evaluations/{evaluation}', [App\Http\Controllers\Alumni\EvaluationController::class, 'show'])->name('alumni.evaluations.show');
     Route::post('/evaluations/{evaluation}', [App\Http\Controllers\Alumni\EvaluationController::class, 'store'])->name('alumni.evaluations.store');
+
+    // CHED Tracer Survey Routes
+    Route::get('/tracer-survey', [App\Http\Controllers\Alumni\TracerSurveyController::class, 'index'])->name('tracer.index');
+    Route::post('/tracer-survey', [App\Http\Controllers\Alumni\TracerSurveyController::class, 'store'])->name('tracer.store');
 
     // Interactivity Routes (Reactions & Comments)
     Route::post('/news/{news_event}/react', [App\Http\Controllers\NewsEventReactionController::class, 'toggle'])->name('news.react');

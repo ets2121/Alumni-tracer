@@ -9,7 +9,7 @@ class EvaluationQuestion extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['form_id', 'question_text', 'type', 'options', 'order', 'required'];
+    protected $fillable = ['form_id', 'question_text', 'type', 'section', 'options', 'order', 'required'];
 
     protected $casts = [
         'options' => 'array',

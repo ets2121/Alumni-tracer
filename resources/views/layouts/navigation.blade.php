@@ -42,6 +42,10 @@
                             </span>
                         @endif
                     </x-nav-link>
+                    <x-nav-link :href="route('tracer.index')" :active="request()->routeIs('tracer.*')"
+                        class="text-brand-100 hover:text-white hover:border-brand-200 relative">
+                        {{ __('Tracer Survey') }}
+                    </x-nav-link>
                 </div>
             </div>
 

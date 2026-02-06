@@ -32,7 +32,14 @@
                                     
                                     @elseif($question->type === 'radio')
                                         <div class="space-y-2">
-                                            @foreach(json_decode($question->options, true) ?? [] as $option)
+                                            @php
+                                                $radioOptions = $question->options;
+                                                if (is_string($radioOptions)) {
+                                                    $radioOptions = json_decode($radioOptions, true);
+                                                }
+                                                $radioOptions = is_array($radioOptions) ? $radioOptions : [];
+                                            @endphp
+                                            @foreach($radioOptions as $option)
                                                 <label class="flex items-center p-3 bg-white rounded-lg border border-gray-200 cursor-pointer hover:border-brand-300 transition-colors">
                                                     <input type="radio" name="q_{{ $question->id }}" value="{{ $option }}" class="text-brand-600 focus:ring-brand-500" {{ $question->required ? 'required' : '' }}>
                                                     <span class="ml-3 text-gray-700">{{ $option }}</span>
@@ -42,7 +49,14 @@
 
                                     @elseif($question->type === 'checkbox')
                                         <div class="space-y-2">
-                                            @foreach(json_decode($question->options, true) ?? [] as $option)
+                                            @php
+                                                $cbOptions = $question->options;
+                                                if (is_string($cbOptions)) {
+                                                    $cbOptions = json_decode($cbOptions, true);
+                                                }
+                                                $cbOptions = is_array($cbOptions) ? $cbOptions : [];
+                                            @endphp
+                                            @foreach($cbOptions as $option)
                                                 <label class="flex items-center p-3 bg-white rounded-lg border border-gray-200 cursor-pointer hover:border-brand-300 transition-colors">
                                                     <input type="checkbox" name="q_{{ $question->id }}[]" value="{{ $option }}" class="text-brand-600 focus:ring-brand-500">
                                                     <span class="ml-3 text-gray-700">{{ $option }}</span>
@@ -53,9 +67,14 @@
                                     @elseif($question->type === 'scale')
                                         <div class="flex justify-between items-center max-w-md mx-auto py-4">
                                             @php 
-                                                $options = json_decode($question->options, true) ?? ['1' => 'Poor', '5' => 'Excellent']; 
-                                                $minLabel = $options['1'] ?? 'Poor';
-                                                $maxLabel = $options['5'] ?? 'Excellent';
+                                                $scaleOptions = $question->options;
+                                                if (is_string($scaleOptions)) {
+                                                    $scaleOptions = json_decode($scaleOptions, true);
+                                                }
+                                                $scaleOptions = is_array($scaleOptions) ? $scaleOptions : ['1' => 'Poor', '5' => 'Excellent'];
+
+                                                $minLabel = $scaleOptions['1'] ?? 'Poor';
+                                                $maxLabel = $scaleOptions['5'] ?? 'Excellent';
                                             @endphp
                                             <span class="text-xs font-bold text-gray-500 uppercase">{{ $minLabel }}</span>
                                             <div class="flex gap-4">

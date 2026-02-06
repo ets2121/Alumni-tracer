@@ -16,6 +16,7 @@ class EvaluationController extends Controller
         // Get forms that are active
         // Check if user has already responded
         $forms = EvaluationForm::where('is_active', true)
+            ->where('type', '!=', 'tracer') // Exclude Tracer Surveys
             ->withCount([
                 'responses' => function ($q) {
                     $q->where('user_id', Auth::id());

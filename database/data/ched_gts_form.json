@@ -1,0 +1,475 @@
+{
+    "form_metadata": {
+        "name": "CHED Graduate Tracer Survey (GTS)",
+        "type": "tracer",
+        "visibility": "Public",
+        "submission_rule": "One submission per alumni account",
+        "description": "Dear Graduate: Good day! Please complete this GTS questionnaire as accurately & frankly as possible by checking ( ) the box corresponding to your response. Your answer will be used for research purposes in order to assess graduate employability and eventually, improve course offerings of your alma mater & other universities/colleges in the Philippines. Your answers to this survey will be treated with strictest confidentiality."
+    },
+    "questions": [
+        {
+            "question_number": "1",
+            "section": "SECTION A – GENERAL INFORMATION",
+            "question_text": "Name",
+            "answer_type": "text",
+            "is_required": true
+        },
+        {
+            "question_number": "2",
+            "section": "SECTION A – GENERAL INFORMATION",
+            "question_text": "Permanent Address",
+            "answer_type": "text",
+            "is_required": true
+        },
+        {
+            "question_number": "3",
+            "section": "SECTION A – GENERAL INFORMATION",
+            "question_text": "E-mail Address",
+            "answer_type": "email",
+            "is_required": true
+        },
+        {
+            "question_number": "4",
+            "section": "SECTION A – GENERAL INFORMATION",
+            "question_text": "Telephone or Contact Number(s)",
+            "answer_type": "text",
+            "is_required": false
+        },
+        {
+            "question_number": "5",
+            "section": "SECTION A – GENERAL INFORMATION",
+            "question_text": "Mobile Number",
+            "answer_type": "text",
+            "is_required": true
+        },
+        {
+            "question_number": "6",
+            "section": "SECTION A – GENERAL INFORMATION",
+            "question_text": "Civil Status",
+            "answer_type": "radio",
+            "options": [
+                "Single",
+                "Married",
+                "Separated",
+                "Widow or Widower",
+                "Single Parent"
+            ],
+            "is_required": true
+        },
+        {
+            "question_number": "7",
+            "section": "SECTION A – GENERAL INFORMATION",
+            "question_text": "Sex",
+            "answer_type": "radio",
+            "options": [
+                "Male",
+                "Female"
+            ],
+            "is_required": true
+        },
+        {
+            "question_number": "8",
+            "section": "SECTION A – GENERAL INFORMATION",
+            "question_text": "Birthday",
+            "answer_type": "date_group",
+            "sub_fields": [
+                "Month",
+                "Day",
+                "Year"
+            ],
+            "is_required": true
+        },
+        {
+            "question_number": "9",
+            "section": "SECTION A – GENERAL INFORMATION",
+            "question_text": "Region of Origin",
+            "answer_type": "radio",
+            "options": [
+                "Region 1",
+                "Region 2",
+                "Region 3",
+                "Region 4",
+                "Region 5",
+                "Region 6",
+                "Region 7",
+                "Region 8",
+                "Region 9",
+                "Region 10",
+                "Region 11",
+                "Region 12",
+                "NCR",
+                "CAR",
+                "ARMM",
+                "CARAGA"
+            ],
+            "is_required": true
+        },
+        {
+            "question_number": "10",
+            "section": "SECTION A – GENERAL INFORMATION",
+            "question_text": "Province",
+            "answer_type": "text",
+            "is_required": true
+        },
+        {
+            "question_number": "11",
+            "section": "SECTION A – GENERAL INFORMATION",
+            "question_text": "Location of Residence",
+            "answer_type": "radio",
+            "options": [
+                "City",
+                "Municipality"
+            ],
+            "is_required": true
+        },
+        {
+            "question_number": "12",
+            "section": "SECTION B – EDUCATIONAL BACKGROUND",
+            "question_text": "Educational Attainment (Baccalaureate Degree only)",
+            "answer_type": "dynamic_table",
+            "table_columns": [
+                "Degree & Specialization",
+                "College/University",
+                "Year Graduated",
+                "Honors/Awards"
+            ],
+            "min_rows": 1,
+            "is_required": true
+        },
+        {
+            "question_number": "13",
+            "section": "SECTION B – EDUCATIONAL BACKGROUND",
+            "question_text": "Professional Examination(s) Passed",
+            "answer_type": "dynamic_table",
+            "table_columns": [
+                "Exam Name",
+                "Date Taken",
+                "Rating"
+            ],
+            "min_rows": 1,
+            "is_required": false
+        },
+        {
+            "question_number": "14",
+            "section": "SECTION B – EDUCATIONAL BACKGROUND",
+            "question_text": "Reasons for taking the course(s) or pursuing degree(s)",
+            "answer_type": "checkbox_matrix",
+            "matrix_categories": [
+                "Undergraduate",
+                "Graduate"
+            ],
+            "matrix_options": [
+                "High grades in the course or subject area(s) related to the course",
+                "Good grades in high school",
+                "Influence of parents or relatives",
+                "Peer influence",
+                "Inspired by a role model",
+                "Strong passion for the profession",
+                "Prospect for immediate employment",
+                "Status or prestige of the profession",
+                "Availability of course offering in chosen institution",
+                "Prospect of career advancement",
+                "Affordable for the family",
+                "Prospect of attractive compensation",
+                "Opportunity for employment abroad",
+                "No particular choice or no better idea",
+                "Others, please specify"
+            ],
+            "other_option_label": "Others, please specify",
+            "is_required": false
+        },
+        {
+            "question_number": "15a",
+            "section": "SECTION C – TRAININGS / ADVANCE STUDIES",
+            "question_text": "Trainings / Advance Studies",
+            "answer_type": "dynamic_table",
+            "table_columns": [
+                "Training Title",
+                "Duration/Credits",
+                "Institution"
+            ],
+            "min_rows": 1,
+            "is_required": false
+        },
+        {
+            "question_number": "15b",
+            "section": "SECTION C – TRAININGS / ADVANCE STUDIES",
+            "question_text": "Reason for taking the training/advance studies",
+            "answer_type": "radio_with_other",
+            "options": [
+                "For promotion",
+                "For professional development"
+            ],
+            "is_required": false
+        },
+        {
+            "question_number": "16",
+            "section": "SECTION D – EMPLOYMENT DATA",
+            "question_text": "Are you presently employed?",
+            "answer_type": "radio",
+            "options": [
+                "Yes",
+                "No",
+                "Never Employed"
+            ],
+            "conditional_logic": [
+                {
+                    "trigger": "Yes",
+                    "action": "show",
+                    "target_questions": [
+                        "18",
+                        "19",
+                        "20",
+                        "21",
+                        "22",
+                        "23",
+                        "24",
+                        "25",
+                        "26",
+                        "27",
+                        "28",
+                        "29"
+                    ]
+                },
+                {
+                    "trigger": "No",
+                    "action": "show",
+                    "target_questions": [
+                        "17"
+                    ]
+                },
+                {
+                    "trigger": "Never Employed",
+                    "action": "show",
+                    "target_questions": [
+                        "17"
+                    ]
+                }
+            ],
+            "is_required": true
+        },
+        {
+            "question_number": "17",
+            "section": "SECTION D – EMPLOYMENT DATA",
+            "question_text": "Please state reason(s) why you are not presently employed",
+            "answer_type": "checkbox",
+            "options": [
+                "Advance or further study",
+                "Family concern and decided not to find a job",
+                "Health-related reason(s)",
+                "Lack of work experience",
+                "No job opportunity",
+                "Did not look for a job",
+                "Others, please specify"
+            ],
+            "other_option_label": "Others, please specify",
+            "is_required": true
+        },
+        {
+            "question_number": "18",
+            "section": "SECTION D – EMPLOYMENT DATA",
+            "question_text": "Present Employment Status",
+            "answer_type": "radio",
+            "options": [
+                "Regular or Permanent",
+                "Temporary",
+                "Casual",
+                "Contractual",
+                "Self-employed"
+            ],
+            "is_required": true
+        },
+        {
+            "question_number": "19",
+            "section": "SECTION D – EMPLOYMENT DATA",
+            "question_text": "Present occupation",
+            "answer_type": "text",
+            "is_required": true
+        },
+        {
+            "question_number": "20",
+            "section": "SECTION D – EMPLOYMENT DATA",
+            "question_text": "Major line of business of the company you are presently employed in",
+            "answer_type": "radio",
+            "options": [
+                "Agriculture, Hunting and Forestry",
+                "Fishing",
+                "Mining and Quarrying",
+                "Manufacturing",
+                "Electricity, Gas and Water Supply",
+                "Construction",
+                "Wholesale and Retail Trade; Repair of Motor Vehicles, Motorcycles and Personal and Household Goods",
+                "Hotels and Restaurants",
+                "Transport Storage and Communication",
+                "Financial Intermediation",
+                "Real Estate, Renting and Business Activities",
+                "Public Administration and Defense; Compulsory Social Security",
+                "Education",
+                "Health and Social Work",
+                "Other Community, Social and Personal Service Activities",
+                "Private Households with Employed Persons",
+                "Extra-territorial Organizations and Bodies"
+            ],
+            "is_required": true
+        },
+        {
+            "question_number": "21",
+            "section": "SECTION D – EMPLOYMENT DATA",
+            "question_text": "Place of Work",
+            "answer_type": "radio",
+            "options": [
+                "Local",
+                "Abroad"
+            ],
+            "is_required": true
+        },
+        {
+            "question_number": "22",
+            "section": "SECTION D – EMPLOYMENT DATA",
+            "question_text": "Is this your first job after college?",
+            "answer_type": "radio",
+            "options": [
+                "Yes",
+                "No"
+            ],
+            "conditional_logic": [
+                {
+                    "trigger": "No",
+                    "action": "show",
+                    "target_questions": [
+                        "23"
+                    ]
+                },
+                {
+                    "trigger": "Yes",
+                    "action": "skip",
+                    "target_questions": [
+                        "23"
+                    ]
+                }
+            ],
+            "is_required": true
+        },
+        {
+            "question_number": "23",
+            "section": "SECTION D – EMPLOYMENT DATA",
+            "question_text": "What are your reason(s) for staying on the job? You may check (/) more than one answer",
+            "answer_type": "checkbox",
+            "options": [
+                "Salaries and benefits",
+                "Career challenge",
+                "Related to special skill",
+                "Proximity to residence",
+                "Peer influence",
+                "Family influence",
+                "Others, please specify"
+            ],
+            "other_option_label": "Others, please specify",
+            "is_required": false
+        },
+        {
+            "question_number": "24",
+            "section": "SECTION D – EMPLOYMENT DATA",
+            "question_text": "How did you find your first job?",
+            "answer_type": "radio",
+            "options": [
+                "Response to an advertisement",
+                "As walk-in applicant",
+                "Recommended by someone",
+                "Arranged by the school’s job placement officer",
+                "Family business",
+                "Job Fair or Public Employment Service Office (PESO)",
+                "Others, please specify"
+            ],
+            "other_option_label": "Others, please specify",
+            "is_required": true
+        },
+        {
+            "question_number": "25",
+            "section": "SECTION D – EMPLOYMENT DATA",
+            "question_text": "How long did it take you to land your first job?",
+            "answer_type": "radio",
+            "options": [
+                "Less than a month",
+                "1 to 6 months",
+                "7 to 11 months",
+                "1 year to less than 2 years",
+                "2 years to less than 3 years",
+                "3 years to less than 4 years",
+                "Others, please specify"
+            ],
+            "other_option_label": "Others, please specify",
+            "is_required": true
+        },
+        {
+            "question_number": "26",
+            "section": "SECTION D – EMPLOYMENT DATA",
+            "question_text": "Job Level Position",
+            "answer_type": "radio",
+            "options": [
+                "Rank or Clerical",
+                "Professional, Technical or Supervisory",
+                "Managerial or Executive",
+                "Self-employed"
+            ],
+            "is_required": true
+        },
+        {
+            "question_number": "27",
+            "section": "SECTION D – EMPLOYMENT DATA",
+            "question_text": "What is your initial gross monthly earning in your first job after college?",
+            "answer_type": "radio",
+            "options": [
+                "Below P5,000.00",
+                "P5,000.00 to less than P10,000.00",
+                "P10,000.00 to less than P15,000.00",
+                "P15,000.00 to less than P20,000.00",
+                "P20,000.00 to less than P25,000.00",
+                "P25,000.00 and above"
+            ],
+            "is_required": true
+        },
+        {
+            "question_number": "28",
+            "section": "SECTION D – EMPLOYMENT DATA",
+            "question_text": "Was the curriculum you had in college relevant to your first job?",
+            "answer_type": "radio",
+            "options": [
+                "Yes",
+                "No"
+            ],
+            "is_required": true
+        },
+        {
+            "question_number": "29",
+            "section": "SECTION D – EMPLOYMENT DATA",
+            "question_text": "List down competencies you learned in college that you find very useful in your first job. You may check (/) more than one answer",
+            "answer_type": "checkbox",
+            "options": [
+                "Communication skills",
+                "Human Relations skills",
+                "Entrepreneurial skills",
+                "Information Technology skills",
+                "Problem-solving skills",
+                "Critical Thinking skills",
+                "Others, please specify"
+            ],
+            "other_option_label": "Others, please specify",
+            "is_required": true
+        },
+        {
+            "question_number": "30",
+            "section": "REFERRAL SECTION",
+            "question_text": "List down details of other alumni you know",
+            "answer_type": "dynamic_table",
+            "table_columns": [
+                "Name",
+                "Full Address",
+                "Contact Number"
+            ],
+            "min_rows": 1,
+            "is_required": false
+        }
+    ],
+    "closing_message": "Thank you for taking time out to fill out this questionnaire. Your feedback will be very useful in the improvement of the curriculum and other services of the institution."
+}

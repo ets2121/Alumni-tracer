@@ -5,11 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+use App\Traits\HasDepartmentIsolation;
+
 class EvaluationResponse extends Model
 {
-    use HasFactory;
+    use HasFactory, HasDepartmentIsolation;
 
-    protected $fillable = ['form_id', 'user_id'];
+    protected $fillable = ['form_id', 'user_id', 'department_name'];
 
     public function form()
     {
