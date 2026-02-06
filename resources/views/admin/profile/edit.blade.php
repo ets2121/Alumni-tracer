@@ -50,7 +50,7 @@
             this.error = '';
             this.otpType = type;
             try {
-                const response = await fetch('{{ route('verification.send') }}', {
+                const response = await fetch('{{ route('otp.send') }}', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
                     body: JSON.stringify({ email: type === 'email_update' ? this.email : this.originalEmail, type: type })
@@ -66,7 +66,7 @@
             this.loading = true;
             this.error = '';
             try {
-                const response = await fetch('{{ route('verification.verify') }}', {
+                const response = await fetch('{{ route('otp.verify') }}', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
                     body: JSON.stringify({ 
