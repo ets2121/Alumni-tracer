@@ -27,8 +27,6 @@
                         <label class="block text-sm font-medium text-gray-700 mb-1">Form Type</label>
                         <select name="type" required
                             class="w-full border-gray-300 rounded-md shadow-sm focus:ring-brand-500 focus:border-brand-500">
-                            <option value="tracer" {{ $evaluation->type == 'tracer' ? 'selected' : '' }}>Graduate Tracer
-                                Study</option>
                             <option value="usability" {{ $evaluation->type == 'usability' ? 'selected' : '' }}>System
                                 Usability Survey</option>
                             <option value="event" {{ $evaluation->type == 'event' ? 'selected' : '' }}>Event Feedback

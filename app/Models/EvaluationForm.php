@@ -11,7 +11,7 @@ class EvaluationForm extends Model
 {
     use HasFactory, HasDepartmentIsolation;
 
-    protected $fillable = ['title', 'description', 'type', 'is_active', 'version', 'parent_form_id', 'is_draft'];
+    protected $fillable = ['title', 'description', 'type', 'is_active', 'version', 'parent_form_id', 'is_draft', 'department_name'];
 
     public function questions()
     {

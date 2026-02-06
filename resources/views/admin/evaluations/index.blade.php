@@ -121,12 +121,12 @@
 
                                         <!-- Duplicate Action -->
                                         <button type="button" @click="$dispatch('open-confirmation-modal', { 
-                                                                                title: 'Duplicate Form', 
-                                                                                message: 'Create a draft copy of \'{{ $form->title }}\'?', 
-                                                                                action: '{{ route('admin.evaluations.duplicate', $form->id) }}', 
-                                                                                method: 'POST', 
-                                                                                confirmText: 'Duplicate' 
-                                                                            })"
+                                                                                    title: 'Duplicate Form', 
+                                                                                    message: 'Create a draft copy of \'{{ $form->title }}\'?', 
+                                                                                    action: '{{ route('admin.evaluations.duplicate', $form->id) }}', 
+                                                                                    method: 'POST', 
+                                                                                    confirmText: 'Duplicate' 
+                                                                                })"
                                             class="p-2 rounded-lg text-gray-400 hover:text-amber-600 hover:bg-amber-50 transition-colors"
                                             title="Duplicate Form">
                                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -137,13 +137,13 @@
 
                                         <!-- Delete Action -->
                                         <button type="button" @click="$dispatch('open-confirmation-modal', { 
-                                                                                title: 'Delete Evaluation Form', 
-                                                                                message: 'Are you sure you want to delete \'{{ $form->title }}\'? This will permanently delete all associated questions and responses.', 
-                                                                                action: '{{ route('admin.evaluations.destroy', $form->id) }}', 
-                                                                                method: 'DELETE', 
-                                                                                danger: true,
-                                                                                confirmText: 'Delete Form' 
-                                                                            })"
+                                                                                    title: 'Delete Evaluation Form', 
+                                                                                    message: 'Are you sure you want to delete \'{{ $form->title }}\'? This will permanently delete all associated questions and responses.', 
+                                                                                    action: '{{ route('admin.evaluations.destroy', $form->id) }}', 
+                                                                                    method: 'DELETE', 
+                                                                                    danger: true,
+                                                                                    confirmText: 'Delete Form' 
+                                                                                })"
                                             class="p-2 rounded-lg text-gray-400 hover:text-red-600 hover:bg-red-50 transition-colors"
                                             title="Delete Form">
                                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -224,7 +224,6 @@
                                     <label class="block text-sm font-medium text-gray-700 mb-1">Form Type</label>
                                     <select name="type" required
                                         class="w-full border-gray-300 rounded-md shadow-sm focus:ring-brand-500 focus:border-brand-500">
-                                        <option value="tracer">Graduate Tracer Study</option>
                                         <option value="usability">System Usability Survey</option>
                                         <option value="event">Event Feedback</option>
                                         <option value="general">General Survey</option>

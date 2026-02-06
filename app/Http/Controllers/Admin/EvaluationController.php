@@ -31,6 +31,9 @@ class EvaluationController extends Controller
 
     public function edit(EvaluationForm $evaluation)
     {
+        if ($evaluation->type === 'tracer') {
+            abort(404, 'Tracer Survey management is handled separately.');
+        }
         $evaluation->load('questions');
         return view('admin.evaluations.edit', compact('evaluation'));
     }
@@ -167,6 +170,9 @@ class EvaluationController extends Controller
 
     public function show(EvaluationForm $evaluation)
     {
+        if ($evaluation->type === 'tracer') {
+            abort(404, 'Tracer Survey analytics are handled separately.');
+        }
         $evaluation->load(['questions', 'responses.answers']);
 
         $analytics = [];
@@ -212,6 +218,9 @@ class EvaluationController extends Controller
 
     public function destroy(EvaluationForm $evaluation)
     {
+        if ($evaluation->type === 'tracer') {
+            abort(404, 'Tracer Survey deletion is restricted here.');
+        }
         $evaluation->delete();
         return redirect()->route('admin.evaluations.index')->with('success', 'Form deleted successfully.');
     }

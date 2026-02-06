@@ -36,7 +36,7 @@ trait HasDepartmentIsolation
             // Fetch user WITHOUT global scopes to break recursion and improve performance
             $user = \App\Models\User::withoutGlobalScopes()->find($userId);
 
-            if ($user && ($user->role === 'dept_admin' || $user->role === 'admin')) {
+            if ($user && in_array($user->role, ['dept_admin', 'admin', 'alumni'])) {
                 return $deptContext = [
                     'id' => $user->id,
                     'role' => $user->role,
@@ -56,8 +56,8 @@ trait HasDepartmentIsolation
         static::addGlobalScope('department', function (Builder $builder) {
             $ctx = self::getDepartmentContext();
 
-            // Only apply isolation for Department Administrators
-            if ($ctx && $ctx['role'] === 'dept_admin') {
+            // Apply isolation for Department Administrators and Alumni
+            if ($ctx && in_array($ctx['role'], ['dept_admin', 'alumni'])) {
                 $table = $builder->getModel()->getTable();
 
                 if ($table === 'users') {
@@ -80,7 +80,7 @@ trait HasDepartmentIsolation
 
         static::creating(function ($model) {
             $ctx = self::getDepartmentContext();
-            if ($ctx && $ctx['role'] === 'dept_admin') {
+            if ($ctx && in_array($ctx['role'], ['dept_admin', 'alumni'])) {
                 $tableName = $model->getTable();
                 if (Schema::hasColumn($tableName, 'department_name')) {
                     $model->department_name = $ctx['dept'];
@@ -92,7 +92,7 @@ trait HasDepartmentIsolation
     public function scopeForCurrentDepartment($query)
     {
         $ctx = self::getDepartmentContext();
-        if ($ctx && $ctx['role'] === 'dept_admin') {
+        if ($ctx && in_array($ctx['role'], ['dept_admin', 'alumni'])) {
             return $query->where($this->getTable() . '.department_name', $ctx['dept']);
         }
         return $query;
