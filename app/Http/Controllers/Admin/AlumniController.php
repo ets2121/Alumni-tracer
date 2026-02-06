@@ -135,7 +135,7 @@ class AlumniController extends Controller
 
         $alumni->update($request->only('name', 'email', 'status', 'admin_remarks'));
 
-        // Trigger notification when approved
+        // Trigger notification when approved or rejected
         if ($oldStatus !== 'active' && $alumni->status === 'active') {
             try {
                 $alumni->notify(new \App\Notifications\RegistrationApproved($alumni));
@@ -168,6 +168,12 @@ class AlumniController extends Controller
             } catch (\Exception $e) {
                 // Log the error but don't block the update
                 \Illuminate\Support\Facades\Log::error("Failed to process approval notifications: " . $e->getMessage());
+            }
+        } elseif ($oldStatus !== 'rejected' && $alumni->status === 'rejected') {
+            try {
+                $alumni->notify(new \App\Notifications\RegistrationRejected($alumni, $alumni->admin_remarks));
+            } catch (\Exception $e) {
+                \Illuminate\Support\Facades\Log::error("Failed to send rejection notification: " . $e->getMessage());
             }
         }
 
