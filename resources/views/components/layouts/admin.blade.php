@@ -46,7 +46,35 @@
     </style>
 </head>
 
-<body class="h-full font-sans antialiased text-gray-900 dark:text-gray-100 overflow-hidden">
+<body class="h-full font-sans antialiased text-gray-900 dark:text-gray-100 overflow-hidden"
+    x-data="{ sidebarOpen: false, isLoading: false }" @loading-start.window="isLoading = true"
+    @loading-end.window="isLoading = false" @page-loading.window="isLoading = true">
+    <!-- Global Loading Bar -->
+    <div x-show="isLoading" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0"
+        x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-300"
+        x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
+        class="fixed top-0 left-0 right-0 h-0.5 bg-brand-500 z-[100] shadow-[0_0_10px_rgba(34,197,94,0.5)]">
+        <div class="h-full bg-brand-600 animate-[loading_2s_ease-in-out_infinite]"></div>
+    </div>
+
+    <style>
+        @keyframes loading {
+            0% {
+                width: 0;
+                left: 0;
+            }
+
+            50% {
+                width: 70%;
+                left: 15%;
+            }
+
+            100% {
+                width: 0;
+                left: 100%;
+            }
+        }
+    </style>
     <div x-data="{ sidebarOpen: false }" class="h-full flex bg-gray-50 dark:bg-black">
 
         <!-- Mobile Sidebar Backdrop -->
@@ -65,7 +93,8 @@
                 <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-3 group">
                     <div class="relative w-10 h-10 flex-shrink-0">
                         <img src="{{ asset('images/logo-1.png') }}" alt="Logo"
-                            class="w-full h-full object-contain drop-shadow-md group-hover:scale-110 transition-transform duration-300">
+                            class="w-full h-full object-contain drop-shadow-md group-hover:scale-110 transition-transform duration-300"
+                            loading="lazy">
                     </div>
                     <div class="flex flex-col overflow-hidden">
                         <span class="text-xs text-brand-200 font-medium uppercase tracking-wider truncate">
@@ -122,7 +151,7 @@
                 @if(Auth::user()->isSystemAdmin())
                     <a href="{{ route('admin.users.index') }}"
                         class="flex items-center gap-3 py-2.5 px-3 rounded-lg text-sm font-medium transition-all duration-200 group
-                                       {{ request()->routeIs('admin.users.*') ? 'bg-brand-700 text-white shadow-md ring-1 ring-brand-600' : 'text-brand-100 hover:bg-brand-800 hover:text-white hover:translate-x-1' }}">
+                                               {{ request()->routeIs('admin.users.*') ? 'bg-brand-700 text-white shadow-md ring-1 ring-brand-600' : 'text-brand-100 hover:bg-brand-800 hover:text-white hover:translate-x-1' }}">
                         <svg class="w-5 h-5 flex-shrink-0 {{ request()->routeIs('admin.users.*') ? 'text-white' : 'text-brand-300 group-hover:text-white' }}"
                             fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -134,7 +163,7 @@
 
                     <a href="{{ route('admin.courses.index') }}"
                         class="flex items-center gap-3 py-2.5 px-3 rounded-lg text-sm font-medium transition-all duration-200 group
-                                       {{ request()->routeIs('admin.courses.*') ? 'bg-brand-700 text-white shadow-md ring-1 ring-brand-600' : 'text-brand-100 hover:bg-brand-800 hover:text-white hover:translate-x-1' }}">
+                                               {{ request()->routeIs('admin.courses.*') ? 'bg-brand-700 text-white shadow-md ring-1 ring-brand-600' : 'text-brand-100 hover:bg-brand-800 hover:text-white hover:translate-x-1' }}">
                         <svg class="w-5 h-5 flex-shrink-0 {{ request()->routeIs('admin.courses.*') ? 'text-white' : 'text-brand-300 group-hover:text-white' }}"
                             fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -242,7 +271,7 @@
                 <div class="flex items-center">
                     @if(Auth::user()->avatar)
                         <img src="{{ asset('storage/' . Auth::user()->avatar) }}" alt="{{ Auth::user()->name }}"
-                            class="h-9 w-9 rounded-full object-cover ring-2 ring-brand-600">
+                            class="h-9 w-9 rounded-full object-cover ring-2 ring-brand-600" loading="lazy">
                     @else
                         <div
                             class="bg-brand-700 rounded-full h-9 w-9 flex items-center justify-center text-white font-bold ring-2 ring-brand-600">

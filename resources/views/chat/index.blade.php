@@ -128,7 +128,7 @@
                                 <div class="flex-shrink-0 self-end" x-show="message.user_id != {{ Auth::id() }}">
                                     <div class="w-7 h-7 rounded-lg bg-gray-200 shadow-sm overflow-hidden">
                                         <img :src="message.user.avatar ? '{{ asset('storage') }}/' + message.user.avatar : 'https://ui-avatars.com/api/?name=' + message.user.name"
-                                            class="w-full h-full object-cover">
+                                            class="w-full h-full object-cover" loading="lazy">
                                     </div>
                                 </div>
 

@@ -24,7 +24,34 @@
     </script>
 </head>
 
-<body class="h-full font-sans antialiased text-gray-900 flex flex-col overflow-hidden">
+<body class="h-full font-sans antialiased text-gray-900 flex flex-col overflow-hidden" x-data="{ isLoading: false }"
+    @loading-start.window="isLoading = true" @loading-end.window="isLoading = false">
+    <!-- Global Loading Bar -->
+    <div x-show="isLoading" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0"
+        x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-300"
+        x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
+        class="fixed top-0 left-0 right-0 h-1 bg-brand-500 z-[100] shadow-[0_0_10px_rgba(34,197,94,0.5)]">
+        <div class="h-full bg-brand-600 animate-[loading_2s_ease-in-out_infinite]"></div>
+    </div>
+
+    <style>
+        @keyframes loading {
+            0% {
+                width: 0;
+                left: 0;
+            }
+
+            50% {
+                width: 70%;
+                left: 15%;
+            }
+
+            100% {
+                width: 0;
+                left: 100%;
+            }
+        }
+    </style>
 
     <!-- Top Navigation (Fixed) -->
     <div class="flex-shrink-0 z-30 bg-white dark:bg-gray-900 shadow-sm border-b border-gray-200 dark:border-gray-800">

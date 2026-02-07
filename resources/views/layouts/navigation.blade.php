@@ -6,7 +6,7 @@
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center">
                     <a href="{{ route('dashboard') }}" class="flex items-center gap-2">
-                        <img src="{{ asset('images/logo-1.png') }}" alt="Logo" class="h-8 w-auto">
+                        <img src="{{ asset('images/logo-1.png') }}" alt="Logo" class="h-8 w-auto" loading="lazy">
                         <span class="font-bold text-white text-xl">AlumniConnect</span>
                     </a>
                 </div>
@@ -66,7 +66,7 @@
                             class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-brand-100 bg-brand-600 hover:bg-brand-700 focus:outline-none transition ease-in-out duration-150">
                             @if(Auth::user()->avatar)
                                 <img src="{{ asset('storage/' . Auth::user()->avatar) }}" alt=""
-                                    class="w-8 h-8 rounded-full object-cover me-2 border border-brand-400">
+                                    class="w-8 h-8 rounded-full object-cover me-2 border border-brand-400" loading="lazy">
                             @else
                                 <div
                                     class="w-8 h-8 rounded-full bg-brand-500 flex items-center justify-center me-2 border border-brand-400">

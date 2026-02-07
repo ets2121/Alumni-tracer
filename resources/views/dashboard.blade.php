@@ -97,16 +97,19 @@
         </div>
 
         <!-- Discussion Modal -->
-        <div x-show="discussionModal.open" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0"
-            x-transition:enter-end="opacity-100" x-transition:leave="ease-in duration-200"
-            x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
-            @keydown.escape.window="discussionModal.open = false"
-            class="fixed inset-0 z-50 overflow-hidden flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm" x-cloak>
-            <div @click.away="discussionModal.open = false" class="bg-white w-full max-w-2xl h-[90vh] rounded-3xl overflow-hidden shadow-2xl relative">
+        <div x-show="discussionModal.open" x-transition:enter="ease-out duration-300"
+            x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
+            x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100"
+            x-transition:leave-end="opacity-0" @keydown.escape.window="discussionModal.open = false"
+            class="fixed inset-0 z-50 overflow-hidden flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+            x-cloak>
+            <div @click.away="discussionModal.open = false"
+                class="bg-white w-full max-w-2xl h-[90vh] rounded-3xl overflow-hidden shadow-2xl relative">
                 <button @click="discussionModal.open = false"
                     class="absolute top-4 right-4 text-gray-400 hover:text-gray-900 transition-colors bg-gray-100 p-2 rounded-full z-20">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M6 18L18 6M6 6l12 12" />
                     </svg>
                 </button>
                 <div class="h-full" x-html="discussionModal.html" x-ref="discussionModalContent"></div>
@@ -134,6 +137,14 @@
                     },
 
                     init() {
+                        // SWR Logic: Try to load from cache first
+                        const cacheKey = `feed_${this.tab}`;
+                        const cached = sessionStorage.getItem(cacheKey);
+                        if (cached) {
+                            this.feedHtml = cached;
+                            // Still fetch in background to refresh
+                        }
+
                         this.fetchFeed();
 
                         const observer = new IntersectionObserver((entries) => {
@@ -175,7 +186,16 @@
                         this.tab = newTab;
                         this.nextCursor = null;
                         this.hasMore = true;
-                        this.feedHtml = '';
+
+                        // SWR for tab switching
+                        const cacheKey = `feed_${this.tab}`;
+                        const cached = sessionStorage.getItem(cacheKey);
+                        if (cached) {
+                            this.feedHtml = cached;
+                        } else {
+                            this.feedHtml = '';
+                        }
+
                         this.fetchFeed();
 
                         this.$dispatch('feed-tab-synced', newTab);
@@ -206,6 +226,8 @@
 
                             if (!this.nextCursor) {
                                 this.feedHtml = data.html;
+                                // Cache the first page for SWR
+                                sessionStorage.setItem(`feed_${this.tab}`, data.html);
                             } else {
                                 this.feedHtml += data.html;
                             }

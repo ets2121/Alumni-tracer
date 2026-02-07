@@ -115,7 +115,7 @@
                     <div class="aspect-square rounded-lg overflow-hidden border border-gray-100 bg-gray-50 relative group cursor-pointer"
                         @click="$dispatch('open-image-modal', { src: '{{ asset('storage/' . $photo->image_path) }}' })">
                         <img src="{{ asset('storage/' . $photo->image_path) }}"
-                            class="w-full h-full object-cover transition-transform group-hover:scale-110">
+                            class="w-full h-full object-cover transition-transform group-hover:scale-110" loading="lazy">
                         @if($loop->index === 3 && $post->photos->count() > 4)
                             <div class="absolute inset-0 bg-black/50 flex items-center justify-center">
                                 <span class="text-white text-xs font-black">+{{ $post->photos->count() - 3 }}</span>
