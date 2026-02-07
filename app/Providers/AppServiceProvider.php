@@ -19,6 +19,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        if ($this->app->environment('production', 'staging')) {
+            \Illuminate\Support\Facades\URL::forceScheme('https');
+        }
     }
 }
