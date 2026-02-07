@@ -75,7 +75,7 @@
             }
         }
     </style>
-    <div x-data="{ sidebarOpen: false }" class="h-full flex bg-gray-50 dark:bg-black">
+    <div x-data="{ sidebarOpen: false }" class="h-full flex bg-gray-50 dark:bg-dark-bg-deep">
 
         <!-- Mobile Sidebar Backdrop -->
         <div x-show="sidebarOpen" @click="sidebarOpen = false"
@@ -151,7 +151,7 @@
                 @if(Auth::user()->isSystemAdmin())
                     <a href="{{ route('admin.users.index') }}"
                         class="flex items-center gap-3 py-2.5 px-3 rounded-lg text-sm font-medium transition-all duration-200 group
-                                               {{ request()->routeIs('admin.users.*') ? 'bg-brand-700 text-white shadow-md ring-1 ring-brand-600' : 'text-brand-100 hover:bg-brand-800 hover:text-white hover:translate-x-1' }}">
+                                                   {{ request()->routeIs('admin.users.*') ? 'bg-brand-700 text-white shadow-md ring-1 ring-brand-600' : 'text-brand-100 hover:bg-brand-800 hover:text-white hover:translate-x-1' }}">
                         <svg class="w-5 h-5 flex-shrink-0 {{ request()->routeIs('admin.users.*') ? 'text-white' : 'text-brand-300 group-hover:text-white' }}"
                             fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -163,7 +163,7 @@
 
                     <a href="{{ route('admin.courses.index') }}"
                         class="flex items-center gap-3 py-2.5 px-3 rounded-lg text-sm font-medium transition-all duration-200 group
-                                               {{ request()->routeIs('admin.courses.*') ? 'bg-brand-700 text-white shadow-md ring-1 ring-brand-600' : 'text-brand-100 hover:bg-brand-800 hover:text-white hover:translate-x-1' }}">
+                                                   {{ request()->routeIs('admin.courses.*') ? 'bg-brand-700 text-white shadow-md ring-1 ring-brand-600' : 'text-brand-100 hover:bg-brand-800 hover:text-white hover:translate-x-1' }}">
                         <svg class="w-5 h-5 flex-shrink-0 {{ request()->routeIs('admin.courses.*') ? 'text-white' : 'text-brand-300 group-hover:text-white' }}"
                             fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -309,7 +309,7 @@
 
             <!-- Mobile Header with Toggle -->
             <header
-                class="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 lg:hidden flex-shrink-0 relative z-20">
+                class="bg-white dark:bg-dark-bg-elevated border-b border-gray-200 dark:border-dark-border lg:hidden flex-shrink-0 relative z-20">
                 <div class="px-4 py-3 flex justify-between items-center">
                     <div class="flex items-center gap-3">
                         <button @click="sidebarOpen = true"
@@ -336,13 +336,13 @@
 
             <!-- Scrollable Content Area -->
             <main
-                class="flex-1 relative bg-gray-50 dark:bg-black focus:outline-none custom-scrollbar {{ request()->routeIs('admin.chat-management.show') ? 'overflow-hidden flex flex-col' : 'overflow-y-auto' }}">
+                class="flex-1 relative bg-gray-50 dark:bg-dark-bg-deep focus:outline-none custom-scrollbar {{ request()->routeIs('admin.chat-management.show') ? 'overflow-hidden flex flex-col' : 'overflow-y-auto' }}">
 
                 <!-- Sticky Page Header -->
                 @if(isset($header) && !request()->routeIs('admin.chat-management.show'))
                     <div
-                        class="sticky top-0 z-10 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border-b border-gray-200 dark:border-gray-800 px-6 py-4 shadow-sm">
-                        <h1 class="text-xl font-bold text-gray-900 dark:text-white leading-tight">
+                        class="sticky top-0 z-10 bg-white/80 dark:bg-dark-bg-elevated/80 backdrop-blur-md border-b border-gray-200 dark:border-dark-border px-6 py-4 shadow-sm">
+                        <h1 class="text-xl font-bold text-gray-900 dark:text-dark-text-primary leading-tight">
                             {{ $header }}
                         </h1>
                     </div>

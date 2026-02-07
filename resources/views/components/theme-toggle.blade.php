@@ -11,7 +11,7 @@
             }
         }
     }" @click="toggleTheme()"
-    class="relative p-2 rounded-lg transition-all duration-300 hover:bg-gray-100 dark:hover:bg-gray-800 group focus:outline-none focus:ring-2 focus:ring-primary-500"
+    class="relative p-2 rounded-lg transition-all duration-300 hover:bg-gray-100 dark:hover:bg-dark-state-hover group focus:outline-none focus:ring-2 focus:ring-primary-500"
     :title="darkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'">
     <!-- Sun Icon (Visible in Dark Mode) -->
     <svg x-show="darkMode" x-transition:enter="transition duration-300 ease-out"

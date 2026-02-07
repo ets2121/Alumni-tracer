@@ -1,16 +1,16 @@
 <x-layouts.admin>
     <div class="py-6" x-data="preRegManager()" x-init="init()">
         <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
-            <h2 class="text-xl font-bold text-gray-800">Pre-Registration Management</h2>
+            <h2 class="text-xl font-bold text-gray-800 dark:text-dark-text-primary">Pre-Registration Management</h2>
 
             <!-- Search Form -->
             <div class="relative max-w-sm w-full">
                 <div class="flex items-center gap-2">
                     <div class="relative flex-1">
                         <input type="text" x-model.debounce.300ms="search" placeholder="Search by name or email..."
-                            class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-brand-500 focus:border-brand-500 text-sm">
+                            class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-brand-500 focus:border-brand-500 text-sm dark:border-dark-border-subtle dark:bg-dark-bg-subtle dark:text-dark-text-primary">
                         <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                            <svg class="h-4 w-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg class="h-4 w-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24 ">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                             </svg>

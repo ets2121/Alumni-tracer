@@ -1,7 +1,7 @@
 <div
-    class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden mb-4 transition-all hover:shadow-md max-w-lg mx-auto">
+    class="bg-white dark:bg-dark-bg-elevated rounded-xl shadow-sm border border-gray-100 dark:border-dark-border overflow-hidden mb-4 transition-all hover:shadow-md max-w-lg mx-auto">
     <!-- Card Header -->
-    <div class="px-4 py-3 flex items-center justify-between border-b border-gray-50">
+    <div class="px-4 py-3 flex items-center justify-between border-b border-gray-50 dark:border-dark-border">
         <div class="flex items-center space-x-2.5">
             <div class="relative">
                 @if($post->author_avatar)
@@ -34,10 +34,11 @@
                 </div>
             </div>
             <div class="min-w-0">
-                <h4 class="text-[13px] font-bold text-gray-900 truncate tracking-tight">
+                <h4 class="text-[13px] font-bold text-gray-900 dark:text-dark-text-primary truncate tracking-tight">
                     {{ $post->author ?? 'System Admin' }}
                 </h4>
-                <p class="text-[10px] text-gray-400 font-medium">{{ $post->created_at->diffForHumans() }}</p>
+                <p class="text-[10px] text-gray-400 dark:text-dark-text-muted font-medium">
+                    {{ $post->created_at->diffForHumans() }}</p>
             </div>
         </div>
         @if($post->is_pinned)
@@ -95,8 +96,10 @@
             </div>
         @endif
 
-        <h3 class="text-sm font-bold text-gray-900 mb-1.5 leading-snug tracking-tight">{{ $post->title }}</h3>
-        <div class="text-gray-600 text-[13px] mb-3 leading-relaxed prose prose-sm max-w-none prose-p:my-1">
+        <h3 class="text-sm font-bold text-gray-900 dark:text-dark-text-primary mb-1.5 leading-snug tracking-tight">
+            {{ $post->title }}</h3>
+        <div
+            class="text-gray-600 dark:text-dark-text-secondary text-[13px] mb-3 leading-relaxed prose prose-sm max-w-none prose-p:my-1 dark:prose-invert">
             {!! $post->content !!}
         </div>
 
@@ -173,7 +176,8 @@
         }
     }" @comment-added.window="if($event.detail.postId === {{ $post->id }}) commentsCount = $event.detail.count"
         @reaction-toggled.window="if($event.detail.postId === {{ $post->id }}) { likesCount = $event.detail.count; isLiked = $event.detail.userReacted; }">
-        <div class="px-3 py-2 bg-gray-50/50 border-t border-gray-100 flex items-center justify-between">
+        <div
+            class="px-3 py-2 bg-gray-50/50 dark:bg-dark-bg-deep/50 border-t border-gray-100 dark:border-dark-border flex items-center justify-between">
             <div class="flex items-center space-x-4">
                 <button @click="toggleLike()" :class="isLiked ? 'text-red-600' : 'text-gray-400'"
                     class="flex items-center space-x-1.5 hover:text-red-600 transition-all group">

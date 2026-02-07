@@ -1,4 +1,5 @@
-<nav x-data="{ open: false }" class="bg-brand-600 dark: border-b border-brand-500 dark:border-brand-950">
+<nav x-data="{ open: false }"
+    class="bg-brand-600 dark:bg-dark-bg-elevated border-b border-brand-500 dark:border-dark-border">
     <!-- Primary Navigation Menu -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-16">
@@ -130,7 +131,8 @@
     </div>
 
     <!-- Responsive Navigation Menu -->
-    <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden bg-brand-700">
+    <div :class="{'block': open, 'hidden': ! open}"
+        class="hidden sm:hidden bg-brand-700 dark:bg-dark-bg-elevated border-b dark:border-dark-border">
         <div class="pt-2 pb-3 space-y-1">
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')"
                 class="text-brand-100 hover:bg-brand-600 hover:text-white border-l-4 border-transparent hover:border-brand-300">
@@ -148,7 +150,7 @@
         </div>
 
         <!-- Responsive Settings Options -->
-        <div class="pt-4 pb-1 border-t border-brand-600">
+        <div class="pt-4 pb-1 border-t border-brand-600 dark:border-dark-border">
             <div class="px-4">
                 <div class="font-medium text-base text-white">{{ Auth::user()->name }}</div>
                 <div class="font-medium text-sm text-brand-300">{{ Auth::user()->email }}</div>

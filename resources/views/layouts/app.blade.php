@@ -54,18 +54,19 @@
     </style>
 
     <!-- Top Navigation (Fixed) -->
-    <div class="flex-shrink-0 z-30 bg-white dark:bg-gray-900 shadow-sm border-b border-gray-200 dark:border-gray-800">
+    <div
+        class="flex-shrink-0 z-30 bg-white dark:bg-dark-bg-elevated shadow-sm border-b border-gray-200 dark:border-dark-border">
         @include('layouts.navigation')
     </div>
 
     <!-- Main Content Wrapper (Scrollable) -->
     <div
-        class="flex-1 flex flex-col relative bg-gray-50 dark:bg-black {{ request()->routeIs('chat.*', 'dashboard') ? 'overflow-hidden' : 'overflow-y-auto custom-scrollbar' }}">
+        class="flex-1 flex flex-col relative bg-gray-50 dark:bg-dark-bg-deep {{ request()->routeIs('chat.*', 'dashboard') ? 'overflow-hidden' : 'overflow-y-auto custom-scrollbar' }}">
 
         <!-- Page Heading (Sticky) -->
         @isset($header)
             <header
-                class="bg-white/80 dark:bg-gray-900/80 backdrop-blur-md shadow-sm border-b border-gray-100 dark:border-gray-800 sticky top-0 z-20 flex-shrink-0">
+                class="bg-white/80 dark:bg-dark-bg-elevated/80 backdrop-blur-md shadow-sm border-b border-gray-100 dark:border-dark-border sticky top-0 z-20 flex-shrink-0">
                 <div
                     class="{{ request()->routeIs('chat.*', 'dashboard') ? 'max-w-2xl mx-auto py-3 px-4' : 'max-w-7xl mx-auto py-5 px-4 sm:px-6 lg:px-8' }}">
                     {{ $header }}
@@ -81,9 +82,10 @@
 
         <!-- Footer -->
         @unless(request()->routeIs('chat.*', 'dashboard'))
-            <footer class="bg-white border-t border-gray-200 mt-auto flex-shrink-0 dark:bg-dark">
+            <footer
+                class="bg-white border-t border-gray-200 mt-auto flex-shrink-0 dark:bg-dark-bg-deep dark:border-dark-border">
                 <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-                    <p class="text-center text-sm text-gray-500">
+                    <p class="text-center text-sm text-gray-500 dark:text-dark-text-muted">
                         &copy; {{ date('Y') }} {{ config('app.university_name') }}. All rights reserved.
                     </p>
                 </div>

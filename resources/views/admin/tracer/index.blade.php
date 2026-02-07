@@ -1,14 +1,14 @@
 <x-layouts.admin>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+        <h2 class="font-semibold text-xl text-gray-800 dark:text-dark-text-primary leading-tight">
             {{ __('Graduate Tracer Survey Responses') }}
         </h2>
     </x-slot>
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900">
+            <div class="bg-white dark:bg-dark-bg-deep overflow-hidden shadow-sm sm:rounded-lg">
+                <div class="p-6 text-gray-900 dark:text-dark-text-primary">
 
                     <!-- Stats Overview -->
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
@@ -16,14 +16,19 @@
                             <h4 class="text-sm font-bold uppercase tracking-wider opacity-80">Total Responses</h4>
                             <p class="text-4xl font-extrabold mt-2">{{ number_format($totalResponses) }}</p>
                         </div>
-                        <div class="md:col-span-2 bg-white border border-gray-100 rounded-lg p-6 shadow-sm">
-                            <h4 class="text-sm font-bold text-gray-500 uppercase tracking-wider mb-4">Top Participating
+                        <div
+                            class="md:col-span-2 bg-white dark:bg-dark-bg-elevated border border-gray-100 dark:border-dark-border rounded-lg p-6 shadow-sm">
+                            <h4
+                                class="text-sm font-bold text-gray-500 dark:text-dark-text-muted uppercase tracking-wider mb-4">
+                                Top Participating
                                 Departments</h4>
                             <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
                                 @forelse($deptStats as $stat)
-                                    <div class="text-center p-2 bg-gray-50 rounded">
-                                        <div class="text-lg font-bold text-gray-800">{{ $stat->total }}</div>
-                                        <div class="text-xs text-gray-500 truncate" title="{{ $stat->department_name }}">
+                                    <div class="text-center p-2 bg-gray-50 dark:bg-dark-bg-subtle rounded">
+                                        <div class="text-lg font-bold text-gray-800 dark:text-dark-text-primary">
+                                            {{ $stat->total }}</div>
+                                        <div class="text-xs text-gray-500 dark:text-dark-text-muted truncate"
+                                            title="{{ $stat->department_name }}">
                                             {{ $stat->department_name }}
                                         </div>
                                     </div>
@@ -35,14 +40,15 @@
                     </div>
 
                     <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
-                        <h3 class="text-lg font-bold text-gray-700">All Responses</h3>
+                        <h3 class="text-lg font-bold text-gray-700 dark:text-dark-text-primary">All Responses</h3>
 
                         <!-- Advanced Export Form -->
                         <form action="{{ route('admin.tracer.export') }}" method="GET" target="_blank"
-                            class="flex items-center gap-2 bg-gray-50 p-2 rounded-lg border border-gray-200">
-                            <label class="text-xs font-semibold uppercase text-gray-500">Export:</label>
+                            class="flex items-center gap-2 bg-gray-50 dark:bg-dark-bg-subtle p-2 rounded-lg border border-gray-200 dark:border-dark-border">
+                            <label
+                                class="text-xs font-semibold uppercase text-gray-500 dark:text-dark-text-muted">Export:</label>
                             <select name="section"
-                                class="text-sm border-gray-300 rounded-md shadow-sm focus:border-green-500 focus:ring focus:ring-green-200">
+                                class="text-sm border-gray-300 dark:border-dark-border dark:bg-dark-bg-deep dark:text-dark-text-primary rounded-md shadow-sm focus:border-green-500 focus:ring focus:ring-green-200">
                                 <option value="all">Entire Survey</option>
                                 <option value="reference">Reference / Gen. Info</option>
                                 @foreach($sections as $sec)
@@ -50,7 +56,7 @@
                                 @endforeach
                             </select>
                             <select name="format"
-                                class="text-sm border-gray-300 rounded-md shadow-sm focus:border-green-500 focus:ring focus:ring-green-200">
+                                class="text-sm border-gray-300 dark:border-dark-border dark:bg-dark-bg-deep dark:text-dark-text-primary rounded-md shadow-sm focus:border-green-500 focus:ring focus:ring-green-200">
                                 <option value="excel">Excel (.xls)</option>
                                 <option value="csv">CSV (.csv)</option>
                             </select>
@@ -70,11 +76,11 @@
                         <div class="flex-1 min-w-[200px]">
                             <input type="text" name="search" value="{{ request('search') }}"
                                 placeholder="Search by name or email"
-                                class="w-full border-gray-300 rounded-md shadow-sm focus:border-green-500 focus:ring focus:ring-green-200">
+                                class="w-full border-gray-300 dark:border-dark-border dark:bg-dark-bg-subtle dark:text-dark-text-primary rounded-md shadow-sm focus:border-green-500 focus:ring focus:ring-green-200">
                         </div>
                         <div class="w-full sm:w-auto">
                             <select name="department"
-                                class="w-full border-gray-300 rounded-md shadow-sm focus:border-green-500 focus:ring focus:ring-green-200">
+                                class="w-full border-gray-300 dark:border-dark-border dark:bg-dark-bg-subtle dark:text-dark-text-primary rounded-md shadow-sm focus:border-green-500 focus:ring focus:ring-green-200">
                                 <option value="">All Departments</option>
                                 @foreach($departments as $dept)
                                     <option value="{{ $dept }}" {{ request('department') == $dept ? 'selected' : '' }}>
@@ -85,7 +91,7 @@
                         </div>
                         <div class="w-full sm:w-auto">
                             <select name="year"
-                                class="w-full border-gray-300 rounded-md shadow-sm focus:border-green-500 focus:ring focus:ring-green-200">
+                                class="w-full border-gray-300 dark:border-dark-border dark:bg-dark-bg-subtle dark:text-dark-text-primary rounded-md shadow-sm focus:border-green-500 focus:ring focus:ring-green-200">
                                 <option value="">All Years</option>
                                 @foreach(range(date('Y'), 2020) as $year)
                                     <option value="{{ $year }}" {{ request('year') == $year ? 'selected' : '' }}>{{ $year }}
@@ -99,59 +105,64 @@
                                 Filter
                             </button>
                             <a href="{{ route('admin.tracer.index') }}"
-                                class="ml-2 text-gray-600 hover:text-gray-800 underline">Reset</a>
+                                class="ml-2 text-gray-600 dark:text-dark-text-muted hover:text-gray-800 dark:hover:text-dark-text-secondary underline">Reset</a>
                         </div>
                     </form>
 
                     <!-- Table -->
                     <div class="overflow-x-auto">
-                        <table class="min-w-full divide-y divide-gray-200">
-                            <thead class="bg-gray-50">
+                        <table class="min-w-full divide-y divide-gray-200 dark:divide-dark-border">
+                            <thead class="bg-gray-50 dark:bg-dark-bg-subtle">
                                 <tr>
                                     <th
-                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-dark-text-muted uppercase tracking-wider">
                                         Alumni</th>
                                     <th
-                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-dark-text-muted uppercase tracking-wider">
                                         Department</th>
                                     <th
-                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-dark-text-muted uppercase tracking-wider">
                                         Date Submitted</th>
                                     <th
-                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-dark-text-muted uppercase tracking-wider">
                                         Actions</th>
                                 </tr>
                             </thead>
-                            <tbody class="bg-white divide-y divide-gray-200">
+                            <tbody class="bg-white dark:bg-dark-bg divide-y divide-gray-200 dark:divide-dark-border">
                                 @forelse($responses as $response)
                                     <tr>
                                         <td class="px-6 py-4 whitespace-nowrap">
                                             <div class="flex items-center">
                                                 <div class="ml-0">
-                                                    <div class="text-sm font-medium text-gray-900">
+                                                    <div
+                                                        class="text-sm font-medium text-gray-900 dark:text-dark-text-primary">
                                                         {{ $response->user->name }}
                                                     </div>
-                                                    <div class="text-sm text-gray-500">{{ $response->user->email }}</div>
+                                                    <div class="text-sm text-gray-500 dark:text-dark-text-muted">
+                                                        {{ $response->user->email }}</div>
                                                 </div>
                                             </div>
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap">
                                             <span
-                                                class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
+                                                class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300">
                                                 {{ $response->department_name ?? 'N/A' }}
                                             </span>
                                         </td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        <td
+                                            class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-dark-text-secondary">
                                             {{ $response->created_at->format('M d, Y') }}
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                             <div class="flex items-center gap-3">
                                                 <a href="{{ route('admin.tracer.show', $response->id) }}"
-                                                    class="text-indigo-600 hover:text-indigo-900" title="View Details">
+                                                    class="text-indigo-600 dark:text-indigo-400 hover:text-indigo-900 dark:hover:text-indigo-300 transition-colors"
+                                                    title="View Details">
                                                     View
                                                 </a>
                                                 <a href="{{ route('admin.tracer.pdf', $response->id) }}" target="_blank"
-                                                    class="text-gray-600 hover:text-gray-900" title="Print / PDF">
+                                                    class="text-gray-600 dark:text-dark-text-muted hover:text-gray-900 dark:hover:text-dark-text-secondary transition-colors"
+                                                    title="Print / PDF">
                                                     PDF
                                                 </a>
                                                 <a href="{{ route('admin.tracer.export.individual', ['response' => $response->id, 'format' => 'excel']) }}"
@@ -173,7 +184,9 @@
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="4" class="px-6 py-4 text-center text-gray-500">No responses found.</td>
+                                        <td colspan="4"
+                                            class="px-6 py-4 text-center text-gray-500 dark:text-dark-text-muted italic">No
+                                            responses found.</td>
                                     </tr>
                                 @endforelse
                             </tbody>

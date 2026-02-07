@@ -1,14 +1,15 @@
 <div id="alumni-container" class="space-y-6">
-    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+    <div
+        class="bg-white dark:bg-dark-bg-elevated rounded-xl shadow-sm border border-gray-100 dark:border-dark-border p-6">
         <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-gray-200">
-                <thead class="bg-gray-50">
+            <table class="min-w-full divide-y divide-gray-200 dark:divide-dark-border">
+                <thead class="bg-gray-50 dark:bg-dark-bg-subtle">
                     <tr>
                         <th
                             class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider whitespace-nowrap">
                             ID</th>
                         <th
-                            class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider whitespace-nowrap">
+                            class="px-6 py-3 text-left text-xs font-semibold text-gray-500 dark:text-dark-text-muted uppercase tracking-wider whitespace-nowrap">
                             <button @click="sortBy('name')"
                                 class="flex items-center gap-1 hover:text-brand-600 uppercase">
                                 Name
@@ -18,29 +19,30 @@
                             </button>
                         </th>
                         <th
-                            class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider whitespace-nowrap">
+                            class="px-6 py-3 text-left text-xs font-semibold text-gray-500 dark:text-dark-text-muted uppercase tracking-wider whitespace-nowrap">
                             Course</th>
                         <th
-                            class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider whitespace-nowrap">
+                            class="px-6 py-3 text-left text-xs font-semibold text-gray-500 dark:text-dark-text-muted uppercase tracking-wider whitespace-nowrap">
                             Year Graduated</th>
                         <th
-                            class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider whitespace-nowrap">
+                            class="px-6 py-3 text-left text-xs font-semibold text-gray-500 dark:text-dark-text-muted uppercase tracking-wider whitespace-nowrap">
                             Current Work</th>
                         <th
-                            class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider whitespace-nowrap">
+                            class="px-6 py-3 text-left text-xs font-semibold text-gray-500 dark:text-dark-text-muted uppercase tracking-wider whitespace-nowrap">
                             Contact Number</th>
                         <th
-                            class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider whitespace-nowrap">
+                            class="px-6 py-3 text-left text-xs font-semibold text-gray-500 dark:text-dark-text-muted uppercase tracking-wider whitespace-nowrap">
                             Status</th>
                         <th
-                            class="sticky right-0 top-0 bg-gray-50 z-10 px-6 py-3 text-right text-xs font-semibold text-gray-500 uppercase tracking-wider shadow-[-4px_0_8px_-2px_rgba(0,0,0,0.05)]">
+                            class="sticky right-0 top-0 bg-gray-50 dark:bg-dark-bg-subtle z-10 px-6 py-3 text-right text-xs font-semibold text-gray-500 dark:text-dark-text-muted uppercase tracking-wider shadow-[-4px_0_8px_-2px_rgba(0,0,0,0.05)]">
                             Actions</th>
                     </tr>
                 </thead>
-                <tbody class="bg-white divide-y divide-gray-100">
+                <tbody class="bg-white dark:bg-dark-bg divide-y divide-gray-100 dark:divide-dark-border">
                     @forelse($alumni as $user)
-                        <tr class="hover:bg-gray-50 transition-colors group">
-                            <td class="px-6 py-3 whitespace-nowrap text-sm text-gray-500 font-mono">
+                        <tr class="hover:bg-gray-50 dark:hover:bg-dark-state-hover transition-colors group">
+                            <td
+                                class="px-6 py-3 whitespace-nowrap text-sm text-gray-500 dark:text-dark-text-muted font-mono">
                                 #{{ str_pad($user->id, 5, '0', STR_PAD_LEFT) }}</td>
                             <td class="px-6 py-3 whitespace-nowrap">
                                 <div class="flex items-center">
@@ -50,7 +52,7 @@
                                                 src="{{ asset('storage/' . $user->avatar) }}" alt="">
                                         @else
                                             <div
-                                                class="w-8 h-8 rounded-full bg-brand-50 flex items-center justify-center text-brand-300">
+                                                class="w-8 h-8 rounded-full bg-brand-50 dark:bg-brand-900/20 flex items-center justify-center text-brand-300 dark:text-brand-400">
                                                 <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
                                                     <path
                                                         d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
@@ -59,33 +61,34 @@
                                         @endif
                                     </div>
                                     <div
-                                        class="text-sm font-bold text-gray-900 group-hover:text-brand-600 transition-colors">
+                                        class="text-sm font-bold text-gray-900 dark:text-dark-text-primary group-hover:text-brand-600 transition-colors">
                                         {{ $user->name }}
                                     </div>
                                 </div>
                             </td>
                             <td class="px-6 py-3 whitespace-nowrap text-sm"><span
-                                    class="px-2 py-0.5 text-[10px] font-bold rounded-md bg-brand-50 text-brand-700 uppercase">{{ $user->alumniProfile->course->code ?? 'N/A' }}</span>
+                                    class="px-2 py-0.5 text-[10px] font-bold rounded-md bg-brand-50 dark:bg-brand-900/30 text-brand-700 dark:text-brand-300 uppercase">{{ $user->alumniProfile->course->code ?? 'N/A' }}</span>
                             </td>
-                            <td class="px-6 py-3 whitespace-nowrap text-sm text-gray-600 font-medium">
+                            <td
+                                class="px-6 py-3 whitespace-nowrap text-sm text-gray-600 dark:text-dark-text-secondary font-medium">
                                 {{ $user->alumniProfile->batch_year ?? 'N/A' }}
                             </td>
-                            <td class="px-6 py-3 whitespace-nowrap text-sm text-gray-500">
+                            <td class="px-6 py-3 whitespace-nowrap text-sm text-gray-500 dark:text-dark-text-muted">
                                 {{ $user->alumniProfile->position ?? 'Not specified' }}
                             </td>
-                            <td class="px-6 py-3 whitespace-nowrap text-sm text-gray-500">
+                            <td class="px-6 py-3 whitespace-nowrap text-sm text-gray-500 dark:text-dark-text-muted">
                                 {{ $user->alumniProfile->contact_number ?? 'N/A' }}
                             </td>
                             <td class="px-6 py-3 whitespace-nowrap"><span
                                     class="px-2.5 py-1 text-[10px] font-black rounded-full bg-green-100 text-green-700 uppercase tracking-wider">Active</span>
                             </td>
                             <td
-                                class="sticky right-0 bg-white group-hover:bg-gray-50 z-10 px-6 py-3 whitespace-nowrap text-right text-sm shadow-[-4px_0_8px_-2px_rgba(0,0,0,0.05)]">
+                                class="sticky right-0 bg-white dark:bg-dark-bg-elevated group-hover:bg-gray-50 dark:group-hover:bg-dark-state-hover z-10 px-6 py-3 whitespace-nowrap text-right text-sm shadow-[-4px_0_8px_-2px_rgba(0,0,0,0.05)]">
                                 <div
                                     class="flex items-center justify-end gap-2 opacity-80 group-hover:opacity-100 transition-opacity">
                                     <button
                                         @click="openModal('{{ route('admin.alumni.show', $user->id) }}', 'Alumni Profile Detail')"
-                                        class="p-1.5 text-gray-400 hover:text-brand-600 hover:bg-brand-50 rounded-lg transition-all"
+                                        class="p-1.5 text-gray-400 dark:text-dark-text-muted hover:text-brand-600 dark:hover:text-brand-400 hover:bg-brand-50 dark:hover:bg-brand-900/20 rounded-lg transition-all"
                                         title="View Profile">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -96,7 +99,7 @@
                                     </button>
                                     <button
                                         @click="openModal('{{ route('admin.alumni.edit', $user->id) }}', 'Edit Alumni Record')"
-                                        class="p-1.5 text-gray-400 hover:text-brand-600 hover:bg-brand-50 rounded-lg transition-all"
+                                        class="p-1.5 text-gray-400 dark:text-dark-text-muted hover:text-brand-600 dark:hover:text-brand-400 hover:bg-brand-50 dark:hover:bg-brand-900/20 rounded-lg transition-all"
                                         title="Edit Record">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -104,14 +107,14 @@
                                         </svg>
                                     </button>
                                     <button @click="$dispatch('open-confirmation-modal', { 
-                                                title: 'Delete Alumni Record', 
-                                                message: 'Are you sure you want to delete {{ $user->name }}? This action cannot be undone.', 
-                                                action: '{{ route('admin.alumni.destroy', $user->id) }}', 
-                                                method: 'DELETE', 
-                                                danger: true,
-                                                confirmText: 'Delete Record' 
-                                            })"
-                                        class="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all"
+                                                        title: 'Delete Alumni Record', 
+                                                        message: 'Are you sure you want to delete {{ $user->name }}? This action cannot be undone.', 
+                                                        action: '{{ route('admin.alumni.destroy', $user->id) }}', 
+                                                        method: 'DELETE', 
+                                                        danger: true,
+                                                        confirmText: 'Delete Record' 
+                                                    })"
+                                        class="p-1.5 text-gray-400 dark:text-dark-text-muted hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-all"
                                         title="Delete Record">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -123,7 +126,9 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="8" class="px-6 py-12 text-center text-gray-500 italic bg-gray-50/50 rounded-xl">No
+                            <td colspan="8"
+                                class="px-6 py-12 text-center text-gray-500 dark:text-dark-text-muted italic bg-gray-50/50 dark:bg-dark-bg-subtle/50 rounded-xl">
+                                No
                                 active alumni records found.</td>
                         </tr>
                     @endforelse

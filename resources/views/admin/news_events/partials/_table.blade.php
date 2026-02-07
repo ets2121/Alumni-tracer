@@ -3,32 +3,32 @@
         <thead>
             <tr>
                 <th
-                    class="px-5 py-3 border-b-2 border-gray-200 bg-gray-50 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">
+                    class="px-5 py-3 border-b-2 border-gray-200 dark:border-dark-border bg-gray-50 dark:bg-dark-bg-subtle text-left text-xs font-bold text-gray-500 dark:text-dark-text-muted uppercase tracking-wider">
                     Content</th>
                 <th
-                    class="px-5 py-3 border-b-2 border-gray-200 bg-gray-50 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">
+                    class="px-5 py-3 border-b-2 border-gray-200 dark:border-dark-border bg-gray-50 dark:bg-dark-bg-subtle text-left text-xs font-bold text-gray-500 dark:text-dark-text-muted uppercase tracking-wider">
                     Type</th>
                 <th
                     class="px-5 py-3 border-b-2 border-gray-200 bg-gray-50 text-center text-xs font-bold text-gray-500 uppercase tracking-wider">
                     Pinned</th>
                 <th
-                    class="px-5 py-3 border-b-2 border-gray-200 bg-gray-50 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">
+                    class="px-5 py-3 border-b-2 border-gray-200 dark:border-dark-border bg-gray-50 dark:bg-dark-bg-subtle text-left text-xs font-bold text-gray-500 dark:text-dark-text-muted uppercase tracking-wider">
                     Details</th>
                 <th
                     class="px-5 py-3 border-b-2 border-gray-200 bg-gray-50 text-center text-xs font-bold text-gray-500 uppercase tracking-wider">
                     Engagement</th>
                 <th
-                    class="px-5 py-3 border-b-2 border-gray-200 bg-gray-50 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">
+                    class="px-5 py-3 border-b-2 border-gray-200 dark:border-dark-border bg-gray-50 dark:bg-dark-bg-subtle text-left text-xs font-bold text-gray-500 dark:text-dark-text-muted uppercase tracking-wider">
                     Posted</th>
                 <th
-                    class="sticky right-0 top-0 bg-gray-50 z-10 px-5 py-3 border-b-2 border-gray-200 text-right text-xs font-bold text-gray-500 uppercase tracking-wider shadow-[-4px_0_8px_-2px_rgba(0,0,0,0.05)]">
+                    class="sticky right-0 top-0 bg-gray-50 dark:bg-dark-bg-subtle z-10 px-5 py-3 border-b-2 border-gray-200 dark:border-dark-border text-right text-xs font-bold text-gray-500 dark:text-dark-text-muted uppercase tracking-wider shadow-[-4px_0_8px_-2px_rgba(0,0,0,0.05)]">
                     Actions</th>
             </tr>
         </thead>
-        <tbody class="divide-y divide-gray-100">
+        <tbody class="divide-y divide-gray-100 dark:divide-dark-border">
             @forelse($newsEvents as $post)
-                <tr class="hover:bg-gray-50 transition-colors group">
-                    <td class="px-5 py-4 bg-white text-sm">
+                <tr class="hover:bg-gray-50 dark:hover:bg-dark-state-hover transition-colors group">
+                    <td class="px-5 py-4 bg-white dark:bg-dark-bg text-sm">
                         <div class="flex items-center">
                             <div class="flex-shrink-0 w-10 h-10 mr-4 relative">
                                 @if($post->image_path)
@@ -36,7 +36,7 @@
                                         src="{{ asset('storage/' . $post->image_path) }}" alt="" />
                                 @else
                                     <div
-                                        class="w-full h-full rounded-lg bg-gray-100 flex items-center justify-center text-gray-400">
+                                        class="w-full h-full rounded-lg bg-gray-100 dark:bg-dark-bg-subtle flex items-center justify-center text-gray-400 dark:text-dark-text-muted">
                                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                 d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
@@ -55,26 +55,26 @@
                             </div>
                             <div>
                                 <a href="{{ route('admin.news_events.show', $post->id) }}"
-                                    class="font-bold text-gray-900 line-clamp-1 text-sm hover:text-brand-600 transition-colors">{{ $post->title }}</a>
-                                <div class="text-[10px] text-gray-500 line-clamp-1">
+                                    class="font-bold text-gray-900 dark:text-dark-text-primary line-clamp-1 text-sm hover:text-brand-600 transition-colors">{{ $post->title }}</a>
+                                <div class="text-[10px] text-gray-500 dark:text-dark-text-muted line-clamp-1">
                                     {{ Str::limit(strip_tags($post->content), 50) }}
                                 </div>
                             </div>
                         </div>
                     </td>
-                    <td class="px-5 py-4 bg-white text-sm">
+                    <td class="px-5 py-4 bg-white dark:bg-dark-bg text-sm">
                         @if($post->type === 'news')
                             <span
-                                class="px-2.5 py-0.5 text-[10px] font-bold rounded-full bg-blue-50 text-blue-600 border border-blue-100 uppercase tracking-wide">News</span>
+                                class="px-2.5 py-0.5 text-[10px] font-bold rounded-full bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-300 border border-blue-100 dark:border-blue-800 uppercase tracking-wide">News</span>
                         @elseif($post->type === 'event')
                             <span
-                                class="px-2.5 py-0.5 text-[10px] font-bold rounded-full bg-purple-50 text-purple-600 border border-purple-100 uppercase tracking-wide">Event</span>
+                                class="px-2.5 py-0.5 text-[10px] font-bold rounded-full bg-purple-50 dark:bg-purple-900/30 text-purple-600 dark:text-purple-300 border border-purple-100 dark:border-purple-800 uppercase tracking-wide">Event</span>
                         @elseif($post->type === 'announcement')
                             <span
-                                class="px-2.5 py-0.5 text-[10px] font-bold rounded-full bg-amber-50 text-amber-600 border border-amber-100 uppercase tracking-wide">Announce</span>
+                                class="px-2.5 py-0.5 text-[10px] font-bold rounded-full bg-amber-50 dark:bg-amber-900/30 text-amber-600 dark:text-amber-300 border border-amber-100 dark:border-amber-800 uppercase tracking-wide">Announce</span>
                         @elseif($post->type === 'job')
                             <span
-                                class="px-2.5 py-0.5 text-[10px] font-bold rounded-full bg-blue-50 text-blue-600 border border-blue-100 uppercase tracking-wide">Job
+                                class="px-2.5 py-0.5 text-[10px] font-bold rounded-full bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-300 border border-blue-100 dark:border-blue-800 uppercase tracking-wide">Job
                                 Post</span>
                         @endif
                     </td>
@@ -90,7 +90,7 @@
                             <span class="text-gray-300">-</span>
                         @endif
                     </td>
-                    <td class="px-5 py-4 bg-white text-sm">
+                    <td class="px-5 py-4 bg-white dark:bg-dark-bg text-sm">
                         <div class="flex flex-col gap-1">
                             @if($post->type === 'event')
                                 <div class="flex items-center text-[10px] text-gray-600 font-medium">
@@ -141,36 +141,40 @@
                         <div class="flex items-center justify-center gap-4">
                             <div class="flex items-center gap-1.5"
                                 title="{{ number_format($post->reactions_count) }} Reactions">
-                                <div class="w-7 h-7 rounded-lg bg-red-50 flex items-center justify-center text-red-500">
+                                <div
+                                    class="w-7 h-7 rounded-lg bg-red-50 dark:bg-red-900/20 flex items-center justify-center text-red-500">
                                     <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
                                         <path
                                             d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
                                     </svg>
                                 </div>
                                 <span
-                                    class="text-xs font-bold text-gray-700">{{ number_format($post->reactions_count) }}</span>
+                                    class="text-xs font-bold text-gray-700 dark:text-dark-text-secondary">{{ number_format($post->reactions_count) }}</span>
                             </div>
                             <div class="flex items-center gap-1.5"
                                 title="{{ number_format($post->comments_count) }} Comments">
-                                <div class="w-7 h-7 rounded-lg bg-blue-50 flex items-center justify-center text-blue-500">
+                                <div
+                                    class="w-7 h-7 rounded-lg bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center text-blue-500">
                                     <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
                                         <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v10z" />
                                     </svg>
                                 </div>
                                 <span
-                                    class="text-xs font-bold text-gray-700">{{ number_format($post->comments_count) }}</span>
+                                    class="text-xs font-bold text-gray-700 dark:text-dark-text-secondary">{{ number_format($post->comments_count) }}</span>
                             </div>
                         </div>
                     </td>
-                    <td class="px-5 py-4 bg-white text-sm text-gray-500 whitespace-nowrap">
+                    <td
+                        class="px-5 py-4 bg-white dark:bg-dark-bg text-sm text-gray-500 dark:text-dark-text-muted whitespace-nowrap">
                         <div class="flex flex-col">
                             <span
-                                class="text-[11px] font-bold text-gray-700">{{ $post->created_at->format('M d, Y') }}</span>
-                            <span class="text-[9px] text-gray-400">{{ $post->created_at->diffForHumans() }}</span>
+                                class="text-[11px] font-bold text-gray-700 dark:text-dark-text-secondary">{{ $post->created_at->format('M d, Y') }}</span>
+                            <span
+                                class="text-[9px] text-gray-400 dark:text-dark-text-muted">{{ $post->created_at->diffForHumans() }}</span>
                         </div>
                     </td>
                     <td
-                        class="sticky right-0 bg-white group-hover:bg-gray-50 shadow-[-4px_0_8px_-2px_rgba(0,0,0,0.05)] px-5 py-4 text-sm text-right z-10">
+                        class="sticky right-0 bg-white dark:bg-dark-bg-elevated group-hover:bg-gray-50 dark:group-hover:bg-dark-state-hover shadow-[-4px_0_8px_-2px_rgba(0,0,0,0.05)] px-5 py-4 text-sm text-right z-10">
                         <div
                             class="flex items-center justify-end gap-2 opacity-80 group-hover:opacity-100 transition-opacity">
                             @if($post->type === 'event')
@@ -203,13 +207,13 @@
                                 </svg>
                             </button>
                             <button @click="$dispatch('open-confirmation-modal', { 
-                                                        title: 'Delete Publication', 
-                                                        message: 'Are you sure you want to delete {{ addslashes($post->title) }}? This action cannot be undone.', 
-                                                        action: '{{ route('admin.news_events.destroy', $post->id) }}', 
-                                                        method: 'DELETE', 
-                                                        danger: true, 
-                                                        confirmText: 'Delete' 
-                                                    })"
+                                                            title: 'Delete Publication', 
+                                                            message: 'Are you sure you want to delete {{ addslashes($post->title) }}? This action cannot be undone.', 
+                                                            action: '{{ route('admin.news_events.destroy', $post->id) }}', 
+                                                            method: 'DELETE', 
+                                                            danger: true, 
+                                                            confirmText: 'Delete' 
+                                                        })"
                                 class="p-1.5 text-gray-400 hover:bg-red-50 hover:text-red-600 rounded-lg transition-colors"
                                 title="Delete">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -223,16 +227,20 @@
                 </tr>
             @empty
                 <tr>
-                    <td colspan="6" class="px-5 py-20 border-b border-gray-100 bg-white text-center">
-                        <div class="flex flex-col items-center justify-center text-gray-500">
-                            <div class="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mb-4">
-                                <svg class="w-8 h-8 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <td colspan="6"
+                        class="px-5 py-20 border-b border-gray-100 dark:border-dark-border bg-white dark:bg-dark-bg text-center">
+                        <div class="flex flex-col items-center justify-center text-gray-500 dark:text-dark-text-muted">
+                            <div
+                                class="w-16 h-16 bg-gray-50 dark:bg-dark-bg-subtle rounded-full flex items-center justify-center mb-4">
+                                <svg class="w-8 h-8 text-gray-300 dark:text-dark-text-disabled" fill="none"
+                                    stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
                                 </svg>
                             </div>
-                            <h3 class="text-lg font-medium text-gray-900">No content found</h3>
-                            <p class="text-sm text-gray-400 mt-1">Get started by creating a new post.</p>
+                            <h3 class="text-lg font-medium text-gray-900 dark:text-dark-text-primary">No content found</h3>
+                            <p class="text-sm text-gray-400 dark:text-dark-text-muted mt-1">Get started by creating a new
+                                post.</p>
                         </div>
                     </td>
                 </tr>
