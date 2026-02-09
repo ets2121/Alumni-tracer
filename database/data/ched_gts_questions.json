@@ -1,0 +1,362 @@
+{
+    "form_title": "GRADUATE TRACER SURVEY (GTS)",
+    "sections": [
+        {
+            "id": "A",
+            "title": "SECTION A: GENERAL INFORMATION",
+            "questions": [
+                {
+                    "id": "Q1",
+                    "text": "Name",
+                    "type": "text",
+                    "required": true
+                },
+                {
+                    "id": "Q2",
+                    "text": "Permanent Address",
+                    "type": "text",
+                    "required": true
+                },
+                {
+                    "id": "Q3",
+                    "text": "E-mail Address",
+                    "type": "email",
+                    "required": true
+                },
+                {
+                    "id": "Q4",
+                    "text": "Telephone or Contact Number(s)",
+                    "type": "text",
+                    "required": false
+                },
+                {
+                    "id": "Q5",
+                    "text": "Mobile Number",
+                    "type": "text",
+                    "required": true
+                },
+                {
+                    "id": "Q6",
+                    "text": "Civil Status",
+                    "type": "radio",
+                    "options": [
+                        "Single",
+                        "Married",
+                        "Separated",
+                        "Widow or Widower",
+                        "Single Parent"
+                    ],
+                    "required": true
+                },
+                {
+                    "id": "Q7",
+                    "text": "Sex",
+                    "type": "radio",
+                    "options": [
+                        "Male",
+                        "Female"
+                    ],
+                    "required": true
+                },
+                {
+                    "id": "Q8",
+                    "text": "Birthday",
+                    "type": "date_parts",
+                    "required": true
+                },
+                {
+                    "id": "Q9",
+                    "text": "Region of Origin",
+                    "type": "radio",
+                    "options": [
+                        "Region 1",
+                        "Region 2",
+                        "Region 3",
+                        "Region 4",
+                        "Region 5",
+                        "Region 6",
+                        "Region 7",
+                        "Region 8",
+                        "Region 9",
+                        "Region 10",
+                        "Region 11",
+                        "Region 12",
+                        "NCR",
+                        "CAR",
+                        "ARMM",
+                        "CARAGA"
+                    ],
+                    "required": true
+                },
+                {
+                    "id": "Q10",
+                    "text": "Province",
+                    "type": "text",
+                    "required": true
+                },
+                {
+                    "id": "Q11",
+                    "text": "Location of Residence",
+                    "type": "radio",
+                    "options": [
+                        "City",
+                        "Municipality"
+                    ],
+                    "required": true
+                }
+            ]
+        },
+        {
+            "id": "B",
+            "title": "SECTION B: EDUCATIONAL BACKGROUND",
+            "questions": [
+                {
+                    "id": "Q12",
+                    "text": "Educational Attainment (Baccalaureate Degree only)",
+                    "type": "dynamic_table",
+                    "columns": [
+                        "Degree(s) & Specialization(s)",
+                        "College or University",
+                        "Year Graduated",
+                        "Honor(s) or Award(s) Received"
+                    ]
+                },
+                {
+                    "id": "Q13",
+                    "text": "Professional Examination(s) Passed",
+                    "type": "dynamic_table",
+                    "columns": [
+                        "Name of Examination",
+                        "Date Taken",
+                        "Rating"
+                    ]
+                },
+                {
+                    "id": "Q14",
+                    "text": "Reason(s) for taking the course(s) or pursuing degree(s)",
+                    "type": "checkbox_matrix",
+                    "headers": [
+                        "Undergraduate/AB/BS",
+                        "Graduate/MS/MA/PhD"
+                    ],
+                    "options": [
+                        "High grades in the course or subject area(s) related to the course",
+                        "Good grades in high school",
+                        "Influence of parents or relatives",
+                        "Peer Influence",
+                        "Inspired by a role model",
+                        "Strong passion for the profession",
+                        "Prospect for immediate employment",
+                        "Status or prestige of the profession",
+                        "Availability of course offering in chosen institution",
+                        "Prospect of career advancement",
+                        "Affordable for the family",
+                        "Prospect of attractive compensation",
+                        "Opportunity for employment abroad",
+                        "No particular choice or no better idea",
+                        "Others"
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "C",
+            "title": "SECTION C: TRAINING(S)/ADVANCE STUDIES ATTENDED AFTER COLLEGE",
+            "questions": [
+                {
+                    "id": "Q15a",
+                    "text": "List down all professional or work-related training program(s)",
+                    "type": "dynamic_table",
+                    "columns": [
+                        "Title of Training or Advance Study",
+                        "Duration and Credits Earned",
+                        "Name of Training Institution/College/University"
+                    ]
+                },
+                {
+                    "id": "Q15b",
+                    "text": "What made you pursue advance studies?",
+                    "type": "radio",
+                    "options": [
+                        "For promotion",
+                        "For professional development",
+                        "Others"
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "D",
+            "title": "SECTION D: EMPLOYMENT DATA",
+            "questions": [
+                {
+                    "id": "Q16",
+                    "text": "Are you presently employed?",
+                    "type": "radio",
+                    "options": [
+                        "Yes",
+                        "No",
+                        "Never Employed"
+                    ],
+                    "logic": "Branching"
+                },
+                {
+                    "id": "Q17",
+                    "text": "Please state reason(s) why you are not yet employed",
+                    "type": "checkbox",
+                    "options": [
+                        "Advance or further study",
+                        "Family concern and decided not to find a job",
+                        "Health-related reason(s)",
+                        "Lack of work experience",
+                        "No job opportunity",
+                        "Did not look for a job",
+                        "Others"
+                    ],
+                    "condition": "Q16 == No/Never"
+                },
+                {
+                    "id": "Q18",
+                    "text": "Present Employment Status",
+                    "type": "radio",
+                    "options": [
+                        "Regular or Permanent",
+                        "Temporary",
+                        "Casual",
+                        "Contractual",
+                        "Self-employed"
+                    ],
+                    "condition": "Q16 == Yes"
+                },
+                {
+                    "id": "Q19",
+                    "text": "Present occupation",
+                    "type": "text",
+                    "condition": "Q16 == Yes"
+                },
+                {
+                    "id": "Q20",
+                    "text": "Major line of business",
+                    "type": "radio",
+                    "condition": "Q16 == Yes"
+                },
+                {
+                    "id": "Q21",
+                    "text": "Place of work",
+                    "type": "radio",
+                    "options": [
+                        "Local",
+                        "Abroad"
+                    ],
+                    "condition": "Q16 == Yes"
+                },
+                {
+                    "id": "Q22",
+                    "text": "Is this your first job after college?",
+                    "type": "radio",
+                    "options": [
+                        "Yes",
+                        "No"
+                    ],
+                    "condition": "Q16 == Yes"
+                },
+                {
+                    "id": "Q23",
+                    "text": "What are your reason(s) for staying on the job?",
+                    "type": "checkbox",
+                    "condition": "Q22 == Yes"
+                },
+                {
+                    "id": "Q24",
+                    "text": "Is your first job related to the course you took up in college?",
+                    "type": "radio",
+                    "condition": "Q22 == Yes"
+                },
+                {
+                    "id": "Q25",
+                    "text": "Reasons for accepting the job",
+                    "type": "checkbox",
+                    "condition": "Q24 == Yes"
+                },
+                {
+                    "id": "Q26",
+                    "text": "Reason(s) for changing job",
+                    "type": "checkbox",
+                    "condition": "Q22 == No"
+                },
+                {
+                    "id": "Q27",
+                    "text": "How long did you stay in your first job?",
+                    "type": "radio",
+                    "condition": "Q22 == No"
+                },
+                {
+                    "id": "Q28",
+                    "text": "How did you find your first job?",
+                    "type": "radio"
+                },
+                {
+                    "id": "Q29",
+                    "text": "How long did it take you to land your first job?",
+                    "type": "radio"
+                },
+                {
+                    "id": "Q30",
+                    "text": "Job Level Position",
+                    "type": "matrix_radio",
+                    "rows": [
+                        "Rank or Clerical",
+                        "Professional, Technical or Supervisory",
+                        "Managerial or Executive",
+                        "Self-employed"
+                    ],
+                    "columns": [
+                        "30.1. First Job",
+                        "30.2. Current or Present Job"
+                    ]
+                },
+                {
+                    "id": "Q31",
+                    "text": "Initial gross monthly earning",
+                    "type": "radio"
+                },
+                {
+                    "id": "Q32",
+                    "text": "Curriculum relevance",
+                    "type": "radio",
+                    "options": [
+                        "Yes",
+                        "No"
+                    ]
+                },
+                {
+                    "id": "Q33",
+                    "text": "Competencies learned in college",
+                    "type": "checkbox",
+                    "condition": "Q32 == Yes"
+                },
+                {
+                    "id": "Q34",
+                    "text": "List down suggestions",
+                    "type": "textarea"
+                }
+            ]
+        },
+        {
+            "id": "REF",
+            "title": "REFERRAL SECTION",
+            "questions": [
+                {
+                    "id": "REF",
+                    "text": "List other graduates from your institution",
+                    "type": "dynamic_table",
+                    "columns": [
+                        "Name",
+                        "Full Address",
+                        "Contact Number"
+                    ]
+                }
+            ]
+        }
+    ]
+}

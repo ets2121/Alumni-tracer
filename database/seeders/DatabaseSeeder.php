@@ -19,7 +19,7 @@ class DatabaseSeeder extends Seeder
             CourseSeeder::class,
             AdminSeeder::class,
             AlumniSeeder::class,
-            EvaluationSeeder::class,
+            EvaluationDemoSeeder::class,
         ]);
 
         // Create a predictable test alumni user for quick dev access

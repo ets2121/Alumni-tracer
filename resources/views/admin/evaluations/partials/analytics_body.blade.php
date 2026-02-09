@@ -237,7 +237,7 @@
 
         <!-- Questions Grid -->
         <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6 print:block print:w-full">
-            <template x-for="(item, index) in analytics" :key="item.id">
+            <template x-for="(item, index) in analytics" :key="item.id || index">
                 <div x-data="{ expanded: true }"
                     class="bg-white rounded-2xl shadow-[0_2px_10px_-2px_rgba(0,0,0,0.05)] border border-gray-100 flex flex-col break-inside-avoid h-full transition-all duration-300 hover:shadow-md">
 
@@ -300,7 +300,7 @@
                                     class="w-full h-full overflow-hidden flex flex-col">
                                     <ul x-show="item.text_answers && item.text_answers.length > 0"
                                         class="space-y-2 overflow-y-auto max-h-full scrollbar-thin scrollbar-track-transparent scrollbar-thumb-gray-200 pr-1">
-                                        <template x-for="ans in item.text_answers" :key="ans">
+                                        <template x-for="(ans, aIdx) in (item.text_answers || [])" :key="aIdx">
                                             <li
                                                 class="bg-white p-2.5 rounded-lg text-xs text-gray-600 border border-gray-100 shadow-sm relative pl-7 hover:bg-gray-50">
                                                 <svg class="w-3 h-3 absolute left-2.5 top-3 text-brand-300"
@@ -313,7 +313,7 @@
                                             </li>
                                         </template>
                                     </ul>
-                                    <div x-show="!item.text_answers || item.text_answers.length === 0"
+                                    <div x-show="!item.text_answers || (item.text_answers && item.text_answers.length === 0)"
                                         class="flex-1 flex flex-col items-center justify-center text-gray-400">
                                         <span class="text-[10px] font-bold uppercase tracking-wider opacity-50">No text
                                             responses</span>

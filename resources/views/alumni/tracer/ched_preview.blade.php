@@ -1,4 +1,4 @@
-<x-layouts.admin>
+<x-app-layout>
     <x-slot name="header">
         <div class="flex flex-col sm:flex-row justify-between items-center gap-4">
             <div class="flex items-center gap-3">
@@ -10,22 +10,13 @@
                     </svg>
                 </div>
                 <h2 class="font-black text-xl text-gray-800 dark:text-dark-text-primary leading-tight tracking-tight">
-                    {{ __('Tracer Survey Response Detail') }}
+                    {{ __('GTS Response Preview') }}
                 </h2>
             </div>
             <div class="flex gap-3 no-print">
-                <a href="{{ route('admin.tracer.index') }}"
+                <a href="{{ route('dashboard') }}"
                     class="inline-flex items-center px-6 py-2.5 bg-gray-100 dark:bg-dark-bg-subtle border border-gray-200 dark:border-dark-border rounded-2xl font-black text-[10px] text-gray-700 dark:text-dark-text-primary uppercase tracking-widest hover:bg-gray-200 dark:hover:bg-dark-bg-elevated transition-all shadow-sm">
-                    Back to List
-                </a>
-                <a href="{{ route('admin.tracer.pdf', $response->id) }}" target="_blank"
-                    class="inline-flex items-center px-6 py-2.5 bg-white dark:bg-dark-bg-elevated border border-gray-200 dark:border-dark-border rounded-2xl font-black text-[10px] text-gray-700 dark:text-dark-text-primary uppercase tracking-widest hover:bg-gray-50 transition-all shadow-sm">
-                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
-                        </path>
-                    </svg>
-                    Export PDF
+                    Back to Feed
                 </a>
                 <button onclick="window.print()"
                     class="inline-flex items-center px-6 py-2.5 bg-brand-600 border border-transparent rounded-2xl font-black text-[10px] text-white uppercase tracking-widest hover:bg-brand-700 transition-all shadow-lg hover:shadow-brand-500/20 active:scale-95">
@@ -59,7 +50,7 @@
                     <div
                         class="flex items-center gap-2 px-6 py-2 bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 text-[10px] font-black uppercase tracking-[0.2em] rounded-full border border-green-100 dark:border-green-900/30">
                         <span class="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></span>
-                        User ID: {{ $response->user->id }}
+                        Submitted Official Response
                     </div>
                 </div>
 
@@ -68,37 +59,30 @@
                     <div class="flex-shrink-0">
                         <div
                             class="w-32 h-32 bg-white dark:bg-dark-bg-subtle rounded-[2.5rem] shadow-xl flex items-center justify-center border-4 border-gray-50 dark:border-dark-border/50 rotate-3 transition-transform hover:rotate-0">
-                            <!-- Avatar or Placeholder -->
-                            @if($response->user->profile_photo_path)
-                                <img class="w-32 h-32 rounded-[2.5rem] object-cover"
-                                    src="{{ $response->user->profile_photo_url }}" alt="{{ $response->user->name }}">
-                            @else
-                                <div class="text-4xl font-black text-brand-200">{{ substr($response->user->name, 0, 1) }}
-                                </div>
-                            @endif
+                            <svg class="w-16 h-16 text-brand-600" viewBox="0 0 24 24" fill="currentColor">
+                                <path
+                                    d="M12 2L1 21h22L12 2zm0 3.45l8.15 14.1H3.85L12 5.45zM11 15h2v2h-2v-2zm0-6h2v4h-2V9z" />
+                            </svg>
                         </div>
                     </div>
                     <div class="text-center md:text-left space-y-3">
-                        <p class="text-[10px] font-black text-brand-600 uppercase tracking-[0.3em]">Official Submission
-                        </p>
+                        <p class="text-[10px] font-black text-brand-600 uppercase tracking-[0.3em]">CHED Official
+                            Record</p>
                         <h1
                             class="text-4xl sm:text-5xl font-black text-gray-900 dark:text-dark-text-primary uppercase tracking-tighter leading-none">
-                            {{ $response->user->name }}
-                        </h1>
+                            Graduate Tracer Survey</h1>
                         <p
                             class="text-sm font-medium text-gray-500 dark:text-dark-text-muted italic max-w-lg leading-relaxed">
-                            Department: <span
-                                class="text-gray-900 dark:text-dark-text-primary font-bold not-italic">{{ $response->department_name ?? 'N/A' }}</span>
-                            <br>
-                            Submitted on: <span
-                                class="text-gray-900 dark:text-dark-text-primary font-bold not-italic">{{ $response->created_at->format('F d, Y h:i A') }}</span>
+                            Verified professional record for alumni monitoring and institutional quality assurance
+                            programs.
                         </p>
                     </div>
                 </div>
 
                 <div class="space-y-16 relative z-10">
                     <!-- SECTION A -->
-                    <div class="section-container group">
+                    <div class="section-container group"
+                        x-intersect="$el.classList.add('animate-in', 'fade-in', 'slide-in-from-bottom-10', 'duration-700')">
                         <div class="section-header">
                             <div class="section-icon bg-brand-100 text-brand-600">
                                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -170,7 +154,8 @@
                     </div>
 
                     <!-- SECTION B -->
-                    <div class="section-container">
+                    <div class="section-container"
+                        x-intersect="$el.classList.add('animate-in', 'fade-in', 'slide-in-from-bottom-10', 'duration-700')">
                         <div class="section-header">
                             <div class="section-icon bg-purple-100 text-purple-600">
                                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -270,7 +255,8 @@
                     </div>
 
                     <!-- SECTION D -->
-                    <div class="section-container">
+                    <div class="section-container"
+                        x-intersect="$el.classList.add('animate-in', 'fade-in', 'slide-in-from-bottom-10', 'duration-700')">
                         <div class="section-header">
                             <div class="section-icon bg-amber-100 text-amber-600">
                                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -432,6 +418,18 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- Footer Action -->
+                <div
+                    class="mt-20 pt-12 border-t border-gray-100 dark:border-dark-border flex justify-center no-print relative z-10">
+                    <a href="{{ route('dashboard') }}" class="modern-submit-btn">
+                        Finish Review
+                        <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                                d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+                        </svg>
+                    </a>
+                </div>
             </div>
 
             <!-- Referral floating Section -->
@@ -454,33 +452,15 @@
                     </template>
                 </div>
             </div>
-
-            <!-- Admin Delete Zone -->
-            <div
-                class="mt-8 no-print p-10 bg-red-50 dark:bg-red-900/10 rounded-[3rem] border border-red-100 dark:border-red-900/30">
-                <div class="flex justify-between items-center">
-                    <div>
-                        <h3 class="text-red-800 dark:text-red-400 font-bold">Danger Zone</h3>
-                        <p class="text-xs text-red-600 dark:text-red-500 mt-1">Irreversible action: Remove this response
-                            permanently from the system.</p>
-                    </div>
-                    <form action="{{ route('admin.tracer.destroy', $response->id) }}" method="POST"
-                        onsubmit="return confirm('Are you sure you want to delete this response?');">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit"
-                            class="px-6 py-3 bg-red-600 hover:bg-red-700 text-white font-bold rounded-2xl text-xs uppercase tracking-widest shadow-lg shadow-red-500/30 transition-transform active:scale-95">
-                            Delete Response
-                        </button>
-                    </form>
-                </div>
-            </div>
-
         </div>
     </div>
 
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap');
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
 
         .section-container {
             @apply p-0 relative;
@@ -583,7 +563,7 @@
     <script>
         function gtsPreview() {
             return {
-                resp: @json($data),
+                resp: @json($response),
                 months: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
                 q14_reasons: [
                     'High grades in the course or subject area(s) related to the course', 'Good grades in high school',
@@ -600,4 +580,4 @@
             }
         }
     </script>
-</x-layouts.admin>
+</x-app-layout>

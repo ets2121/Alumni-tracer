@@ -3,10 +3,11 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\EvaluationForm;
-use App\Models\EvaluationResponse;
+use App\Models\ChedGtsResponse;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class TracerSurveyController extends Controller
 {
@@ -19,14 +20,10 @@ class TracerSurveyController extends Controller
         $department = $request->input('department');
         $year = $request->input('year');
 
-        // Base Query
-        $statsQuery = EvaluationResponse::query()
-            ->whereHas('form', function ($q) {
-                $q->where('title', 'CHED Graduate Tracer Survey (GTS)');
-            });
+        // Base Query using new standalone GTS model
+        $statsQuery = ChedGtsResponse::query();
 
-        // 1. Stats Calculation (Global or Filtered? usually Global for dashboard-like feel, but filtered is nice too)
-        // Let's do Global stats for the cards, and let the table be filtered.
+        // 1. Stats Calculation
         $totalResponses = (clone $statsQuery)->count();
 
         $deptStats = (clone $statsQuery)
@@ -39,7 +36,7 @@ class TracerSurveyController extends Controller
 
         // 2. Filtered List for Table
         $query = clone $statsQuery;
-        $query->with(['user', 'form']); // Eager load
+        $query->with(['user']); // Eager load user
 
         if ($search) {
             $query->whereHas('user', function ($q) use ($search) {
@@ -56,23 +53,25 @@ class TracerSurveyController extends Controller
             $query->whereYear('created_at', $year);
         }
 
-        $responses = $query->latest()->paginate(10);
+        $responses = $query->latest()->paginate(15);
 
         // Get unique departments for filter dropdown
-        $departments = EvaluationResponse::select('department_name')
+        $departments = ChedGtsResponse::select('department_name')
             ->distinct()
             ->whereNotNull('department_name')
             ->pluck('department_name');
 
-        // Get unique sections for export dropdown
-        $sections = \App\Models\EvaluationQuestion::select('section')
-            ->distinct()
-            ->whereNotNull('section')
-            ->pluck('section');
+        // Sections for export (hardcoded or from JSON if needed, but 'all' is common)
+        $sections = [
+            'General Information',
+            'Educational Background',
+            'Advanced Studies',
+            'Employment Data',
+        ];
 
         if ($request->wantsJson()) {
             return response()->json([
-                'responses' => $responses, // Paginator to JSON
+                'responses' => $responses,
                 'departments' => $departments,
                 'totalResponses' => $totalResponses,
                 'deptStats' => $deptStats,
@@ -88,24 +87,21 @@ class TracerSurveyController extends Controller
      */
     public function show($id)
     {
-        $response = EvaluationResponse::with([
-            'user',
-            'form.questions' => function ($q) {
-                $q->orderBy('order');
-            },
-            'answers'
-        ])->findOrFail($id);
+        $response = ChedGtsResponse::with(['user'])->findOrFail($id);
 
-        return view('admin.tracer.show', compact('response'));
+        return view('admin.tracer.show', [
+            'response' => $response,
+            'data' => $response->response_data
+        ]);
     }
 
     /**
-     * Export responses to CSV.
+     * Delete the specified response.
      */
     public function destroy($id)
     {
-        EvaluationResponse::destroy($id);
-        return redirect()->back()->with('success', 'Response deleted successfully. The aumni can now retake the survey.');
+        ChedGtsResponse::destroy($id);
+        return redirect()->back()->with('success', 'Response deleted successfully. The alumni can now retake the survey.');
     }
 
     public function exportIndividual($id)
@@ -123,7 +119,7 @@ class TracerSurveyController extends Controller
         $format = $request->input('format', 'csv');
         $section = $request->input('section', 'all');
 
-        $fileName = 'gts_responses_' . ($singleId ? 'individual_' . $singleId . '_' : '') . ($section !== 'all' ? 'section_' : '') . date('Y-m-d_H-i');
+        $fileName = 'ched_gts_responses_' . ($singleId ? 'individual_' . $singleId . '_' : '') . date('Y-m-d_H-i');
         $fileName .= $format === 'excel' ? '.xls' : '.csv';
 
         // Excel Wrapper
@@ -152,30 +148,49 @@ class TracerSurveyController extends Controller
         if ($format === 'csv')
             fprintf($handle, chr(0xEF) . chr(0xBB) . chr(0xBF));
 
-        // 1. Setup Questions
-        $form = EvaluationForm::where('title', 'CHED Graduate Tracer Survey (GTS)')->first();
-        if (!$form)
-            return;
-
-        $questionsQuery = $form->questions()->orderBy('order');
-
-        if ($section !== 'all') {
-            $questionsQuery->where('section', $section);
-        }
-
-        $questions = $questionsQuery->get();
-
-        // Headers
-        $headers = ['Response ID', 'User ID', 'Name', 'Email', 'Department', 'Date Submitted'];
-        $questionMap = [];
-
-        foreach ($questions as $q) {
-            $qNum = $q->options['question_number'] ?? '';
-            // Clean header text
-            $qText = $qNum ? "$qNum. $q->question_text" : $q->question_text;
-            $headers[] = $qText;
-            $questionMap[$q->id] = $q; // Store full object for type check
-        }
+        // Define Headers based on the CHED GTS structure
+        $headers = [
+            'Response ID',
+            'User ID',
+            'Name',
+            'Email',
+            'Department',
+            'Date Submitted',
+            'Q1_Name',
+            'Q2_Address',
+            'Q3_Email',
+            'Q4_Tel',
+            'Q5_Mobile',
+            'Q6_Civil_Status',
+            'Q7_Sex',
+            'Q8_Birthday',
+            'Q9_Region',
+            'Q10_Province',
+            'Q11_Location',
+            'Q12_Degrees',
+            'Q13_Prof_Exams',
+            'Q14_Reasons_for_Course',
+            'Q15_Trainings',
+            'Q16_Employed',
+            'Q17_Employment_Status',
+            'Q18_Present_Job_Relation',
+            'Q19_Occupation',
+            'Q20_Business_Line',
+            'Q21_Place_of_Work',
+            'Q22_Is_First_Job',
+            'Q23_Reason_for_Staying',
+            'Q24_Time_to_Find_First_Job',
+            'Q25_How_Found_First_Job',
+            'Q26_How_Long_Found_First_Job',
+            'Q27_Is_Course_Related_to_First_Job',
+            'Q28_Reason_for_Accepting_First_Job',
+            'Q29_Reason_for_Changing_Job',
+            'Q30_How_Long_in_First_Job',
+            'Q31_Curriculum_Relevance',
+            'Q32_Useful_Skills',
+            'Q33_Competencies',
+            'Q34_Suggestions'
+        ];
 
         // Output Headers
         if ($format === 'csv') {
@@ -187,33 +202,80 @@ class TracerSurveyController extends Controller
             echo "</tr>";
         }
 
-        // 2. Data Rows
-        $query = EvaluationResponse::query()
-            ->where('form_id', $form->id)
-            ->with(['user', 'answers']);
-
+        // Fetch Data
+        $query = ChedGtsResponse::query()->with(['user']);
         if ($singleId) {
             $query->where('id', $singleId);
         }
 
-        $query->chunk(100, function ($responses) use ($handle, $questionMap, $format) {
+        $query->chunk(100, function ($responses) use ($handle, $format) {
             foreach ($responses as $response) {
+                $data = $response->response_data;
+
                 $row = [
                     $response->id,
                     $response->user_id,
-                    $response->user->name,
-                    $response->user->email,
+                    $response->user->name ?? 'N/A',
+                    $response->user->email ?? 'N/A',
                     $response->department_name,
                     $response->created_at->format('Y-m-d H:i:s'),
                 ];
 
-                $answers = $response->answers->pluck('answer_text', 'question_id');
+                // Map JSON data to flat row
+                $row[] = $data['q1_name'] ?? 'N/A';
+                $row[] = $data['q2_address'] ?? 'N/A';
+                $row[] = $data['q3_email'] ?? 'N/A';
+                $row[] = $data['q4_tel'] ?? 'N/A';
+                $row[] = $data['q5_mobile'] ?? 'N/A';
+                $row[] = $data['q6_civil_status'] ?? 'N/A';
+                $row[] = $data['q7_sex'] ?? 'N/A';
+                $row[] = ($data['q8_month'] ?? '') . '/' . ($data['q8_day'] ?? '') . '/' . ($data['q8_year'] ?? '');
+                $row[] = $data['q9_region'] ?? 'N/A';
+                $row[] = $data['q10_province'] ?? 'N/A';
+                $row[] = $data['q11_location'] ?? 'N/A';
 
-                foreach ($questionMap as $qId => $question) {
-                    $ans = $answers[$qId] ?? null;
-                    $formattedAns = $this->formatAnswerForExport($ans, $question);
-                    $row[] = $formattedAns;
-                }
+                // Q12 Degrees (Array)
+                $q12 = $data['q12'] ?? [];
+                $q12Str = [];
+                foreach ($q12 as $d)
+                    $q12Str[] = ($d['degree'] ?? '') . ' (' . ($d['college'] ?? '') . ', ' . ($d['year'] ?? '') . ')';
+                $row[] = implode(" | ", $q12Str);
+
+                // Q13 Prof Exams (Array)
+                $q13 = $data['q13'] ?? [];
+                $q13Str = [];
+                foreach ($q13 as $e)
+                    $q13Str[] = ($e['name'] ?? '') . ' (' . ($e['date'] ?? '') . ', ' . ($e['rating'] ?? '') . ')';
+                $row[] = implode(" | ", $q13Str);
+
+                $row[] = $data['q14_others'] ?? 'N/A';
+
+                // Q15 Trainings (Array)
+                $q15a = $data['q15a'] ?? [];
+                $q15Str = [];
+                foreach ($q15a as $t)
+                    $q15Str[] = ($t['title'] ?? '') . ' (' . ($t['institution'] ?? '') . ')';
+                $row[] = implode(" | ", $q15Str);
+
+                $row[] = $data['q16_employed'] ?? 'N/A';
+                $row[] = $data['q17_employment_status'] ?? 'N/A';
+                $row[] = $data['q18_job_relation'] ?? 'N/A';
+                $row[] = $data['q19_occupation'] ?? 'N/A';
+                $row[] = $data['q20_business_line'] ?? 'N/A';
+                $row[] = $data['q21_work_place'] ?? 'N/A';
+                $row[] = $data['q22_first_job'] ?? 'N/A';
+                $row[] = $data['q23_staying_reason'] ?? 'N/A';
+                $row[] = $data['q24_time_to_find'] ?? 'N/A';
+                $row[] = $data['q25_how_found'] ?? 'N/A';
+                $row[] = $data['q26_how_long_found'] ?? 'N/A';
+                $row[] = $data['q27_course_related'] ?? 'N/A';
+                $row[] = $data['q28_accept_reason'] ?? 'N/A';
+                $row[] = $data['q29_change_reason'] ?? 'N/A';
+                $row[] = $data['q30_long_in_first'] ?? 'N/A';
+                $row[] = $data['q31_curriculum_relevance'] ?? 'N/A';
+                $row[] = $data['q32_useful_skills'] ?? 'N/A';
+                $row[] = $data['q33_others'] ?? 'N/A';
+                $row[] = $data['q34_suggestions'] ?? 'N/A';
 
                 if ($format === 'csv') {
                     fputcsv($handle, $row);
@@ -230,59 +292,13 @@ class TracerSurveyController extends Controller
             fclose($handle);
     }
 
-    private function formatAnswerForExport($rawAnswer, $question)
-    {
-        if ($rawAnswer === null || $rawAnswer === '') {
-            return 'N/A';
-        }
-
-        // Try Decode
-        $decoded = json_decode($rawAnswer, true);
-
-        if (json_last_error() !== JSON_ERROR_NONE || !is_array($decoded)) {
-            return $rawAnswer; // Plain text
-        }
-
-        // 1. Simple Array (Checkboxes)
-        if (array_is_list($decoded) && is_scalar($decoded[0] ?? '')) {
-            return implode(", ", $decoded);
-        }
-
-        // 2. Dynamic Table (Array of objects)
-        if ($question->type === 'dynamic_table') {
-            $lines = [];
-            foreach ($decoded as $rowIndex => $row) {
-                $rowStr = [];
-                foreach ($row as $col => $val) {
-                    $rowStr[] = "$col: $val";
-                }
-                if (!empty($rowStr)) {
-                    $lines[] = "[" . ($rowIndex + 1) . "] " . implode(" | ", $rowStr);
-                }
-            }
-            return implode("\n", $lines); // Excel handles newlines well
-        }
-
-        // 3. Date Group
-        if ($question->type === 'date_group') {
-            $m = $decoded['month'] ?? '';
-            $d = $decoded['day'] ?? '';
-            $y = $decoded['year'] ?? '';
-            return "$m $d, $y";
-        }
-
-        return json_encode($decoded); // Fallback
-    }
     public function exportPdf($id)
     {
-        $response = EvaluationResponse::with([
-            'user',
-            'form.questions' => function ($q) {
-                // Ensure questions are loaded
-            },
-            'answers'
-        ])->findOrFail($id);
+        $response = ChedGtsResponse::with(['user'])->findOrFail($id);
 
-        return view('admin.tracer.pdf', compact('response'));
+        return view('admin.tracer.pdf', [
+            'response' => $response,
+            'data' => $response->response_data
+        ]);
     }
 }

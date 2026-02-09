@@ -110,9 +110,10 @@ Route::middleware(['auth', 'status'])->group(function () {
         Route::post('evaluations/{evaluation}', [App\Http\Controllers\Alumni\EvaluationController::class, 'store'])->name('evaluations.store');
     });
 
-    // CHED Tracer Survey Routes
-    Route::get('tracer-survey', [App\Http\Controllers\Alumni\TracerSurveyController::class, 'index'])->name('tracer.index');
-    Route::post('tracer-survey', [App\Http\Controllers\Alumni\TracerSurveyController::class, 'store'])->name('tracer.store');
+    // CHED Standalone GTS Routes
+    Route::get('tracer-survey', [App\Http\Controllers\Alumni\ChedGtsController::class, 'index'])->name('ched-gts.index');
+    Route::get('tracer-survey/preview', [App\Http\Controllers\Alumni\ChedGtsController::class, 'show'])->name('ched-gts.show');
+    Route::post('tracer-survey', [App\Http\Controllers\Alumni\ChedGtsController::class, 'store'])->name('ched-gts.store');
 
     // Interactivity Routes (Reactions & Comments)
     Route::post('news/{news_event}/react', [App\Http\Controllers\NewsEventReactionController::class, 'toggle'])->name('news.react');

@@ -17,12 +17,15 @@ class TracerSurveyController extends Controller
         $user = Auth::user();
 
         // Check if user has already submitted the GTS
-        // We identify GTS by title for now, or we could add a flag "is_gts" to DB. Title is "CHED Graduate Tracer Survey (GTS)"
-        $form = EvaluationForm::where('title', 'CHED Graduate Tracer Survey (GTS)')->with([
-            'questions' => function ($q) {
-                $q->orderBy('order');
-            }
-        ])->first();
+        // We identify GTS by type 'tracer' which is more robust than title
+        $form = EvaluationForm::where('type', 'tracer')
+            ->where('is_active', true)
+            ->where('is_draft', false)
+            ->with([
+                'questions' => function ($q) {
+                    $q->orderBy('order');
+                }
+            ])->orderBy('version', 'desc')->first();
 
         if (!$form) {
             return redirect()->route('dashboard')->with('error', 'Tracer Survey not found.');

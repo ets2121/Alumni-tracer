@@ -1,6 +1,6 @@
 <form id="news-form"
     action="{{ isset($newsEvent) ? route('admin.news_events.update', $newsEvent->id) : route('admin.news_events.store') }}"
-    method="POST" enctype="multipart/form-data" x-data="{
+    method="POST" enctype="multipart/form-data" class="h-full flex flex-col" x-data="{
         postType: '{{ $newsEvent->type ?? 'news' }}',
         visibilityType: '{{ $newsEvent->visibility_type ?? 'all' }}',
         selectedDepartment: '{{ $newsEvent->department_name ?? '' }}',
@@ -62,9 +62,9 @@
         @method('PUT')
     @endif
 
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 h-full">
         <!-- Column 1: Configuration (4 cols) -->
-        <div class="lg:col-span-4 space-y-6">
+        <div class="lg:col-span-4 space-y-6 lg:overflow-y-auto lg:h-full lg:pr-1 custom-scrollbar">
             <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm space-y-5">
                 <h3 class="text-sm font-black text-brand-800 uppercase tracking-widest border-b border-gray-100 pb-3">
                     Post Configuration</h3>
@@ -156,19 +156,44 @@
                     </div>
                 </div>
 
+                <!-- Post Gallery (Moved from Right) -->
+                <div>
+                    <h4 class="text-xs font-bold text-gray-700 uppercase mb-2">Post Gallery</h4>
+                    <div class="grid grid-cols-2 gap-3" id="photo-previews">
+                        @if(isset($newsEvent) && $newsEvent->photos)
+                            @foreach($newsEvent->photos as $photo)
+                                <div class="aspect-square rounded-xl overflow-hidden border border-gray-200 relative group">
+                                    <img src="{{ asset('storage/' . $photo->image_path) }}" class="w-full h-full object-cover">
+                                    <div
+                                        class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                        <button type="button" class="text-white text-xs font-bold underline">Delete</button>
+                                    </div>
+                                </div>
+                            @endforeach
+                        @endif
+                        <label
+                            class="aspect-square rounded-xl border-2 border-dashed border-gray-200 flex flex-col items-center justify-center cursor-pointer hover:border-brand-500 hover:bg-brand-50 transition-all text-gray-400 hover:text-brand-600">
+                            <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 4v16m8-8H4" stroke-width="2" stroke-linecap="round" />
+                            </svg>
+                            <span class="text-[9px] font-bold uppercase">Add</span>
+                            <input type="file" name="photos[]" multiple class="hidden" accept="image/*">
+                        </label>
+                    </div>
+                </div>
+
                 <!-- Author -->
                 <div>
                     <label for="author" class="block text-xs font-bold text-gray-700 uppercase mb-1">Author</label>
                     <input type="text" name="author" id="author"
                         value="{{ $newsEvent->author ?? auth()->user()->name }}"
-                        class="w-full border-gray-200 rounded-xl shadow-sm focus:ring-brand-500 text-sm py-2 px-4 shadow-sm">
+                        class="w-full border-gray-200 rounded-xl shadow-sm focus:ring-brand-500 text-sm py-2 px-4">
                 </div>
             </div>
 
             <!-- Contextual Fields -->
             <div
                 class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm space-y-5 animate-in fade-in slide-in-from-bottom-4">
-
                 <!-- Event Fields -->
                 <template x-if="postType === 'event'">
                     <div class="space-y-4">
@@ -229,18 +254,29 @@
                     No additional settings required
                 </div>
             </div>
+
+            <!-- Actions (Mobile/Tablet only) -->
+            <div class="flex lg:hidden justify-end gap-3 pb-8">
+                <button type="button" @click="closeModal()"
+                    class="px-8 py-3 bg-gray-100 text-gray-600 rounded-xl text-sm font-black uppercase tracking-widest hover:bg-gray-200 transition-all">Cancel</button>
+                <button type="submit" @click="saving = true"
+                    class="px-8 py-3 bg-brand-600 text-white rounded-xl text-sm font-black uppercase tracking-widest hover:bg-brand-700 transition-all shadow-xl shadow-brand-100">
+                    <span x-show="!saving">Publish Post</span>
+                    <span x-show="saving">Processing...</span>
+                </button>
+            </div>
         </div>
 
         <!-- Column 2: Content (8 cols) -->
-        <div class="lg:col-span-8 flex flex-col gap-6" x-data='tiptapEditor({ 
+        <div class="lg:col-span-8 flex flex-col gap-6 lg:h-full lg:overflow-y-auto custom-scrollbar lg:pr-1" x-data='tiptapEditor({ 
                 content: {!! json_encode($newsEvent->content ?? "") !!}, 
                 placeholder: "Share your story or post details here...",
                 inputName: "content"
              })'>
 
             <div
-                class="bg-white rounded-2xl border border-gray-100 shadow-sm flex-1 flex flex-col overflow-hidden h-full">
-                <div class="p-4 border-b border-gray-100 bg-gray-50 flex justify-between items-center">
+                class="bg-white rounded-2xl border border-gray-100 shadow-sm flex-1 flex flex-col overflow-hidden h-full min-h-[500px] lg:min-h-0">
+                <div class="p-4 border-b border-gray-100 bg-gray-50 flex justify-between items-center shrink-0">
                     <h3 class="text-sm font-black text-gray-800 uppercase tracking-widest">Post Content</h3>
                     <div class="flex items-center gap-4">
                         <div class="hidden md:flex gap-1" id="tiptap-toolbar">
@@ -273,43 +309,18 @@
                 <div class="flex-1 p-0 overflow-hidden relative flex flex-col h-full">
                     <!-- Tiptap Editor Container -->
                     <div x-ref="editor"
-                        class="flex-1 overflow-y-auto px-8 py-6 prose prose-sm max-w-none focus:outline-none min-h-[500px]">
+                        class="flex-1 overflow-y-auto px-8 py-6 prose prose-sm max-w-none focus:outline-none custom-scrollbar h-full">
                     </div>
                     <!-- Hidden field for actual submission -->
                     <input type="hidden" name="content" x-model="content">
                 </div>
             </div>
 
-            <!-- Photos Gallery (Multi-upload) -->
-            <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
-                <h4 class="text-sm font-black text-brand-800 uppercase tracking-widest mb-4">Post Gallery</h4>
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-4" id="photo-previews">
-                    @if(isset($newsEvent) && $newsEvent->photos)
-                        @foreach($newsEvent->photos as $photo)
-                            <div class="aspect-square rounded-xl overflow-hidden border border-gray-200 relative group">
-                                <img src="{{ asset('storage/' . $photo->image_path) }}" class="w-full h-full object-cover">
-                                <div
-                                    class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                                    <button type="button" class="text-white text-xs font-bold underline">Delete</button>
-                                </div>
-                            </div>
-                        @endforeach
-                    @endif
-                    <label
-                        class="aspect-square rounded-xl border-2 border-dashed border-gray-200 flex flex-col items-center justify-center cursor-pointer hover:border-brand-500 hover:bg-brand-50 transition-all text-gray-400 hover:text-brand-600">
-                        <svg class="w-8 h-8 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path d="M12 4v16m8-8H4" stroke-width="2" stroke-linecap="round" />
-                        </svg>
-                        <span class="text-[10px] font-bold uppercase">Add Photos</span>
-                        <input type="file" name="photos[]" multiple class="hidden" accept="image/*">
-                    </label>
-                </div>
-            </div>
-
-            <!-- Actions -->
-            <div class="flex justify-end gap-3 pb-8">
+            <!-- Actions (Desktop Sticky) -->
+            <div
+                class="hidden lg:flex justify-end gap-3 pb-0 sticky bottom-0 bg-white/0 backdrop-blur-sm p-4 -mx-4 -mb-4 border-t border-gray-100/50">
                 <button type="button" @click="closeModal()"
-                    class="px-8 py-3 bg-gray-100 text-gray-600 rounded-xl text-sm font-black uppercase tracking-widest hover:bg-gray-200 transition-all">Cancel</button>
+                    class="px-8 py-3 bg-gray-100 text-gray-600 rounded-xl text-sm font-black uppercase tracking-widest hover:bg-gray-200 transition-all shadow-sm">Cancel</button>
                 <button type="submit" @click="saving = true"
                     class="px-8 py-3 bg-brand-600 text-white rounded-xl text-sm font-black uppercase tracking-widest hover:bg-brand-700 transition-all shadow-xl shadow-brand-100">
                     <span x-show="!saving">Publish Post</span>
@@ -317,6 +328,7 @@
                 </button>
             </div>
         </div>
+
     </div>
 
     <!-- Gallery Library Shared Modal Logic -->
@@ -326,6 +338,7 @@
 <style>
     .ProseMirror {
         outline: none;
+        min-height: 100%;
     }
 
     .ProseMirror p.is-editor-empty:first-child::before {
@@ -364,5 +377,23 @@
     .ProseMirror a {
         color: #2563eb;
         text-decoration: underline;
+    }
+
+    /* Custom Scrollbar */
+    .custom-scrollbar::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+        background-color: #cbd5e1;
+        border-radius: 10px;
+    }
+
+    .custom-scrollbar:hover::-webkit-scrollbar-thumb {
+        background-color: #94a3b8;
     }
 </style>

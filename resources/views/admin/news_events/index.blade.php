@@ -278,19 +278,17 @@
 
         <!-- Create/Edit Modal -->
         <div x-show="modalOpen" class="fixed inset-0 z-50 overflow-y-auto" style="display: none;">
-            <div class="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-                <div class="modal-backdrop fixed inset-0 bg-gray-900/40 backdrop-blur-sm transition-opacity"
+            <div class="flex items-center justify-center min-h-screen px-4 py-6 text-center sm:p-6">
+                <div class="modal-backdrop fixed inset-0 bg-gray-900/60 backdrop-blur-sm transition-opacity"
                     @click="closeModal()" x-show="modalOpen" x-transition.opacity></div>
 
-                <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-
-                <div class="modal-content-container inline-block align-bottom bg-white rounded-2xl text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-4xl sm:w-full"
+                <div class="modal-content-container bg-white text-left overflow-hidden shadow-2xl transform transition-all w-full max-w-7xl h-[90vh] rounded-2xl flex flex-col relative z-10"
                     x-show="modalOpen" x-transition:enter="ease-out duration-300"
                     x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
                     x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100">
 
-                    <div class="bg-white px-4 pt-5 pb-4 sm:p-8">
-                        <div class="flex justify-between items-center mb-6 pl-2 border-l-4 border-brand-500">
+                    <div class="bg-white px-4 pt-5 pb-4 sm:p-8 h-full flex flex-col">
+                        <div class="flex justify-between items-center mb-6 pl-2 border-l-4 border-brand-500 shrink-0">
                             <h3 class="text-2xl font-black text-gray-900 tracking-tight" x-text="modalTitle"></h3>
                             <button @click="closeModal()"
                                 class="text-gray-400 hover:text-gray-500 focus:outline-none transition-colors">
@@ -301,7 +299,7 @@
                                 </svg>
                             </button>
                         </div>
-                        <div id="modal-content"></div>
+                        <div id="modal-content" class="flex-1 min-h-0 overflow-y-auto lg:overflow-hidden"></div>
                     </div>
                 </div>
             </div>

@@ -11,64 +11,65 @@ class EvaluationSeeder extends Seeder
     public function run()
     {
         // 1. GRADUATE TRACER STUDY
-        $tracer = EvaluationForm::firstOrCreate(
-            ['title' => 'Graduate Tracer Study 2026'],
+        $tracer = EvaluationForm::updateOrCreate(
+            ['type' => 'tracer'],
             [
+                'title' => 'CHED Graduate Tracer Survey (GTS)',
                 'description' => 'Standardized survey to track employment status and curriculum relevance.',
-                'type' => 'tracer',
                 'is_active' => true,
                 'is_draft' => false,
                 'version' => 1
             ]
         );
 
-        if ($tracer->questions()->count() == 0) {
-            $questions = [
-                [
-                    'text' => 'Employment Status',
-                    'type' => 'radio',
-                    'options' => ['Employed', 'Self-employed', 'Unemployed', 'Student'],
-                    'required' => true
-                ],
-                [
-                    'text' => 'Is your current job related to your academic program?',
-                    'type' => 'radio',
-                    'options' => ['Yes', 'No', 'Partially'],
-                    'required' => true
-                ],
-                [
-                    'text' => 'How long did it take you to find your first job?',
-                    'type' => 'radio',
-                    'options' => ['Less than 1 month', '1-6 months', '6-12 months', 'Over 1 year'],
-                    'required' => true
-                ],
-                [
-                    'text' => 'Which skills learned in college are most useful in your current job?',
-                    'type' => 'checkbox',
-                    'options' => ['Critical Thinking', 'Communication', 'Technical Skills', 'Teamwork', 'Leadership'],
-                    'required' => false
-                ],
-                [
-                    'text' => 'Please provide suggestions to improve the curriculum.',
-                    'type' => 'textarea',
-                    'options' => null,
-                    'required' => false
-                ]
-            ];
+        // Clear existing questions to be sure
+        $tracer->questions()->delete();
 
-            foreach ($questions as $index => $q) {
-                EvaluationQuestion::create([
-                    'form_id' => $tracer->id,
-                    'question_text' => $q['text'],
-                    'type' => $q['type'],
-                    'options' => isset($q['options']) ? json_encode($q['options']) : null,
-                    'order' => $index + 1,
-                    'required' => $q['required']
-                ]);
-            }
+        $questions = [
+            [
+                'text' => 'Employment Status',
+                'type' => 'radio',
+                'options' => ['Employed', 'Self-employed', 'Unemployed', 'Student'],
+                'required' => true
+            ],
+            [
+                'text' => 'Is your current job related to your academic program?',
+                'type' => 'radio',
+                'options' => ['Yes', 'No', 'Partially'],
+                'required' => true
+            ],
+            [
+                'text' => 'How long did it take you to find your first job?',
+                'type' => 'radio',
+                'options' => ['Less than 1 month', '1-6 months', '6-12 months', 'Over 1 year'],
+                'required' => true
+            ],
+            [
+                'text' => 'Which skills learned in college are most useful in your current job?',
+                'type' => 'checkbox',
+                'options' => ['Critical Thinking', 'Communication', 'Technical Skills', 'Teamwork', 'Leadership'],
+                'required' => false
+            ],
+            [
+                'text' => 'Please provide suggestions to improve the curriculum.',
+                'type' => 'textarea',
+                'options' => null,
+                'required' => false
+            ]
+        ];
+
+        foreach ($questions as $index => $q) {
+            EvaluationQuestion::create([
+                'form_id' => $tracer->id,
+                'question_text' => $q['text'],
+                'type' => $q['type'],
+                'options' => isset($q['options']) ? json_encode(['options' => $q['options']]) : null,
+                'order' => $index + 1,
+                'required' => $q['required']
+            ]);
         }
 
-        // 2. SYSTEM USABILITY STUDY
+        // 1. SYSTEM USABILITY STUDY
         $sus = EvaluationForm::firstOrCreate(
             ['title' => 'System Usability Evaluation'],
             [
