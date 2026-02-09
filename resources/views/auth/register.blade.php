@@ -15,11 +15,26 @@
         async requestOtp() {
             this.loading = true;
             this.error = '';
+
+            // Client-side validation
+            if (this.form.password !== this.form.password_confirmation) {
+                this.error = 'Passwords do not match.';
+                this.loading = false;
+                return;
+            }
+
+            if (this.form.password.length < 8) {
+                this.error = 'Password must be at least 8 characters.';
+                this.loading = false;
+                return;
+            }
+
             try {
                 const response = await fetch('{{ route('otp.send') }}', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
+                        'Accept': 'application/json',
                         'X-CSRF-TOKEN': '{{ csrf_token() }}'
                     },
                     body: JSON.stringify({

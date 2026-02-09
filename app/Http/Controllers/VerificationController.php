@@ -16,6 +16,14 @@ class VerificationController extends Controller
             'type' => 'required|in:signup,email_update,password_update'
         ]);
 
+        // Check if email already exists for signup
+        if ($request->type === 'signup' && \App\Models\User::where('email', $request->email)->exists()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'This email is already registered. Please log in instead.'
+            ], 422);
+        }
+
         $code = str_pad(random_int(0, 999999), 6, '0', STR_PAD_LEFT);
         $cacheKey = 'otp_' . $request->type . '_' . $request->email;
 

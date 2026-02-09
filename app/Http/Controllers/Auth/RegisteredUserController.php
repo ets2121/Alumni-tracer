@@ -31,15 +31,26 @@ class RegisteredUserController extends Controller
     {
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
+            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
+
+        $cacheKey = 'otp_signup_' . $request->email . '_verified';
+        if (!\Illuminate\Support\Facades\Cache::get($cacheKey)) {
+            throw \Illuminate\Validation\ValidationException::withMessages([
+                'email' => ['Please verify your email address first.'],
+            ]);
+        }
 
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
         ]);
+
+        // Clear the verified status to prevent reuse (optional, but good practice)
+        \Illuminate\Support\Facades\Cache::forget($cacheKey);
+        \Illuminate\Support\Facades\Cache::forget('otp_signup_' . $request->email);
 
         event(new Registered($user));
 
