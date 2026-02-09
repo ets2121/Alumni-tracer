@@ -74,7 +74,10 @@ export default () => ({
 
             try {
                 const response = await fetch(`${this.evalUrl}/${this.selectedEvaluationId}`, {
-                    headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'Accept': 'application/json'
+                    }
                 });
                 const html = await response.text();
                 const container = document.getElementById('injected-report-body');
@@ -137,7 +140,12 @@ export default () => ({
         }
 
         try {
-            const response = await fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' } });
+            const response = await fetch(url, {
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Accept': 'application/json'
+                }
+            });
             const html = await response.text();
 
             const container = document.getElementById('injected-report-body');

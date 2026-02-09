@@ -46,7 +46,8 @@ export default () => ({
 
         fetch(url, {
             headers: {
-                'X-Requested-With': 'XMLHttpRequest'
+                'X-Requested-With': 'XMLHttpRequest',
+                'Accept': 'application/json'
             }
         })
             .then(response => response.text())

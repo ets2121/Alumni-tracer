@@ -24,6 +24,11 @@ export default function router() {
             const html = await response.text();
             const doc = parser.parseFromString(html, 'text/html');
 
+            // 0. Update History (Critical: Do this BEFORE DOM swap so components read correct URL)
+            if (push) {
+                window.history.pushState({}, newTitle, url);
+            }
+
             // 1. Synchronize the Content Wrapper (Scroll behavior & Layout context)
             const newWrapper = doc.getElementById('content-wrapper');
             const currentWrapper = document.getElementById('content-wrapper');
@@ -50,14 +55,26 @@ export default function router() {
                 currentMain.className = newMain.className;
             }
 
+            // 3.5. Synchronize the Navigation Bar (Active States)
+            const newNav = doc.getElementById('main-navigation');
+            const currentNav = document.getElementById('main-navigation');
+            if (newNav && currentNav) {
+                // We only want to swap the inner HTML to preserve x-data state if possible,
+                // BUT x-data is on the nav tag itself. Swapping innerHTML is safer for Alpine parent state?
+                // Actually, the active classes are likely deep inside.
+                // Let's swap the whole thing, but we might lose the 'open' state if it was open.
+                // That's acceptable (resetting menu on nav).
+                // However, replacing the element destroys the Alpine instance.
+                // We need to be careful. Alpine 3 handles DOM morphing better if we use Alpine.morph (not installed).
+                // Simpler approach: innerHTML replacement.
+                currentNav.innerHTML = newNav.innerHTML;
+                currentNav.className = newNav.className; // In case classes change
+            }
+
             // 4. Update the Title
             const newTitle = doc.querySelector('title')?.innerText || document.title;
             document.title = newTitle;
 
-            // 5. Update History
-            if (push) {
-                window.history.pushState({}, newTitle, url);
-            }
 
             // 6. Reset Scroll
             if (currentWrapper && currentWrapper.classList.contains('overflow-y-auto')) {

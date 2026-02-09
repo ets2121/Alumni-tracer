@@ -43,7 +43,10 @@ export default () => ({
 
         try {
             const response = await fetch(fetchUrl, {
-                headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Accept': 'application/json'
+                }
             });
             const data = await response.json();
 
