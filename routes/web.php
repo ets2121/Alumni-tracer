@@ -62,6 +62,11 @@ Route::middleware(['auth', 'status'])->group(function () {
         Route::post('evaluations/{evaluation}/duplicate', [App\Http\Controllers\Admin\EvaluationController::class, 'duplicate'])->name('evaluations.duplicate');
         Route::resource('evaluations', App\Http\Controllers\Admin\EvaluationController::class);
 
+        // Admin Stats
+        Route::get('stats/counts', [App\Http\Controllers\Admin\AdminStatsController::class, 'getCounts'])->name('stats.counts');
+        Route::get('stats/charts', [App\Http\Controllers\Admin\AdminStatsController::class, 'getCharts'])->name('stats.charts');
+        Route::get('stats/recent-users', [App\Http\Controllers\Admin\AdminStatsController::class, 'getRecentUsers'])->name('stats.recent-users');
+
         // Admin Profile
         Route::get('profile', [App\Http\Controllers\Admin\ProfileController::class, 'edit'])->name('profile.edit');
         Route::put('profile/update', [App\Http\Controllers\Admin\ProfileController::class, 'update'])->name('profile.update');

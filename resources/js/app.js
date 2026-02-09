@@ -9,6 +9,7 @@ import newsComments from './components/news-comments';
 import router from './router'; // New SPA Router
 import dataLoader from './data-loader'; // New Data Loader
 import alumniFeed from './components/alumni-feed';
+import adminDashboard from './components/admin-dashboard';
 import newsManager from './components/news-manager'; // Static Import
 import photoManager from './components/photo-manager'; // Static Import
 import reportManager from './components/report-manager';
@@ -46,6 +47,7 @@ Alpine.data('evaluationManager', evaluationManager);
 Alpine.data('alumniEvaluationList', alumniEvaluationList);
 Alpine.data('tracerDashboard', tracerDashboard);
 Alpine.data('tracerForm', (config) => tracerForm(config));
+Alpine.data('adminDashboard', adminDashboard);
 Alpine.data('newsManager', newsManager);
 Alpine.data('photoManager', photoManager);
 Alpine.data('groupManager', (groups) => groupManager(groups));
