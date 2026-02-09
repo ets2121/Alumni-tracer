@@ -4,8 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+use App\Traits\HasDepartmentIsolation;
+
 class Course extends Model
 {
+    use HasDepartmentIsolation;
+
     protected $fillable = ['code', 'name', 'department_name', 'description', 'category'];
 
     /**

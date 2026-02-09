@@ -70,6 +70,16 @@ class TracerSurveyController extends Controller
             ->whereNotNull('section')
             ->pluck('section');
 
+        if ($request->wantsJson()) {
+            return response()->json([
+                'responses' => $responses, // Paginator to JSON
+                'departments' => $departments,
+                'totalResponses' => $totalResponses,
+                'deptStats' => $deptStats,
+                'sections' => $sections
+            ]);
+        }
+
         return view('admin.tracer.index', compact('responses', 'departments', 'totalResponses', 'deptStats', 'sections'));
     }
 

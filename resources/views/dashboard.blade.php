@@ -33,9 +33,10 @@
         </div>
     </x-slot>
 
-    <div class="h-full flex flex-col overflow-hidden bg-gray-50 dark:bg-dark-bg-deep" x-data="alumniFeed()"
-        @@switch-feed-tab.window="switchTab($event.detail)"
-        @open-image-modal.window="imageModal.src = $event.detail.src; imageModal.open = true">
+    <div class="h-full flex flex-col overflow-hidden bg-gray-50 dark:bg-dark-bg-deep" x-data="alumniFeed({
+        endpoint: '{{ route('alumni.feed.fetch') }}'
+    })" x-on:switch-feed-tab.window="switchTab($event.detail)"
+        x-on:open-image-modal.window="imageModal.src = $event.detail.src; imageModal.open = true">
 
         <!-- Main Scrollable Area -->
         <div class="flex-1 overflow-y-auto custom-scrollbar pb-12" id="feed-scroll-container">
@@ -121,142 +122,4 @@
         </div>
     </div>
 
-    @push('scripts')
-        <script>
-            document.addEventListener('alpine:init', () => {
-                Alpine.data('alumniFeed', () => ({
-                    tab: 'all',
-                    nextCursor: null,
-                    loading: false,
-                    hasMore: true,
-                    feedHtml: '',
-                    imageModal: {
-                        open: false,
-                        src: ''
-                    },
-                    discussionModal: {
-                        open: false,
-                        postId: null,
-                        html: ''
-                    },
-
-                    init() {
-                        // SWR Logic: Try to load from cache first
-                        const cacheKey = `feed_${this.tab}`;
-                        const cached = sessionStorage.getItem(cacheKey);
-                        if (cached) {
-                            this.feedHtml = cached;
-                            // Still fetch in background to refresh
-                        }
-
-                        this.fetchFeed();
-
-                        const observer = new IntersectionObserver((entries) => {
-                            if (entries[0].isIntersecting && !this.loading && this.hasMore) {
-                                this.loadMore();
-                            }
-                        }, {
-                            threshold: 0.1,
-                            root: document.getElementById('feed-scroll-container')
-                        });
-
-                        observer.observe(this.$refs.sentinel);
-                    },
-
-                    async openDiscussion(postId) {
-                        this.discussionModal.postId = postId;
-                        this.discussionModal.open = true;
-                        this.discussionModal.html = '<div class="h-full flex items-center justify-center"><div class="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-600"></div></div>';
-
-                        try {
-                            const response = await fetch(`/news/${postId}/discussion`, {
-                                headers: {
-                                    'X-Requested-With': 'XMLHttpRequest'
-                                }
-                            });
-                            this.discussionModal.html = await response.text();
-                            this.$nextTick(() => {
-                                if (this.$refs.discussionModalContent) {
-                                    Alpine.initTree(this.$refs.discussionModalContent);
-                                }
-                            });
-                        } catch (e) {
-                            this.discussionModal.html = '<div class="p-10 text-center text-red-500 font-bold italic">Failed to load discussion. Please try again.</div>';
-                        }
-                    },
-
-                    switchTab(newTab) {
-                        if (this.tab === newTab) return;
-                        this.tab = newTab;
-                        this.nextCursor = null;
-                        this.hasMore = true;
-
-                        // SWR for tab switching
-                        const cacheKey = `feed_${this.tab}`;
-                        const cached = sessionStorage.getItem(cacheKey);
-                        if (cached) {
-                            this.feedHtml = cached;
-                        } else {
-                            this.feedHtml = '';
-                        }
-
-                        this.fetchFeed();
-
-                        this.$dispatch('feed-tab-synced', newTab);
-
-                        document.getElementById('feed-scroll-container').scrollTo({
-                            top: 0,
-                            behavior: 'smooth'
-                        });
-                    },
-
-                    async fetchFeed() {
-                        if (this.loading) return;
-                        this.loading = true;
-
-                        try {
-                            let url = `{{ route('alumni.feed.fetch') }}?tab=${this.tab}`;
-                            if (this.nextCursor) {
-                                url += `&cursor=${this.nextCursor}`;
-                            }
-
-                            const response = await fetch(url, {
-                                headers: {
-                                    'X-Requested-With': 'XMLHttpRequest'
-                                }
-                            });
-
-                            const data = await response.json();
-
-                            if (!this.nextCursor) {
-                                this.feedHtml = data.html;
-                                // Cache the first page for SWR
-                                sessionStorage.setItem(`feed_${this.tab}`, data.html);
-                            } else {
-                                this.feedHtml += data.html;
-                            }
-
-                            this.nextCursor = data.next_cursor;
-                            this.hasMore = data.has_more;
-
-                            if (!this.nextCursor) {
-                                this.hasMore = false;
-                            }
-
-                        } catch (error) {
-                            console.error('Feed error:', error);
-                        } finally {
-                            this.loading = false;
-                        }
-                    },
-
-                    loadMore() {
-                        if (this.hasMore && !this.loading) {
-                            this.fetchFeed();
-                        }
-                    }
-                }));
-            });
-        </script>
-    @endpush
 </x-app-layout>

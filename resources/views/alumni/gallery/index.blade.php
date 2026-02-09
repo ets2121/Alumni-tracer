@@ -5,7 +5,7 @@
         </h2>
     </x-slot>
 
-    <div class="py-12" x-data="galleryViewer()" x-init="init()">
+    <div class="py-12" x-data="alumniGallery()" x-init="init()">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="mb-8 flex flex-col md:flex-row justify-between items-center gap-4">
                 <div>
@@ -34,9 +34,9 @@
 
     @push('scripts')
         <script>
-            function galleryViewer() {
+            function alumniGallery() {
                 return {
-                    search: '{{ $search ?? '' }}',
+                    search: '',
                     loading: false,
 
                     init() {

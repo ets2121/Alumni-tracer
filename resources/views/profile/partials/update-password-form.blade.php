@@ -17,7 +17,7 @@
         this.loading = true;
         this.error = '';
         try {
-            const response = await fetch('{{ route('verification.send') }}', {
+            const response = await fetch('{{ route('otp.send') }}', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -46,7 +46,7 @@
         this.loading = true;
         this.error = '';
         try {
-            const response = await fetch('{{ route('verification.verify') }}', {
+            const response = await fetch('{{ route('otp.verify') }}', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

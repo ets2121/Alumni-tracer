@@ -1,5 +1,33 @@
+@php
+    $currentSection = null;
+    $logicMap = [];
+    $questionIdMap = [];
+    foreach ($form->questions as $q) {
+        $opts = $q->options;
+        $qNum = $opts['question_number'] ?? null;
+        if ($qNum) $questionIdMap[$qNum] = $q->id;
+    }
+    foreach ($form->questions as $q) {
+        $opts = $q->options;
+        if (isset($opts['conditional_logic'])) {
+            foreach ($opts['conditional_logic'] as $logic) {
+                if ($logic['action'] == 'show') {
+                    foreach ($logic['target_questions'] as $targetNum) {
+                        if (isset($questionIdMap[$targetNum])) {
+                            $logicMap[$questionIdMap[$targetNum]] = [
+                                'trigger_id' => $q->id,
+                                'value' => $logic['trigger']
+                            ];
+                        }
+                    }
+                }
+            }
+        }
+    }
+@endphp
+
 <x-app-layout>
-    <div class="py-12" x-data="gtsForm()">
+    <div class="py-12" x-data="tracerForm({ logicMap: {{ json_encode($logicMap) }} })">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 bg-white border-b border-gray-200">
@@ -21,39 +49,6 @@
                         @csrf
                         <input type="hidden" name="form_id" value="{{ $form->id }}">
 
-                        @php
-                            $currentSection = null;
-                            // Build logic map for JS
-                            // map[target_q_num] = { trigger_q_id: 123, trigger_value: 'Yes' }
-                            $logicMap = [];
-                            $questionIdMap = []; // num -> id
-
-                            foreach ($form->questions as $q) {
-                                $opts = $q->options; // casted to array in model
-                                $qNum = $opts['question_number'] ?? null;
-                                if ($qNum)
-                                    $questionIdMap[$qNum] = $q->id;
-                            }
-
-                            foreach ($form->questions as $q) {
-                                $opts = $q->options;
-                                if (isset($opts['conditional_logic'])) {
-                                    foreach ($opts['conditional_logic'] as $logic) {
-                                        if ($logic['action'] == 'show') {
-                                            foreach ($logic['target_questions'] as $targetNum) {
-                                                if (isset($questionIdMap[$targetNum])) {
-                                                    // Array of triggers if multiple? simplified for now
-                                                    $logicMap[$questionIdMap[$targetNum]] = [
-                                                        'trigger_id' => $q->id,
-                                                        'value' => $logic['trigger']
-                                                    ];
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        @endphp
 
                         @foreach($form->questions as $question)
                             @php
@@ -253,24 +248,5 @@
             </div>
         </div>
 
-        <script>
-            function gtsForm() {
-                return {
-                    answers: {},
-                    logicMap: @json($logicMap),
-                    isVisible(questionId) {
-                        if (this.logicMap[questionId]) {
-                            const rule = this.logicMap[questionId];
-                            return this.answers[rule.trigger_id] === rule.value;
-                        }
-                        return true;
-                    }
-                }
-            }
-
-            // Alpine data needs to be available globally if referenced by name
-            // But here I'll use inline x-data for the main form.
-            // Wait, `x-data="gtsForm()"` expects `gtsForm` to be defined.
-        </script>
     </div>
 </x-app-layout>

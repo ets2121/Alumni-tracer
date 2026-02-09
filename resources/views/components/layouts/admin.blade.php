@@ -47,8 +47,30 @@
 </head>
 
 <body class="h-full font-sans antialiased text-gray-900 dark:text-gray-100 overflow-hidden"
-    x-data="{ sidebarOpen: false, isLoading: false }" @loading-start.window="isLoading = true"
-    @loading-end.window="isLoading = false" @page-loading.window="isLoading = true">
+    x-data="{ 
+        sidebarOpen: false, 
+        isLoading: false,
+        currentPath: window.location.pathname,
+        activeClasses: 'bg-brand-700 text-white shadow-md ring-1 ring-brand-600',
+        inactiveClasses: 'text-brand-100 hover:bg-brand-800 hover:text-white hover:translate-x-1',
+        svgActive: 'text-white',
+        svgInactive: 'text-brand-300 group-hover:text-white',
+        isActive(path) {
+            try {
+                const routePath = new URL(path, window.location.origin).pathname;
+                if (routePath === '{{ parse_url(route('admin.dashboard'), PHP_URL_PATH) }}') {
+                    return this.currentPath === routePath;
+                }
+                return this.currentPath.startsWith(routePath);
+            } catch (e) {
+                return false;
+            }
+        }
+    }" 
+    @loading-start.window="isLoading = true"
+    @loading-end.window="isLoading = false" 
+    @page-loading.window="isLoading = true"
+    @page-navigated.window="sidebarOpen = false; currentPath = window.location.pathname">
     <!-- Global Loading Bar -->
     <div x-show="isLoading" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0"
         x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-300"
@@ -75,7 +97,7 @@
             }
         }
     </style>
-    <div x-data="{ sidebarOpen: false }" class="h-full flex bg-gray-50 dark:bg-dark-bg-deep">
+    <div class="h-full flex bg-gray-50 dark:bg-dark-bg-deep">
 
         <!-- Mobile Sidebar Backdrop -->
         <div x-show="sidebarOpen" @click="sidebarOpen = false"
@@ -109,10 +131,11 @@
             <!-- Navigation Links -->
             <nav class="flex-1 overflow-y-auto sidebar-scroll px-3 py-4 space-y-1">
                 <a href="{{ route('admin.dashboard') }}"
-                    class="flex items-center gap-3 py-2.5 px-3 rounded-lg text-sm font-medium transition-all duration-200 group
-                   {{ request()->routeIs('admin.dashboard') ? 'bg-brand-700 text-white shadow-md ring-1 ring-brand-600' : 'text-brand-100 hover:bg-brand-800 hover:text-white hover:translate-x-1' }}">
-                    <svg class="w-5 h-5 flex-shrink-0 {{ request()->routeIs('admin.dashboard') ? 'text-white' : 'text-brand-300 group-hover:text-white' }}"
-                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    class="flex items-center gap-3 py-2.5 px-3 rounded-lg text-sm font-medium transition-all duration-200 group"
+                    :class="isActive('{{ route('admin.dashboard') }}') ? activeClasses : inactiveClasses">
+                    <svg class="w-5 h-5 flex-shrink-0"
+                        :class="isActive('{{ route('admin.dashboard') }}') ? svgActive : svgInactive" fill="none"
+                        stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z">
                         </path>
@@ -125,9 +148,10 @@
                 </div>
 
                 <a href="{{ route('admin.pre-registration.index') }}"
-                    class="flex items-center gap-3 py-2.5 px-3 rounded-lg text-sm font-medium transition-all duration-200 group
-                   {{ request()->routeIs('admin.pre-registration.*') ? 'bg-brand-700 text-white shadow-md ring-1 ring-brand-600' : 'text-brand-100 hover:bg-brand-800 hover:text-white hover:translate-x-1' }}">
-                    <svg class="w-5 h-5 flex-shrink-0 {{ request()->routeIs('admin.pre-registration.*') ? 'text-white' : 'text-brand-300 group-hover:text-white' }}"
+                    class="flex items-center gap-3 py-2.5 px-3 rounded-lg text-sm font-medium transition-all duration-200 group"
+                    :class="isActive('{{ route('admin.pre-registration.index') }}') ? activeClasses : inactiveClasses">
+                    <svg class="w-5 h-5 flex-shrink-0"
+                        :class="isActive('{{ route('admin.pre-registration.index') }}') ? svgActive : svgInactive"
                         fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z">
@@ -137,10 +161,11 @@
                 </a>
 
                 <a href="{{ route('admin.alumni.index') }}"
-                    class="flex items-center gap-3 py-2.5 px-3 rounded-lg text-sm font-medium transition-all duration-200 group
-                   {{ request()->routeIs('admin.alumni.*') ? 'bg-brand-700 text-white shadow-md ring-1 ring-brand-600' : 'text-brand-100 hover:bg-brand-800 hover:text-white hover:translate-x-1' }}">
-                    <svg class="w-5 h-5 flex-shrink-0 {{ request()->routeIs('admin.alumni.*') ? 'text-white' : 'text-brand-300 group-hover:text-white' }}"
-                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    class="flex items-center gap-3 py-2.5 px-3 rounded-lg text-sm font-medium transition-all duration-200 group"
+                    :class="isActive('{{ route('admin.alumni.index') }}') ? activeClasses : inactiveClasses">
+                    <svg class="w-5 h-5 flex-shrink-0"
+                        :class="isActive('{{ route('admin.alumni.index') }}') ? svgActive : svgInactive" fill="none"
+                        stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z">
                         </path>
@@ -150,10 +175,11 @@
 
                 @if(Auth::user()->isSystemAdmin())
                     <a href="{{ route('admin.users.index') }}"
-                        class="flex items-center gap-3 py-2.5 px-3 rounded-lg text-sm font-medium transition-all duration-200 group
-                                                   {{ request()->routeIs('admin.users.*') ? 'bg-brand-700 text-white shadow-md ring-1 ring-brand-600' : 'text-brand-100 hover:bg-brand-800 hover:text-white hover:translate-x-1' }}">
-                        <svg class="w-5 h-5 flex-shrink-0 {{ request()->routeIs('admin.users.*') ? 'text-white' : 'text-brand-300 group-hover:text-white' }}"
-                            fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        class="flex items-center gap-3 py-2.5 px-3 rounded-lg text-sm font-medium transition-all duration-200 group"
+                        :class="isActive('{{ route('admin.users.index') }}') ? activeClasses : inactiveClasses">
+                        <svg class="w-5 h-5 flex-shrink-0"
+                            :class="isActive('{{ route('admin.users.index') }}') ? svgActive : svgInactive" fill="none"
+                            stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z">
                             </path>
@@ -162,10 +188,11 @@
                     </a>
 
                     <a href="{{ route('admin.courses.index') }}"
-                        class="flex items-center gap-3 py-2.5 px-3 rounded-lg text-sm font-medium transition-all duration-200 group
-                                                   {{ request()->routeIs('admin.courses.*') ? 'bg-brand-700 text-white shadow-md ring-1 ring-brand-600' : 'text-brand-100 hover:bg-brand-800 hover:text-white hover:translate-x-1' }}">
-                        <svg class="w-5 h-5 flex-shrink-0 {{ request()->routeIs('admin.courses.*') ? 'text-white' : 'text-brand-300 group-hover:text-white' }}"
-                            fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        class="flex items-center gap-3 py-2.5 px-3 rounded-lg text-sm font-medium transition-all duration-200 group"
+                        :class="isActive('{{ route('admin.courses.index') }}') ? activeClasses : inactiveClasses">
+                        <svg class="w-5 h-5 flex-shrink-0"
+                            :class="isActive('{{ route('admin.courses.index') }}') ? svgActive : svgInactive" fill="none"
+                            stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10">
                             </path>
@@ -179,9 +206,10 @@
                 </div>
 
                 <a href="{{ route('admin.news_events.index') }}"
-                    class="flex items-center gap-3 py-2.5 px-3 rounded-lg text-sm font-medium transition-all duration-200 group
-                   {{ request()->routeIs('admin.news_events.*') ? 'bg-brand-700 text-white shadow-md ring-1 ring-brand-600' : 'text-brand-100 hover:bg-brand-800 hover:text-white hover:translate-x-1' }}">
-                    <svg class="w-5 h-5 flex-shrink-0 {{ request()->routeIs('admin.news_events.*') ? 'text-white' : 'text-brand-300 group-hover:text-white' }}"
+                    class="flex items-center gap-3 py-2.5 px-3 rounded-lg text-sm font-medium transition-all duration-200 group"
+                    :class="isActive('{{ route('admin.news_events.index') }}') ? activeClasses : inactiveClasses">
+                    <svg class="w-5 h-5 flex-shrink-0"
+                        :class="isActive('{{ route('admin.news_events.index') }}') ? svgActive : svgInactive"
                         fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z">
@@ -191,10 +219,11 @@
                 </a>
 
                 <a href="{{ route('admin.gallery.index') }}"
-                    class="flex items-center gap-3 py-2.5 px-3 rounded-lg text-sm font-medium transition-all duration-200 group
-                   {{ request()->routeIs('admin.gallery.*') ? 'bg-brand-700 text-white shadow-md ring-1 ring-brand-600' : 'text-brand-100 hover:bg-brand-800 hover:text-white hover:translate-x-1' }}">
-                    <svg class="w-5 h-5 flex-shrink-0 {{ request()->routeIs('admin.gallery.*') ? 'text-white' : 'text-brand-300 group-hover:text-white' }}"
-                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    class="flex items-center gap-3 py-2.5 px-3 rounded-lg text-sm font-medium transition-all duration-200 group"
+                    :class="isActive('{{ route('admin.gallery.index') }}') ? activeClasses : inactiveClasses">
+                    <svg class="w-5 h-5 flex-shrink-0"
+                        :class="isActive('{{ route('admin.gallery.index') }}') ? svgActive : svgInactive" fill="none"
+                        stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z">
                         </path>
@@ -203,10 +232,11 @@
                 </a>
 
                 <a href="{{ route('admin.memos.index') }}"
-                    class="flex items-center gap-3 py-2.5 px-3 rounded-lg text-sm font-medium transition-all duration-200 group
-                   {{ request()->routeIs('admin.memos.*') ? 'bg-brand-700 text-white shadow-md ring-1 ring-brand-600' : 'text-brand-100 hover:bg-brand-800 hover:text-white hover:translate-x-1' }}">
-                    <svg class="w-5 h-5 flex-shrink-0 {{ request()->routeIs('admin.memos.*') ? 'text-white' : 'text-brand-300 group-hover:text-white' }}"
-                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    class="flex items-center gap-3 py-2.5 px-3 rounded-lg text-sm font-medium transition-all duration-200 group"
+                    :class="isActive('{{ route('admin.memos.index') }}') ? activeClasses : inactiveClasses">
+                    <svg class="w-5 h-5 flex-shrink-0"
+                        :class="isActive('{{ route('admin.memos.index') }}') ? svgActive : svgInactive" fill="none"
+                        stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
                         </path>
@@ -219,10 +249,11 @@
                 </div>
 
                 <a href="{{ route('admin.reports.index') }}"
-                    class="flex items-center gap-3 py-2.5 px-3 rounded-lg text-sm font-medium transition-all duration-200 group
-                   {{ request()->routeIs('admin.reports.*') ? 'bg-brand-700 text-white shadow-md ring-1 ring-brand-600' : 'text-brand-100 hover:bg-brand-800 hover:text-white hover:translate-x-1' }}">
-                    <svg class="w-5 h-5 flex-shrink-0 {{ request()->routeIs('admin.reports.*') ? 'text-white' : 'text-brand-300 group-hover:text-white' }}"
-                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    class="flex items-center gap-3 py-2.5 px-3 rounded-lg text-sm font-medium transition-all duration-200 group"
+                    :class="isActive('{{ route('admin.reports.index') }}') ? activeClasses : inactiveClasses">
+                    <svg class="w-5 h-5 flex-shrink-0"
+                        :class="isActive('{{ route('admin.reports.index') }}') ? svgActive : svgInactive" fill="none"
+                        stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M16 8v8m-4-5v5m-4-2v2m-2 4h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z">
                         </path>
@@ -231,9 +262,10 @@
                 </a>
 
                 <a href="{{ route('admin.evaluations.index') }}"
-                    class="flex items-center gap-3 py-2.5 px-3 rounded-lg text-sm font-medium transition-all duration-200 group
-                   {{ request()->routeIs('admin.evaluations.*') ? 'bg-brand-700 text-white shadow-md ring-1 ring-brand-600' : 'text-brand-100 hover:bg-brand-800 hover:text-white hover:translate-x-1' }}">
-                    <svg class="w-5 h-5 flex-shrink-0 {{ request()->routeIs('admin.evaluations.*') ? 'text-white' : 'text-brand-300 group-hover:text-white' }}"
+                    class="flex items-center gap-3 py-2.5 px-3 rounded-lg text-sm font-medium transition-all duration-200 group"
+                    :class="isActive('{{ route('admin.evaluations.index') }}') ? activeClasses : inactiveClasses">
+                    <svg class="w-5 h-5 flex-shrink-0"
+                        :class="isActive('{{ route('admin.evaluations.index') }}') ? svgActive : svgInactive"
                         fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
@@ -242,10 +274,11 @@
                 </a>
 
                 <a href="{{ route('admin.tracer.index') }}"
-                    class="flex items-center gap-3 py-2.5 px-3 rounded-lg text-sm font-medium transition-all duration-200 group
-                   {{ request()->routeIs('admin.tracer.*') ? 'bg-brand-700 text-white shadow-md ring-1 ring-brand-600' : 'text-brand-100 hover:bg-brand-800 hover:text-white hover:translate-x-1' }}">
-                    <svg class="w-5 h-5 flex-shrink-0 {{ request()->routeIs('admin.tracer.*') ? 'text-white' : 'text-brand-300 group-hover:text-white' }}"
-                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    class="flex items-center gap-3 py-2.5 px-3 rounded-lg text-sm font-medium transition-all duration-200 group"
+                    :class="isActive('{{ route('admin.tracer.index') }}') ? activeClasses : inactiveClasses">
+                    <svg class="w-5 h-5 flex-shrink-0"
+                        :class="isActive('{{ route('admin.tracer.index') }}') ? svgActive : svgInactive" fill="none"
+                        stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
                         </path>
@@ -254,9 +287,10 @@
                 </a>
 
                 <a href="{{ route('admin.chat-management.index') }}"
-                    class="flex items-center gap-3 py-2.5 px-3 rounded-lg text-sm font-medium transition-all duration-200 group
-                   {{ request()->routeIs('admin.chat-management.*') ? 'bg-brand-700 text-white shadow-md ring-1 ring-brand-600' : 'text-brand-100 hover:bg-brand-800 hover:text-white hover:translate-x-1' }}">
-                    <svg class="w-5 h-5 flex-shrink-0 {{ request()->routeIs('admin.chat-management.*') ? 'text-white' : 'text-brand-300 group-hover:text-white' }}"
+                    class="flex items-center gap-3 py-2.5 px-3 rounded-lg text-sm font-medium transition-all duration-200 group"
+                    :class="isActive('{{ route('admin.chat-management.index') }}') ? activeClasses : inactiveClasses">
+                    <svg class="w-5 h-5 flex-shrink-0"
+                        :class="isActive('{{ route('admin.chat-management.index') }}') ? svgActive : svgInactive"
                         fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z">

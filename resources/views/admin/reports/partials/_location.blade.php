@@ -1,5 +1,5 @@
 <div class="space-y-8">
-    <div class="border-b dark:border-dark-border pb-6">
+    <div class="border-b dark:border-dark-border pb-6 text-center sm:text-left">
         <h2 class="text-xl font-black text-gray-900 dark:text-dark-text-primary uppercase tracking-widest">Geographic Alumni Mapping</h2>
         <p class="text-xs text-gray-500 dark:text-dark-text-secondary font-bold mt-1">Geographic distribution grouped by registered addresses.</p>
     </div>

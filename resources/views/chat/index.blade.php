@@ -1,7 +1,8 @@
 <x-app-layout>
     <!-- Chat Wrapper (Full Height, No Global Scroll) -->
-    <div class="h-full flex bg-white overflow-hidden relative border-t border-gray-200" x-data="chatSystem()"
-        x-init="init()">
+    <div class="h-full flex bg-white overflow-hidden relative border-t border-gray-200" x-data="alumniChatManager({
+         groupsUrl: '{{ route('chat.groups') }}'
+     })" x-init="init()">
 
         <!-- Mobile Sidebar Backdrop -->
         <div x-show="sidebarOpen" @click="sidebarOpen = false"
@@ -51,7 +52,7 @@
                                     x-text="formatTime(group.latest_message?.created_at)"></span>
                             </div>
                             <p class="text-[10px] text-gray-500 truncate leading-tight"
-                                x-text="group.latest_message ? group.latest_message.user.name.split(' ')[0] + ': ' + group.latest_message.content : (group.description || 'Start chatting...')">
+                                x-text="group.latest_message ? (group.latest_message.user ? group.latest_message.user.name.split(' ')[0] : 'Member') + ': ' + group.latest_message.content : (group.description || 'Start chatting...')">
                             </p>
                         </div>
                     </button>
@@ -127,7 +128,7 @@
                                 <!-- Avatar -->
                                 <div class="flex-shrink-0 self-end" x-show="message.user_id != {{ Auth::id() }}">
                                     <div class="w-7 h-7 rounded-lg bg-gray-200 shadow-sm overflow-hidden">
-                                        <img :src="message.user.avatar ? '{{ asset('storage') }}/' + message.user.avatar : 'https://ui-avatars.com/api/?name=' + message.user.name"
+                                        <img :src="(message.user && message.user.avatar) ? '{{ asset('storage') }}/' + message.user.avatar : 'https://ui-avatars.com/api/?name=' + (message.user ? message.user.name : 'Unknown')"
                                             class="w-full h-full object-cover" loading="lazy">
                                     </div>
                                 </div>
@@ -136,7 +137,8 @@
                                 <div class="flex flex-col min-w-0"
                                     :class="message.user_id == {{ Auth::id() }} ? 'items-end' : 'items-start'">
                                     <div class="flex items-baseline gap-2 mb-1 px-1">
-                                        <span class="text-[10px] font-bold text-gray-600" x-text="message.user.name"
+                                        <span class="text-[10px] font-bold text-gray-600"
+                                            x-text="message.user ? message.user.name : 'Unknown Member'"
                                             x-show="message.user_id != {{ Auth::id() }}"></span>
                                     </div>
                                     <div class="px-3.5 py-2 rounded-2xl text-sm leading-relaxed shadow-sm max-w-[260px] sm:max-w-md break-words relative transition-all"
@@ -197,104 +199,5 @@
     @endpush
 
     @push('scripts')
-        <script>
-            function chatSystem() {
-                return {
-                    sidebarOpen: false,
-                    groups: [],
-                    messages: [],
-                    activeGroup: null,
-                    loadingGroups: false,
-                    loadingMessages: false,
-                    newMessage: '',
-                    sending: false,
-                    pollingInterval: null,
-
-                    async init() {
-                        await this.fetchGroups();
-                    },
-
-                    async fetchGroups() {
-                        this.loadingGroups = true;
-                        try {
-                            const response = await fetch('{{ route('chat.groups') }}');
-                            this.groups = await response.json();
-                        } catch (error) { console.error(error); }
-                        finally { this.loadingGroups = false; }
-                    },
-
-                    async selectGroup(group) {
-                        if (this.activeGroup?.id === group.id) return;
-
-                        this.activeGroup = group;
-                        this.messages = [];
-                        this.loadingMessages = true;
-                        if (this.pollingInterval) clearInterval(this.pollingInterval);
-
-                        await this.fetchMessages();
-                        this.loadingMessages = false;
-                        this.scrollToBottom();
-
-                        this.pollingInterval = setInterval(() => this.fetchMessages(true), 3000);
-                    },
-
-                    async fetchMessages(silent = false) {
-                        if (!this.activeGroup) return;
-                        try {
-                            const response = await fetch(`/chat/groups/${this.activeGroup.id}/messages`);
-                            const data = await response.json();
-                            if (JSON.stringify(this.messages) !== JSON.stringify(data)) {
-                                const wasBottom = this.isAtBottom();
-                                this.messages = data;
-                                if (wasBottom || !silent) this.$nextTick(() => this.scrollToBottom());
-                            }
-                        } catch (error) { console.error(error); }
-                    },
-
-                    async sendMessage() {
-                        if (!this.newMessage.trim() || !this.activeGroup || this.sending) return;
-                        const content = this.newMessage;
-                        this.newMessage = '';
-                        this.sending = true;
-
-                        try {
-                            await fetch(`/chat/groups/${this.activeGroup.id}/messages`, {
-                                method: 'POST',
-                                headers: {
-                                    'Content-Type': 'application/json',
-                                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                                    'Accept': 'application/json'
-                                },
-                                body: JSON.stringify({ content: content })
-                            });
-                            await this.fetchMessages(true);
-                            this.scrollToBottom();
-                        } catch (error) { console.error(error); }
-                        finally { this.sending = false; }
-                    },
-
-                    scrollToBottom() {
-                        const container = document.getElementById('message-container');
-                        if (container) container.scrollTop = container.scrollHeight;
-                    },
-
-                    isAtBottom() {
-                        const container = document.getElementById('message-container');
-                        if (!container) return true;
-                        return container.scrollHeight - container.scrollTop <= container.clientHeight + 150;
-                    },
-
-                    formatTime(timestamp) {
-                        if (!timestamp) return '';
-                        return new Date(timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-                    },
-
-                    getGroupColor(type) {
-                        const colors = { batch: 'bg-brand-600', course: 'bg-indigo-600', general: 'bg-blue-600' };
-                        return colors[type] || 'bg-gray-500';
-                    }
-                }
-            }
-        </script>
     @endpush
 </x-app-layout>

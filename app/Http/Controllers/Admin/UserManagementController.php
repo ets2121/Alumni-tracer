@@ -13,22 +13,24 @@ class UserManagementController extends Controller
             abort(403, 'Unauthorized.');
         }
 
-        $search = $request->query('search');
-        $users = \App\Models\User::whereIn('role', ['admin', 'dept_admin'])
-            ->when($search, function ($q) use ($search) {
-                return $q->where('name', 'like', "%{$search}%")
-                    ->orWhere('email', 'like', "%{$search}%");
-            })
-            ->latest()
-            ->paginate(15);
+        if ($request->wantsJson() || $request->query('format') === 'json') {
+            $search = $request->query('search');
+            $users = \App\Models\User::whereIn('role', ['admin', 'dept_admin'])
+                ->when($search, function ($q) use ($search) {
+                    return $q->where('name', 'like', "%{$search}%")
+                        ->orWhere('email', 'like', "%{$search}%");
+                })
+                ->latest()
+                ->paginate(15);
 
-        $departments = \App\Models\Course::distinct()->pluck('department_name')->filter()->values();
-
-        if ($request->ajax()) {
-            return view('admin.users.partials._table', compact('users'));
+            return response()->json($users);
         }
 
-        return view('admin.users.index', compact('users', 'search', 'departments'));
+        // For initial page load, we only need departments for the modal.
+        // The table data will be fetched by Alpine.
+        $departments = \App\Models\Course::distinct()->pluck('department_name')->filter()->values();
+
+        return view('admin.users.index', compact('departments'));
     }
 
     public function create()

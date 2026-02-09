@@ -10,7 +10,7 @@ use Illuminate\Http\Request;
 class EvaluationController extends Controller
 {
 
-    public function index()
+    public function index(Request $request)
     {
         // Get only the latest version of each form lineage OR show all independent forms
         // For simplicity: Show all forms, but grouped if they have parents. 
@@ -20,6 +20,10 @@ class EvaluationController extends Controller
             ->orderByRaw('parent_form_id IS NULL DESC') // Parents first
             ->orderBy('id', 'desc')
             ->get();
+
+        if ($request->wantsJson()) {
+            return response()->json($forms);
+        }
 
         return view('admin.evaluations.index', compact('forms'));
     }

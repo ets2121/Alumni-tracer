@@ -18,67 +18,9 @@
         </div>
     </x-slot>
 
-    <div class="py-12" x-data="employmentHistoryHandler()">
-        <script>
-        function employmentHistoryHandler() {
-            return {
-                isOpen: false,
-                isEdit: false,
-                updateUrl: '',
-                form: {
-                    company_name: '', position: '', industry: '', location: '',
-                    start_date: '', end_date: '', is_current: false, description: ''
-                },
-                
-                openModal() {
-                    this.isOpen = true;
-                    this.isEdit = false;
-                    this.resetForm();
-                },
-
-                editHistory(history) {
-                    this.isOpen = true;
-                    this.isEdit = true;
-                    this.updateUrl = `/employment/${history.id}`;
-                    this.form = {
-                        company_name: history.company_name,
-                        position: history.position,
-                        industry: history.industry,
-                        location: history.location,
-                        start_date: history.start_date ? history.start_date.split('T')[0] : '',
-                        end_date: history.end_date ? history.end_date.split('T')[0] : '',
-                        is_current: !!history.is_current,
-                        description: history.description
-                    };
-                },
-
-                closeModal() {
-                    this.isOpen = false;
-                },
-
-                resetForm() {
-                    this.form = {
-                        company_name: '', position: '', industry: '', location: '',
-                        start_date: '', end_date: '', is_current: false, description: ''
-                    };
-                },
-
-                deleteHistory(url) {
-                    if(confirm('Are you sure you want to remove this record?')) {
-                        const form = document.createElement('form');
-                        form.method = 'POST';
-                        form.action = url;
-                        form.innerHTML = `
-                            @csrf
-                            @method('DELETE')
-                        `;
-                        document.body.appendChild(form);
-                        form.submit();
-                    }
-                }
-            }
-        }
-        </script>
+    <div class="py-12" x-data="employmentManager({ 
+        currentStatus: '{{ old('employment_status', $profile->employment_status ?? '') }}'
+    })">
         <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-8 text-gray-900">
@@ -256,7 +198,7 @@
                             <!-- Overall Employment Status (For Analytics) -->
                             <div class="mb-6">
                                 <label for="employment_status" class="block text-sm font-medium text-gray-700">Current Employment Status</label>
-                                <select name="employment_status" id="employment_status" required
+                                <select name="employment_status" id="employment_status" required x-model="employmentStatus"
                                     class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-brand-500 focus:border-brand-500 sm:text-sm">
                                     <option value="">Select Status</option>
                                     <option value="Employed" {{ old('employment_status', $profile->employment_status ?? '') == 'Employed' ? 'selected' : '' }}>Employed</option>
@@ -271,10 +213,11 @@
 
                             <!-- Extended Professional Details -->
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 p-6 bg-brand-50/50 rounded-3xl border border-brand-100" 
-                                x-show="['Employed', 'Self-employed', 'Underemployed'].includes(document.getElementById('employment_status').value)"
+                                x-show="['Employed', 'Self-employed', 'Underemployed'].includes(employmentStatus)"
                                 x-transition:enter="transition ease-out duration-300"
                                 x-transition:enter-start="opacity-0 -translate-y-4"
-                                x-transition:enter-end="opacity-100 translate-y-0">
+                                x-transition:enter-end="opacity-100 translate-y-0"
+                                style="display: none;">
                                 
                                 <div>
                                     <label for="work_status" class="block text-sm font-medium text-gray-700">Work Status</label>
@@ -428,7 +371,7 @@
                                                 </div>
                                             </div>
                                             <div class="flex items-center">
-                                                <input type="checkbox" name="is_current" id="is_current" x-model="form.is_current" :checked="form.is_current" value="1" class="h-4 w-4 text-brand-600 focus:ring-brand-500 border-gray-300 rounded">
+                                                <input type="checkbox" name="is_current" id="is_current" x-model="form.is_current" value="1" class="h-4 w-4 text-brand-600 focus:ring-brand-500 border-gray-300 rounded">
                                                 <label for="is_current" class="ml-2 block text-sm text-gray-900">I am currently working here</label>
                                             </div>
                                             <div>
@@ -454,63 +397,10 @@
                 </div>
             </div>
 
-            <!-- Career Opportunities Section -->
-            <div class="mt-8 bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-8 text-gray-900">
-                    <div class="flex items-center gap-3 mb-6 border-b pb-4">
-                        <div class="p-2 bg-blue-50 text-blue-600 rounded-lg">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
-                        </div>
-                        <h3 class="text-xl font-black text-gray-900 uppercase tracking-tight">Recommended Careers</h3>
-                    </div>
-
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        @forelse($relevantJobs as $job)
-                            <div class="group bg-gray-50 p-5 rounded-3xl border border-gray-100 transition-all hover:bg-white hover:shadow-xl hover:border-blue-100 flex flex-col h-full">
-                                <div class="flex items-center gap-3 mb-4">
-                                    <div class="w-10 h-10 rounded-2xl bg-white border border-gray-100 flex items-center justify-center text-blue-600 shadow-sm group-hover:scale-110 transition-transform">
-                                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" /></svg>
-                                    </div>
-                                    <div class="flex-1 min-w-0">
-                                        <h4 class="text-xs font-black text-gray-900 uppercase tracking-widest truncate">{{ $job->job_company }}</h4>
-                                        <p class="text-[9px] text-gray-400 font-bold uppercase tracking-[0.2em]">{{ $job->job_location ?: 'Remote' }}</p>
-                                    </div>
-                                </div>
-                                
-                                <h5 class="flex-grow font-black text-gray-800 text-sm mb-3 leading-tight">{{ $job->title }}</h5>
-                                
-                                <div class="mt-auto space-y-3">
-                                    <div class="bg-white/60 rounded-xl p-2.5 flex items-center justify-between">
-                                        <span class="text-[10px] font-black text-blue-600 uppercase tracking-tighter">{{ $job->job_salary ?: 'Competitive' }}</span>
-                                        <span class="text-[10px] font-bold text-gray-400">{{ $job->created_at->diffForHumans() }}</span>
-                                    </div>
-                                    
-                                    <a href="{{ route('alumni.news.show', $job->id) }}" class="w-full py-2 bg-blue-600 text-white rounded-xl text-[10px] font-black uppercase tracking-widest text-center hover:bg-blue-700 transition-all flex items-center justify-center gap-2">
-                                        Learn More
-                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
-                                    </a>
-                                </div>
-                            </div>
-                        @empty
-                            <div class="col-span-full py-12 text-center bg-gray-50 rounded-[2rem] border border-dashed border-gray-200">
-                                <div class="w-16 h-16 bg-white rounded-2xl flex items-center justify-center text-gray-200 mx-auto mb-4 border border-gray-100">
-                                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
-                                </div>
-                                <p class="text-sm font-bold text-gray-400 uppercase tracking-widest">No matching jobs found yet</p>
-                                <p class="text-xs text-gray-400 mt-1">We'll notify you when companies post opportunities for your course.</p>
-                            </div>
-                        @endforelse
-                    </div>
-
-                    @if($relevantJobs->count() > 0)
-                        <div class="mt-8 text-center">
-                            <a href="{{ route('dashboard') }}" class="text-[11px] font-black text-blue-600 uppercase tracking-[0.2em] hover:text-blue-800 transition-colors">
-                                Explore All Opportunities →
-                            </a>
-                        </div>
-                    @endif
                 </div>
             </div>
+        </div>
+    </div>
         </div>
     </div>
 </x-app-layout>

@@ -1,6 +1,6 @@
 <div class="space-y-8">
     <!-- Summary Header -->
-    <div class="flex items-center justify-between mb-8">
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8 text-center sm:text-left">
         <div>
             <h2 class="text-lg font-black text-gray-900 dark:text-dark-text-primary uppercase tracking-tighter">Comparative Analytical Matrix</h2>
             <p class="text-[9px] font-bold text-gray-400 dark:text-dark-text-muted uppercase tracking-widest mt-1">
@@ -15,7 +15,7 @@
                 @endswitch
             </p>
         </div>
-        <div class="flex gap-2">
+        <div class="flex justify-center sm:justify-end gap-2">
             <span class="px-4 py-1.5 bg-brand-600 text-white rounded-xl text-[9px] font-black uppercase tracking-widest shadow-lg shadow-brand-100 italic">Visual Analytics</span>
         </div>
     </div>
@@ -31,8 +31,8 @@
     @else
 
     <!-- Chart Container -->
-    <div class="bg-white dark:bg-dark-bg-elevated rounded-[3rem] border border-gray-100 dark:border-dark-border shadow-sm p-10">
-        <div class="h-[500px] relative">
+    <div class="bg-white dark:bg-dark-bg-elevated rounded-[2rem] sm:rounded-[3rem] border border-gray-100 dark:border-dark-border shadow-sm p-4 sm:p-10">
+        <div class="h-[300px] sm:h-[500px] relative">
             <canvas id="distributionMainChart" 
                 data-type="{{ $data['chart_type'] }}"
                 data-labels='{!! json_encode($data['distribution']->pluck('batch_year')->map(fn($y) => (string)$y)->merge($data['distribution']->pluck('label'))->filter()->values()) !!}'
@@ -44,15 +44,15 @@
     </div>
 
     <!-- Legend/Summary Table -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <div class="bg-gray-50/50 dark:bg-dark-bg-subtle/50 rounded-[2.5rem] p-8 border border-gray-100 dark:border-dark-border">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-8">
+        <div class="bg-gray-50/50 dark:bg-dark-bg-subtle/50 rounded-[2rem] sm:rounded-[2.5rem] p-6 sm:p-8 border border-gray-100 dark:border-dark-border">
             <h4 class="text-[10px] font-black text-gray-900 dark:text-dark-text-primary uppercase tracking-widest mb-6">Distribution Summary</h4>
             <div class="space-y-4">
                 @foreach($data['distribution']->take(5) as $item)
-                    <div class="flex items-center justify-between">
-                        <span class="text-[11px] font-bold text-gray-500 dark:text-dark-text-secondary uppercase">{{ $item->batch_year ?? $item->label ?? 'Unknown' }}</span>
-                        <div class="flex items-center gap-4">
-                            <div class="w-32 h-2 bg-gray-200 dark:bg-dark-bg-subtle rounded-full overflow-hidden">
+                    <div class="flex items-center justify-between gap-4">
+                        <span class="text-[11px] font-bold text-gray-500 dark:text-dark-text-secondary uppercase shrink-0">{{ $item->batch_year ?? $item->label ?? 'Unknown' }}</span>
+                        <div class="flex-1 flex items-center gap-4">
+                            <div class="flex-1 h-2 bg-gray-200 dark:bg-dark-bg-subtle rounded-full overflow-hidden">
                                 <div class="h-full bg-purple-600 rounded-full" style="width: {{ $data['distribution']->max('count') > 0 ? ($item->count / $data['distribution']->max('count') * 100) : 0 }}%"></div>
                             </div>
                             <span class="text-[11px] font-black text-gray-900 dark:text-dark-text-primary">{{ $item->count }}</span>
@@ -62,9 +62,9 @@
             </div>
         </div>
 
-        <div class="bg-purple-600 rounded-[2.5rem] p-8 text-white flex flex-col justify-center">
+        <div class="bg-purple-600 rounded-[2rem] sm:rounded-[2.5rem] p-6 sm:p-8 text-white flex flex-col justify-center text-center lg:text-left">
             <div class="text-[10px] font-black uppercase tracking-widest opacity-60 mb-2">Total Sample Size</div>
-            <div class="text-5xl font-black tracking-tighter">{{ $data['distribution']->sum('count') }}</div>
+            <div class="text-4xl sm:text-5xl font-black tracking-tighter">{{ $data['distribution']->sum('count') }}</div>
             <p class="text-[10px] font-bold uppercase tracking-widest mt-6 opacity-80 leading-relaxed">
                 Aggregated data based on current filter context. Charts recalculate in real-time.
             </p>

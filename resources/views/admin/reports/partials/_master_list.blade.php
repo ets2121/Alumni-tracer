@@ -1,7 +1,7 @@
 <div class="space-y-6">
     <div class="space-y-6">
         <!-- Summary Header for Detail Context -->
-        <div class="flex items-center justify-between mb-8">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8 text-center sm:text-left">
             <div>
                 <h2 class="text-lg font-black text-gray-900 dark:text-dark-text-primary uppercase tracking-tighter">
                     Alumni Record Repository</h2>
@@ -10,7 +10,7 @@
                     {{ $data->lastPage() }}
                 </p>
             </div>
-            <div class="flex gap-2">
+            <div class="flex justify-center sm:justify-end gap-2">
                 <span
                     class="px-4 py-1.5 bg-gray-900 dark:bg-dark-bg-subtle text-white dark:text-dark-text-primary rounded-xl text-[9px] font-black uppercase tracking-widest shadow-lg shadow-gray-100 dark:shadow-none italic">Official
                     Record</span>
@@ -98,25 +98,25 @@
             </div>
 
             <!-- Classic Pagination Section -->
-            <div class="mt-8 flex items-center justify-between px-2">
-                <div class="text-[10px] font-black text-gray-400 dark:text-dark-text-muted uppercase tracking-widest">
+            <div class="mt-8 flex flex-col sm:flex-row items-center justify-between gap-4 px-2">
+                <div class="text-[10px] font-black text-gray-400 dark:text-dark-text-muted uppercase tracking-widest text-center sm:text-left">
                     Showing {{ $data->firstItem() }} to {{ $data->lastItem() }} of {{ $data->total() }} alumni
                 </div>
-                <div class="flex gap-2">
+                <div class="flex gap-2 w-full sm:w-auto overflow-x-auto justify-center">
                     @if($data->onFirstPage())
                         <button
-                            class="px-4 py-2 bg-gray-50 dark:bg-dark-bg-subtle text-gray-300 dark:text-dark-text-disabled rounded-xl text-[10px] font-black uppercase cursor-not-allowed">Previous</button>
+                            class="px-4 py-2 bg-gray-50 dark:bg-dark-bg-subtle text-gray-300 dark:text-dark-text-disabled rounded-xl text-[10px] font-black uppercase cursor-not-allowed shrink-0">Previous</button>
                     @else
                         <button @click="changePage({{ $data->currentPage() - 1 }})"
-                            class="px-4 py-2 bg-white dark:bg-dark-bg-subtle border border-gray-100 dark:border-dark-border text-gray-600 dark:text-dark-text-secondary hover:bg-gray-50 dark:hover:bg-dark-state-hover rounded-xl text-[10px] font-black uppercase transition-all shadow-sm">Previous</button>
+                            class="px-4 py-2 bg-white dark:bg-dark-bg-subtle border border-gray-100 dark:border-dark-border text-gray-600 dark:text-dark-text-secondary hover:bg-gray-50 dark:hover:bg-dark-state-hover rounded-xl text-[10px] font-black uppercase transition-all shadow-sm shrink-0">Previous</button>
                     @endif
 
                     @if($data->hasMorePages())
                         <button @click="changePage({{ $data->currentPage() + 1 }})"
-                            class="px-4 py-2 bg-gray-900 dark:bg-dark-bg-subtle text-white dark:text-dark-text-primary hover:bg-brand-600 rounded-xl text-[10px] font-black uppercase transition-all shadow-xl shadow-gray-200 dark:shadow-none">Next</button>
+                            class="px-4 py-2 bg-gray-900 dark:bg-dark-bg-subtle text-white dark:text-dark-text-primary hover:bg-brand-600 rounded-xl text-[10px] font-black uppercase transition-all shadow-xl shadow-gray-200 dark:shadow-none shrink-0">Next</button>
                     @else
                         <button
-                            class="px-4 py-2 bg-gray-100 dark:bg-dark-bg-subtle text-gray-300 dark:text-dark-text-disabled rounded-xl text-[10px] font-black uppercase cursor-not-allowed">Next</button>
+                            class="px-4 py-2 bg-gray-100 dark:bg-dark-bg-subtle text-gray-300 dark:text-dark-text-disabled rounded-xl text-[10px] font-black uppercase cursor-not-allowed shrink-0">Next</button>
                     @endif
                 </div>
             </div>

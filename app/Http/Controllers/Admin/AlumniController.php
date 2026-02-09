@@ -28,6 +28,10 @@ class AlumniController extends Controller
 
         $alumni = $query->orderBy($sortBy, $sortDir)->paginate(15)->withQueryString();
 
+        if ($request->wantsJson() || $request->query('format') === 'json') {
+            return response()->json($alumni);
+        }
+
         if ($request->ajax()) {
             return view('admin.alumni.partials._table_content', compact('alumni', 'search', 'sortBy', 'sortDir'));
         }

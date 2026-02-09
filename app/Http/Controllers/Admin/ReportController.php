@@ -13,14 +13,7 @@ class ReportController extends Controller
 {
     public function index()
     {
-        $coursesQuery = Course::query();
-        $user = auth()->user();
-
-        if ($user->role === 'dept_admin' && $user->department_name) {
-            $coursesQuery->where('department_name', $user->department_name);
-        }
-
-        $courses = $coursesQuery->get();
+        $courses = Course::all();
         $fields = AlumniProfile::whereNotNull('field_of_work')->distinct()->pluck('field_of_work');
         $evaluations = \App\Models\EvaluationForm::select('id', 'title')->get();
         return view('admin.reports.index', compact('courses', 'fields', 'evaluations'));
@@ -58,7 +51,13 @@ class ReportController extends Controller
             $query->where('field_of_work', $request->query('field_of_work'));
         }
         if ($request->query('work_status')) {
-            $query->where('work_status', $request->query('work_status'));
+            // Check if value is from Employment Status (Employed/Unemployed) or Work Status (Permanent/etc)
+            $val = $request->query('work_status');
+            if (in_array($val, ['Employed', 'Unemployed', 'Ongoing Studies'])) {
+                $query->where('employment_status', $val);
+            } else {
+                $query->where('work_status', $val);
+            }
         }
         if ($request->query('establishment_type')) {
             $query->where('establishment_type', $request->query('establishment_type'));

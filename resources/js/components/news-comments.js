@@ -1,7 +1,7 @@
 export default function newsComments(config = {}) {
     return {
         postId: config.postId,
-        comments: config.initialComments || [],
+        comments: (config.initialComments || []).map(c => ({ ...c, replies: c.replies || [] })),
         cursor: config.nextPage || null,
         hasMore: !!config.nextPage,
         loading: false,
@@ -52,7 +52,7 @@ export default function newsComments(config = {}) {
                 const response = await axios.get(url);
                 const data = response.data;
 
-                this.comments.push(...data.data);
+                this.comments.push(...data.data.map(c => ({ ...c, replies: c.replies || [] })));
                 this.cursor = data.next_page_url; // cursorPaginate returns next_page_url
                 this.hasMore = !!data.next_page_url;
             } catch (e) {
@@ -88,6 +88,7 @@ export default function newsComments(config = {}) {
                         }
                     } else {
                         // Add to top-level comments
+                        newComment.replies = newComment.replies || [];
                         this.comments.unshift(newComment);
                     }
 

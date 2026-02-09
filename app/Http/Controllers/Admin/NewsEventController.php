@@ -70,12 +70,20 @@ class NewsEventController extends Controller
 
         $newsEvents = $query->paginate(10)->withQueryString();
 
+
         // RBAC: Dept Admin cannot see other Dept Admin's posts
         // This is handled by HasDepartmentIsolation trait automatically, 
         // but we ensure System Admin posts with visibility 'all' are also visible.
 
+        if ($request->wantsJson()) {
+            return response()->json($newsEvents);
+        }
+
+        // Fallback for HTML-over-wire if still used by some modals (though modals use specialized methods)
+        // But the INDEX table fetch uses wantsJson now.
         if ($request->ajax()) {
-            return view('admin.news_events.partials._table', compact('newsEvents'));
+            // return view('admin.news_events.partials._table', compact('newsEvents'));
+            return response()->json($newsEvents);
         }
 
         return view('admin.news_events.index', compact('newsEvents', 'search'));

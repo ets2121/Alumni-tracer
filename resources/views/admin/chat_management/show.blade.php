@@ -1,7 +1,10 @@
 <x-layouts.admin>
     <!-- Admin Chat Layout: Fixed Full Height -->
-    <div class="h-full flex flex-col md:flex-row bg-white overflow-hidden relative" x-data="adminChat({{ $group->id }})"
-        x-init="init()">
+    <div class="h-full flex flex-col md:flex-row bg-white overflow-hidden relative" x-data="adminChatManager({
+         groupId: {{ $group->id }},
+         storeUrl: '{{ route('admin.chat-management.store-message', $group) }}',
+         deleteBaseUrl: '{{ url('/admin/chat-management/messages') }}'
+     })" x-init="init()">
 
         <!-- Sidebar (Info Panel) - Fixed on Desktop -->
         <div class="w-full md:w-80 h-full flex flex-col border-r border-gray-200 bg-white z-10">
@@ -157,133 +160,5 @@
     </div>
 
     @push('scripts')
-        <script>
-            function adminChat(groupId) {
-                return {
-                    messages: [],
-                    newMessage: '',
-                    loading: true,
-                    sending: false,
-                    groupId: groupId,
-                    pollingInterval: null,
-
-                    async init() {
-                        await this.fetchMessages();
-                        this.scrollToBottom();
-                        this.pollingInterval = setInterval(() => this.fetchMessages(true), 3000);
-                    },
-
-                    async fetchMessages(silent = false) {
-                        try {
-                            // Assuming reusing the alumni chat API but authenticated as admin 
-                            // OR we need a diverse route. Since the Controller in User Request wasn't shown, 
-                            // I'll assume we might need to use the existing `chat/groups/{id}/messages` endpoint 
-                            // if admins have access, OR the admin specific one.
-                            // However, `admin.chat-management.show` usually implies a different controller.
-                            // I'll use the URL structure consistent with the view: `/chat/groups/${groupId}/messages` 
-                            // If that fails (403), we might need `admin/chat-management/...`.
-                            // But typically specific controllers return JSON. 
-                            // Let's assume for now we reuse the ChatController API if authorized.
-
-                            // Wait, previous file used `$group->messages` in Blade. 
-                            // To use AJAX, we need an endpoint returning JSON.
-                            // I will assume for this task I can use the existing `ChatController` API 
-                            // `Route::get('/chat/groups/{group}/messages', ...)`
-                            // If Admin is also a "User" instance or middleware allows it.
-
-                            const response = await fetch(`/chat/groups/${this.groupId}/messages`, {
-                                headers: { 'Accept': 'application/json' }
-                            });
-
-                            if (!response.ok) throw new Error('Network response was not ok');
-
-                            const data = await response.json();
-                            if (JSON.stringify(this.messages) !== JSON.stringify(data)) {
-                                const wasBottom = this.isAtBottom();
-                                this.messages = data;
-                                if (wasBottom || !silent) this.$nextTick(() => this.scrollToBottom());
-                            }
-                        } catch (error) { console.error('Error fetching messages:', error); }
-                        finally { if (!silent) this.loading = false; }
-                    },
-
-                    async sendMessage() {
-                        if (!this.newMessage.trim() || this.sending) return;
-                        this.sending = true;
-
-                        try {
-                            // Using the Admin route for storing message if distinguishable, 
-                            // OR reuse the standard chat rout if the logged in Admin is a User.
-                            // The previous blade form posted to: `route('admin.chat-management.store-message', $group)`
-                            // I should use THAT route but via FETCH.
-
-                            const response = await fetch(`{{ route('admin.chat-management.store-message', $group) }}`, {
-                                method: 'POST',
-                                headers: {
-                                    'Content-Type': 'application/json',
-                                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                                    'Accept': 'application/json'
-                                },
-                                body: JSON.stringify({ content: this.newMessage })
-                            });
-
-                            if (response.ok) {
-                                this.newMessage = '';
-                                await this.fetchMessages(true);
-                                this.scrollToBottom();
-                            }
-                        } catch (error) { console.error('Error sending message:', error); }
-                        finally { this.sending = false; }
-                    },
-
-                    async deleteMessage(messageId) {
-                        if (!confirm('Are you sure you want to delete this message?')) return;
-
-                        try {
-                            // Need a route to delete by ID.
-                            // Previous form: `route('admin.chat-management.delete-message', $message)`
-                            // We need to construct this URL dynamically in JS.
-                            // Since I can't easily use blade route() with JS param, 
-                            // I'll construct it: `/admin/chat-management/messages/${messageId}`
-                            // Assuming standard resource routing.
-                            // Or I can use a base URL.
-
-                            const baseUrl = `{{ url('/admin/chat-management/messages') }}`;
-                            const response = await fetch(`${baseUrl}/${messageId}`, {
-                                method: 'DELETE',
-                                headers: {
-                                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                                    'Accept': 'application/json'
-                                }
-                            });
-
-                            if (response.ok) {
-                                await this.fetchMessages(true);
-                            }
-                        } catch (error) { console.error('Error deleting message:', error); }
-                    },
-
-                    scrollToBottom() {
-                        const container = document.getElementById('admin-message-container');
-                        if (container) container.scrollTop = container.scrollHeight;
-                    },
-
-                    isAtBottom() {
-                        const container = document.getElementById('admin-message-container');
-                        if (!container) return true;
-                        return container.scrollHeight - container.scrollTop <= container.clientHeight + 150;
-                    },
-
-                    formatTime(timestamp) {
-                        return new Date(timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-                    },
-
-                    getGroupColor(type) {
-                        const colors = { batch: 'bg-brand-600', course: 'bg-indigo-600', general: 'bg-blue-600' };
-                        return colors[type] || 'bg-gray-500';
-                    }
-                }
-            }
-        </script>
     @endpush
 </x-layouts.admin>

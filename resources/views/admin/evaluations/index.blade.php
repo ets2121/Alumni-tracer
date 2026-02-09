@@ -121,12 +121,12 @@
 
                                         <!-- Duplicate Action -->
                                         <button type="button" @click="$dispatch('open-confirmation-modal', { 
-                                                                                    title: 'Duplicate Form', 
-                                                                                    message: 'Create a draft copy of \'{{ $form->title }}\'?', 
-                                                                                    action: '{{ route('admin.evaluations.duplicate', $form->id) }}', 
-                                                                                    method: 'POST', 
-                                                                                    confirmText: 'Duplicate' 
-                                                                                })"
+                                                                                                title: 'Duplicate Form', 
+                                                                                                message: 'Create a draft copy of \'{{ $form->title }}\'?', 
+                                                                                                action: '{{ route('admin.evaluations.duplicate', $form->id) }}', 
+                                                                                                method: 'POST', 
+                                                                                                confirmText: 'Duplicate' 
+                                                                                            })"
                                             class="p-2 rounded-lg text-gray-400 hover:text-amber-600 hover:bg-amber-50 transition-colors"
                                             title="Duplicate Form">
                                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -137,13 +137,13 @@
 
                                         <!-- Delete Action -->
                                         <button type="button" @click="$dispatch('open-confirmation-modal', { 
-                                                                                    title: 'Delete Evaluation Form', 
-                                                                                    message: 'Are you sure you want to delete \'{{ $form->title }}\'? This will permanently delete all associated questions and responses.', 
-                                                                                    action: '{{ route('admin.evaluations.destroy', $form->id) }}', 
-                                                                                    method: 'DELETE', 
-                                                                                    danger: true,
-                                                                                    confirmText: 'Delete Form' 
-                                                                                })"
+                                                                                                title: 'Delete Evaluation Form', 
+                                                                                                message: 'Are you sure you want to delete \'{{ $form->title }}\'? This will permanently delete all associated questions and responses.', 
+                                                                                                action: '{{ route('admin.evaluations.destroy', $form->id) }}', 
+                                                                                                method: 'DELETE', 
+                                                                                                danger: true,
+                                                                                                confirmText: 'Delete Form' 
+                                                                                            })"
                                             class="p-2 rounded-lg text-gray-400 hover:text-red-600 hover:bg-red-50 transition-colors"
                                             title="Delete Form">
                                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -414,89 +414,6 @@
 
     @push('scripts')
         @include('admin.evaluations.partials.analytics_script')
-        <script>
-            function evaluationManager() {
-                return {
-                    modalOpen: false,
-                    questions: [
-                        { id: Date.now(), text: '', type: 'text', required: true, options: [''] }
-                    ],
-
-                    // Analytics Modal Logic
-                    analyticsModalOpen: false,
-                    analyticsLoading: false,
-                    analyticsContent: '',
-                    currentEvaluationId: null,
-                    currentEvaluationTitle: '',
-
-                    openModal() {
-                        this.modalOpen = true;
-                    },
-
-                    closeModal() {
-                        this.modalOpen = false;
-                        // Optional: Confirm if dirty? For now just close.
-                    },
-
-                    openAnalyticsModal(id, title = 'Evaluation Results') {
-                        this.analyticsModalOpen = true;
-                        this.currentEvaluationId = id;
-                        this.currentEvaluationTitle = title;
-                        this.fetchAnalytics(id);
-                    },
-
-                    closeAnalyticsModal() {
-                        this.analyticsModalOpen = false;
-                        this.analyticsContent = '';
-                        this.currentEvaluationId = null;
-                        this.currentEvaluationTitle = '';
-                    },
-
-                    fetchAnalytics(id, params = {}) {
-                        this.analyticsLoading = true;
-
-                        // Construct URL with query parameters
-                        let url = `/admin/evaluations/${id}/analytics`;
-                        const searchParams = new URLSearchParams(params);
-                        if (searchParams.toString()) {
-                            url += `?${searchParams.toString()}`;
-                        }
-
-                        fetch(url, {
-                            headers: {
-                                'X-Requested-With': 'XMLHttpRequest'
-                            }
-                        })
-                            .then(response => response.text())
-                            .then(html => {
-                                this.analyticsContent = html;
-                                this.analyticsLoading = false;
-                            })
-                            .catch(error => {
-                                console.error('Error loading analytics:', error);
-                                this.analyticsContent = '<div class="text-center p-8 text-red-500">Failed to load analytics. Please try again.</div>';
-                                this.analyticsLoading = false;
-                            });
-                    },
-
-                    handleFilters(filters) {
-                        if (this.currentEvaluationId) {
-                            this.fetchAnalytics(this.currentEvaluationId, filters);
-                        }
-                    },
-
-                    addQuestion() {
-                        this.questions.push({
-                            id: Date.now() + Math.random(),
-                            text: '',
-                            type: 'text',
-                            required: true,
-                            options: ['']
-                        });
-                    }
-                }
-            }
-        </script>
     @endpush
 
 

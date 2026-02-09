@@ -1,4 +1,4 @@
-<nav x-data="{ open: false }"
+<nav x-data="{ open: false }" @page-navigated.window="open = false"
     class="bg-brand-600 dark:bg-dark-bg-elevated border-b border-brand-500 dark:border-dark-border">
     <!-- Primary Navigation Menu -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

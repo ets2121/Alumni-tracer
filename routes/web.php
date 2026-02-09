@@ -99,9 +99,11 @@ Route::middleware(['auth', 'status'])->group(function () {
 
     // Alumni Evaluation Routes
     // Alumni Evaluation Routes
-    Route::get('evaluations', [App\Http\Controllers\Alumni\EvaluationController::class, 'index'])->name('alumni.evaluations.index');
-    Route::get('evaluations/{evaluation}', [App\Http\Controllers\Alumni\EvaluationController::class, 'show'])->name('alumni.evaluations.show');
-    Route::post('evaluations/{evaluation}', [App\Http\Controllers\Alumni\EvaluationController::class, 'store'])->name('alumni.evaluations.store');
+    Route::prefix('alumni')->name('alumni.')->group(function () {
+        Route::get('evaluations', [App\Http\Controllers\Alumni\EvaluationController::class, 'index'])->name('evaluations.index');
+        Route::get('evaluations/{evaluation}', [App\Http\Controllers\Alumni\EvaluationController::class, 'show'])->name('evaluations.show');
+        Route::post('evaluations/{evaluation}', [App\Http\Controllers\Alumni\EvaluationController::class, 'store'])->name('evaluations.store');
+    });
 
     // CHED Tracer Survey Routes
     Route::get('tracer-survey', [App\Http\Controllers\Alumni\TracerSurveyController::class, 'index'])->name('tracer.index');

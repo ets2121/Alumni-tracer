@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Auth;
 
 class EvaluationController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         // Get forms that are active
         // Check if user has already responded
@@ -23,6 +23,10 @@ class EvaluationController extends Controller
                 }
             ])
             ->get();
+
+        if ($request->wantsJson()) {
+            return response()->json($forms);
+        }
 
         return view('alumni.evaluations.index', compact('forms'));
     }

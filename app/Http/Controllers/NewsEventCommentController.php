@@ -61,7 +61,7 @@ class NewsEventCommentController extends Controller
         if ($request->ajax()) {
             return response()->json([
                 'status' => 'success',
-                'comment' => $comment->load('user'),
+                'comment' => $comment->load(['user', 'replies']),
                 'count' => $news_event->comments()->count()
             ]);
         }

@@ -104,36 +104,38 @@
             @keydown.window.left="prevPhoto()" @keydown.window.right="nextPhoto()">
 
             <button @click="lightboxOpen = false"
-                class="absolute top-12 right-12 z-[210] p-6 text-white/30 hover:text-white transition-all transform hover:rotate-90">
-                <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                class="absolute top-6 right-6 sm:top-12 sm:right-12 z-[210] p-4 sm:p-6 text-white/30 hover:text-white transition-all transform hover:rotate-90">
+                <svg class="w-8 h-8 sm:w-12 sm:h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12" />
                 </svg>
             </button>
 
-            <div class="relative w-full h-full flex items-center justify-center p-8 md:p-32 overflow-hidden">
+            <div class="relative w-full h-full flex items-center justify-center p-4 sm:p-8 md:p-32 overflow-hidden">
                 <button @click="prevPhoto()"
-                    class="absolute left-12 z-20 w-20 h-20 bg-white/5 hover:bg-white text-white/30 hover:text-gray-950 rounded-full transition-all flex items-center justify-center group shadow-2xl">
-                    <svg class="w-8 h-8 transform group-hover:-translate-x-1 transition-transform" fill="none"
-                        stroke="currentColor" viewBox="0 0 24 24">
+                    class="absolute left-4 sm:left-12 z-20 w-14 h-14 sm:w-20 sm:h-20 bg-white/5 hover:bg-white text-white/30 hover:text-gray-950 rounded-full transition-all flex items-center justify-center group shadow-2xl">
+                    <svg class="w-6 h-6 sm:w-8 sm:h-8 transform group-hover:-translate-x-1 transition-transform"
+                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M15 19l-7-7 7-7" />
                     </svg>
                 </button>
 
-                <div class="relative max-w-7xl w-full h-full flex flex-col items-center justify-center gap-12">
+                <div class="relative max-w-7xl w-full h-full flex flex-col items-center justify-center gap-6 sm:gap-12">
                     <img :src="currentPhoto.url"
-                        class="max-w-full max-h-[75vh] object-contain rounded-[2rem] shadow-[0_0_100px_rgba(0,0,0,0.5)] animate-in fade-in zoom-in duration-1000">
-                    <div class="text-center max-w-3xl px-12">
-                        <p class="text-[10px] font-black text-brand-500 uppercase tracking-[0.5em] mb-4">Memory Insight
+                        class="max-w-full max-h-[60vh] sm:max-h-[75vh] object-contain rounded-[1.5rem] sm:rounded-[2rem] shadow-[0_0_100px_rgba(0,0,0,0.5)] animate-in fade-in zoom-in duration-1000">
+                    <div class="text-center max-w-3xl px-6 sm:px-12">
+                        <p
+                            class="text-[9px] sm:text-[10px] font-black text-brand-500 uppercase tracking-[0.3em] sm:tracking-[0.5em] mb-2 sm:mb-4">
+                            Memory Insight
                         </p>
-                        <h4 class="text-3xl font-black text-white tracking-tighter leading-tight"
+                        <h4 class="text-xl sm:text-3xl font-black text-white tracking-tighter leading-tight"
                             x-text="currentPhoto.caption"></h4>
                     </div>
                 </div>
 
                 <button @click="nextPhoto()"
-                    class="absolute right-12 z-20 w-20 h-20 bg-white/5 hover:bg-white text-white/30 hover:text-gray-950 rounded-full transition-all flex items-center justify-center group shadow-2xl">
-                    <svg class="w-8 h-8 transform group-hover:translate-x-1 transition-transform" fill="none"
-                        stroke="currentColor" viewBox="0 0 24 24">
+                    class="absolute right-4 sm:right-12 z-20 w-14 h-14 sm:w-20 sm:h-20 bg-white/5 hover:bg-white text-white/30 hover:text-gray-950 rounded-full transition-all flex items-center justify-center group shadow-2xl">
+                    <svg class="w-6 h-6 sm:w-8 sm:h-8 transform group-hover:translate-x-1 transition-transform"
+                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M9 5l7 7-7 7" />
                     </svg>
                 </button>
@@ -211,234 +213,4 @@
 
 
 
-        <script>
-            function previewImages(event) {
-                const previewContainer = document.getElementById('image-previews');
-                const files = event.target.files;
-
-                if (files.length > 0) {
-                    previewContainer.classList.remove('hidden');
-                    previewContainer.innerHTML = '';
-
-                    Array.from(files).forEach((file, index) => {
-                        if (file.type.startsWith('image/')) {
-                            const reader = new FileReader();
-                            reader.onload = function (e) {
-                                const previewDiv = document.createElement('div');
-                                previewDiv.className = 'relative group aspect-square rounded-xl overflow-hidden bg-gray-100 border-2 border-gray-200';
-                                previewDiv.innerHTML = `
-                                <img src="${e.target.result}" class="w-full h-full object-cover" alt="Preview ${index + 1}">
-                                <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                                    <div class="text-white text-center">
-                                        <svg class="w-6 h-6 mx-auto mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                                        </svg>
-                                        <p class="text-xs font-bold">Ready</p>
-                                    </div>
-                                </div>
-                                <div class="absolute top-2 right-2 bg-brand-600 text-white text-xs font-bold px-2 py-1 rounded-lg">
-                                    ${index + 1}
-                                </div>
-                            `;
-                                previewContainer.appendChild(previewDiv);
-                            };
-                            reader.readAsDataURL(file);
-                        }
-                    });
-                } else {
-                    previewContainer.classList.add('hidden');
-                }
-            }
-        </script>
-
-        <!-- Edit Caption Modal -->
-        <div x-show="captionModalOpen" class="fixed inset-0 z-50 overflow-y-auto" style="display: none;">
-            <div class="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-                <div class="modal-backdrop" @click="captionModalOpen = false" x-show="captionModalOpen"
-                    x-transition:enter="transition ease-out duration-500" x-transition:enter-start="opacity-0"
-                    x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-300"
-                    x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"></div>
-                <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-                <div class="modal-content-container sm:max-w-lg sm:w-full" x-show="captionModalOpen"
-                    x-transition:enter="transition ease-out duration-500"
-                    x-transition:enter-start="opacity-0 scale-95 translate-y-8"
-                    x-transition:enter-end="opacity-100 scale-100 translate-y-0"
-                    x-transition:leave="transition ease-in duration-300"
-                    x-transition:leave-start="opacity-100 scale-100 translate-y-0"
-                    x-transition:leave-end="opacity-0 scale-95 translate-y-8">
-                    <div class="flex justify-between items-center mb-6 border-b pb-4">
-                        <h3 class="text-xl font-extrabold text-gray-900 tracking-tight">Edit Caption</h3>
-                        <button @click="captionModalOpen = false"
-                            class="text-gray-400 hover:text-brand-600 transition-colors">
-                            <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M6 18L18 6M6 6l12 12" />
-                            </svg>
-                        </button>
-                    </div>
-                    <textarea x-model="editingCaptionText" rows="4"
-                        class="w-full border border-gray-200 bg-white rounded-xl focus:ring-2 focus:ring-brand-500 focus:border-brand-500 text-sm font-medium transition-all p-4 mb-6"
-                        placeholder="Add a caption for this photo..."></textarea>
-                    <div class="flex justify-end gap-3">
-                        <button @click="captionModalOpen = false"
-                            class="px-6 py-3 border border-gray-200 rounded-xl text-sm font-bold text-gray-600 bg-white hover:bg-gray-50 transition-all">Cancel</button>
-                        <button @click="saveCaption()"
-                            class="px-6 py-3 bg-brand-600 text-white rounded-xl text-sm font-bold hover:bg-brand-700 transition-all shadow-lg shadow-brand-100">Save
-                            Caption</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-
-        <!-- Delete Photo Modal -->
-        <div x-show="deleteModalOpen" class="fixed inset-0 z-50 overflow-y-auto" style="display: none;">
-            <div class="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-                <div class="modal-backdrop" @click="deleteModalOpen = false" x-show="deleteModalOpen"
-                    x-transition:enter="transition ease-out duration-500" x-transition:enter-start="opacity-0"
-                    x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-300"
-                    x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"></div>
-                <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-                <div class="modal-content-container sm:max-w-md sm:w-full text-center" x-show="deleteModalOpen"
-                    x-transition:enter="transition ease-out duration-500"
-                    x-transition:enter-start="opacity-0 scale-95 translate-y-8"
-                    x-transition:enter-end="opacity-100 scale-100 translate-y-0"
-                    x-transition:leave="transition ease-in duration-300"
-                    x-transition:leave-start="opacity-100 scale-100 translate-y-0"
-                    x-transition:leave-end="opacity-0 scale-95 translate-y-8">
-                    <div
-                        class="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-red-50 text-red-600 mb-6 border border-red-100">
-                        <svg class="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                        </svg>
-                    </div>
-                    <h3 class="text-2xl font-black text-gray-900 mb-2">Delete Photo?</h3>
-                    <p class="text-sm text-gray-500 mb-8 px-4">This action cannot be undone. The photo will be
-                        permanently removed from the gallery.</p>
-                    <div class="flex justify-center gap-3">
-                        <button @click="deleteModalOpen = false"
-                            class="flex-1 px-6 py-3 border border-gray-200 rounded-xl text-sm font-bold text-gray-600 bg-white hover:bg-gray-50 transition-all">Cancel</button>
-                        <button @click="executeDelete()"
-                            class="flex-1 px-6 py-3 bg-red-600 text-white rounded-xl text-sm font-bold hover:bg-red-700 transition-all shadow-lg shadow-red-100">Delete</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div id="flash-message"></div>
-    </div>
-
-    @push('scripts')
-        <script>
-            function photoManager() {
-                return {
-                    uploadModalOpen: false,
-                    deleteModalOpen: false,
-                    deleteUrl: '',
-                    lightboxOpen: false,
-                    currentIndex: 0,
-                    allPhotos: [],
-                    captionModalOpen: false,
-                    editingCaptionId: null,
-                    editingCaptionText: '',
-
-                    init() {
-                        const input = document.getElementById('photos-upload');
-                        const list = document.getElementById('file-list');
-                        if (input) {
-                            input.addEventListener('change', () => {
-                                list.innerHTML = Array.from(input.files).map(f => `<div class="bg-brand-50 p-2 rounded-lg truncate">• ${f.name}</div>`).join('');
-                            });
-                        }
-                    },
-
-                    openUploadModal() { this.uploadModalOpen = true; },
-
-                    confirmDelete(url) {
-                        this.deleteUrl = url;
-                        this.deleteModalOpen = true;
-                    },
-
-                    editCaption(id, currentCaption) {
-                        this.editingCaptionId = id;
-                        this.editingCaptionText = currentCaption;
-                        this.captionModalOpen = true;
-                    },
-
-                    async saveCaption() {
-                        try {
-                            const response = await fetch(`/admin/gallery/photo/${this.editingCaptionId}`, {
-                                method: 'PATCH',
-                                headers: {
-                                    'Content-Type': 'application/json',
-                                    'X-Requested-With': 'XMLHttpRequest',
-                                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-                                },
-                                body: JSON.stringify({ caption: this.editingCaptionText })
-                            });
-
-                            if (response.ok) {
-                                document.getElementById(`photo-caption-${this.editingCaptionId}`).textContent = this.editingCaptionText || 'Untitled Asset';
-                                this.captionModalOpen = false;
-                                this.showFlash('Caption updated successfully.');
-                                // Update allPhotos for lightbox refresh
-                                const photo = this.allPhotos.find(p => p.id === this.editingCaptionId);
-                                if (photo) photo.caption = this.editingCaptionText || 'No caption provided';
-                            }
-                        } catch (error) { console.error('Save failed:', error); }
-                    },
-
-                    openLightbox(index, photos) {
-                        this.allPhotos = photos;
-                        this.currentIndex = index;
-                        this.lightboxOpen = true;
-                    },
-
-                    prevPhoto() {
-                        this.currentIndex = (this.currentIndex - 1 + this.allPhotos.length) % this.allPhotos.length;
-                    },
-
-                    nextPhoto() {
-                        this.currentIndex = (this.currentIndex + 1) % this.allPhotos.length;
-                    },
-
-                    get currentPhoto() {
-                        return this.allPhotos[this.currentIndex] || { url: '', caption: '' };
-                    },
-
-                    async executeDelete() {
-                        try {
-                            const response = await fetch(this.deleteUrl, {
-                                method: 'DELETE',
-                                headers: {
-                                    'X-Requested-With': 'XMLHttpRequest',
-                                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-                                }
-                            });
-                            const data = await response.json();
-                            if (response.ok) {
-                                this.deleteModalOpen = false;
-                                this.showFlash(data.success);
-                                setTimeout(() => window.location.reload(), 1000);
-                            }
-                        } catch (error) { console.error('Delete failed:', error); }
-                    },
-
-                    showFlash(message) {
-                        const flash = document.getElementById('flash-message');
-                        if (!flash) return;
-                        flash.innerHTML = `<div class="fixed top-8 right-8 z-[300] bg-gray-900 border border-white/10 backdrop-blur-xl text-white px-10 py-5 rounded-[2rem] shadow-2xl animate-in slide-in-from-right duration-500 flex items-center gap-6">
-                                                                <div class="p-3 bg-green-500 rounded-2xl shadow-lg shadow-green-500/20"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" /></svg></div>
-                                                                <div class="flex flex-col text-left">
-                                                                    <span class="text-[9px] font-black text-gray-400 uppercase tracking-[0.2em]">Archival Record Updated</span>
-                                                                    <span class="font-black uppercase text-[11px] tracking-widest">${message}</span>
-                                                                </div>
-                                                            </div>`;
-                        setTimeout(() => flash.innerHTML = '', 4000);
-                    }
-                }
-            }
-        </script>
-    @endpush
 </x-layouts.admin>

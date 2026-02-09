@@ -3,8 +3,9 @@
         News & Events Management
     </x-slot>
 
-    <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg" x-data="newsManager()" x-init="init()">
+    <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg" x-data="newsManager()">
         <div class="p-6 text-gray-900">
+            <!-- Header & Filters -->
             <div
                 class="sticky top-0 z-20 bg-white/90 backdrop-blur-md -mx-6 px-6 py-4 mb-6 border-b border-gray-100 flex flex-col md:flex-row justify-between items-center gap-4 transition-all">
                 <div class="flex flex-col w-full md:w-auto gap-4">
@@ -12,21 +13,12 @@
 
                     <!-- Tabs -->
                     <div class="flex p-1 space-x-1 bg-gray-100/50 rounded-xl w-fit">
-                        <button @click="setTab('all')"
-                            :class="currentTab === 'all' ? 'bg-white text-brand-600 shadow-sm' : 'text-gray-500 hover:text-gray-700'"
-                            class="px-4 py-2 text-sm font-bold rounded-lg transition-all">All</button>
-                        <button @click="setTab('news')"
-                            :class="currentTab === 'news' ? 'bg-white text-blue-600 shadow-sm' : 'text-gray-500 hover:text-gray-700'"
-                            class="px-4 py-2 text-sm font-bold rounded-lg transition-all">News</button>
-                        <button @click="setTab('event')"
-                            :class="currentTab === 'event' ? 'bg-white text-purple-600 shadow-sm' : 'text-gray-500 hover:text-gray-700'"
-                            class="px-4 py-2 text-sm font-bold rounded-lg transition-all">Events</button>
-                        <button @click="setTab('announcement')"
-                            :class="currentTab === 'announcement' ? 'bg-white text-amber-600 shadow-sm' : 'text-gray-500 hover:text-gray-700'"
-                            class="px-4 py-2 text-sm font-bold rounded-lg transition-all">Announcements</button>
-                        <button @click="setTab('job')"
-                            :class="currentTab === 'job' ? 'bg-white text-blue-600 shadow-sm' : 'text-gray-500 hover:text-gray-700'"
-                            class="px-4 py-2 text-sm font-bold rounded-lg transition-all">Jobs</button>
+                        <template x-for="tab in ['all', 'news', 'event', 'announcement', 'job']">
+                            <button @click="setTab(tab)"
+                                :class="currentTab === tab ? 'bg-white text-brand-600 shadow-sm' : 'text-gray-500 hover:text-gray-700'"
+                                class="px-4 py-2 text-sm font-bold rounded-lg transition-all capitalize"
+                                x-text="tab === 'all' ? 'All' : tab + 's'"></button>
+                        </template>
                     </div>
                 </div>
 
@@ -42,7 +34,7 @@
                     </div>
 
                     <div class="relative w-full max-w-xs">
-                        <input type="text" x-model.debounce.300ms="search" placeholder="Search..."
+                        <input type="text" x-model="search" placeholder="Search..."
                             class="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl focus:ring-brand-500 focus:border-brand-500 text-sm shadow-sm">
                         <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                             <svg class="h-4 w-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -61,22 +53,226 @@
                 </div>
             </div>
 
-            <div id="flash-message">
-                @if(session('success'))
-                    <div
-                        class="fixed top-8 right-8 z-[100] bg-gray-900 border border-white/10 backdrop-blur-xl text-white px-8 py-4 rounded-2xl shadow-2xl animate-in slide-in-from-right duration-500 flex items-center gap-4">
-                        <div class="p-2 bg-green-500 rounded-full text-white"><svg class="w-4 h-4" fill="none"
-                                stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
-                            </svg></div>
-                        <span class="font-bold text-sm">{{ session('success') }}</span>
-                    </div>
-                @endif
+            <!-- Loading State -->
+            <div x-show="loading" class="flex justify-center py-12">
+                <svg class="animate-spin h-8 w-8 text-brand-600" xmlns="http://www.w3.org/2000/svg" fill="none"
+                    viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4">
+                    </circle>
+                    <path class="opacity-75" fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                    </path>
+                </svg>
             </div>
 
-            <div id="table-wrapper" :class="{ 'opacity-50 pointer-events-none': loading }"
-                class="transition-opacity duration-200 min-h-[400px]">
-                @include('admin.news_events.partials._table')
+            <!-- Table -->
+            <div x-show="!loading" class="overflow-x-auto min-h-[400px]">
+                <table class="min-w-full leading-normal">
+                    <thead>
+                        <tr>
+                            <th
+                                class="px-5 py-3 border-b-2 border-gray-200 dark:border-dark-border bg-gray-50 dark:bg-dark-bg-subtle text-left text-xs font-bold text-gray-500 dark:text-dark-text-muted uppercase tracking-wider">
+                                Content</th>
+                            <th
+                                class="px-5 py-3 border-b-2 border-gray-200 bg-gray-50 text-center text-xs font-bold text-gray-500 uppercase tracking-wider">
+                                Type</th>
+                            <th
+                                class="px-5 py-3 border-b-2 border-gray-200 bg-gray-50 text-center text-xs font-bold text-gray-500 uppercase tracking-wider">
+                                Pinned</th>
+                            <th
+                                class="px-5 py-3 border-b-2 border-gray-200 bg-gray-50 text-center text-xs font-bold text-gray-500 uppercase tracking-wider">
+                                Engagement</th>
+                            <th
+                                class="px-5 py-3 border-b-2 border-gray-200 dark:border-dark-border bg-gray-50 dark:bg-dark-bg-subtle text-left text-xs font-bold text-gray-500 dark:text-dark-text-muted uppercase tracking-wider">
+                                Posted</th>
+                            <th
+                                class="sticky right-0 top-0 bg-gray-50 z-10 px-5 py-3 border-b-2 border-gray-200 text-right text-xs font-bold text-gray-500 uppercase tracking-wider shadow-[-4px_0_8px_-2px_rgba(0,0,0,0.05)]">
+                                Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-100 dark:divide-dark-border">
+                        <template x-for="post in newsEvents.data" :key="post.id">
+                            <tr class="hover:bg-gray-50 dark:hover:bg-dark-state-hover transition-colors group">
+                                <td class="px-5 py-4 bg-white dark:bg-dark-bg text-sm">
+                                    <div class="flex items-center">
+                                        <div class="flex-shrink-0 w-10 h-10 mr-4 relative">
+                                            <template x-if="post.image_path">
+                                                <img class="w-full h-full rounded-lg shadow-sm object-cover"
+                                                    :src="`/storage/${post.image_path}`" alt="" />
+                                            </template>
+                                            <template x-if="!post.image_path">
+                                                <div
+                                                    class="w-full h-full rounded-lg bg-gray-100 dark:bg-dark-bg-subtle flex items-center justify-center text-gray-400 dark:text-dark-text-muted">
+                                                    <svg class="w-6 h-6" fill="none" stroke="currentColor"
+                                                        viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                                            stroke-width="2"
+                                                            d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                                    </svg>
+                                                </div>
+                                            </template>
+                                            <template x-if="post.is_pinned">
+                                                <div
+                                                    class="absolute -top-1.5 -right-1.5 bg-brand-500 text-white p-0.5 rounded-full shadow-md">
+                                                    <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor"
+                                                        viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                                            stroke-width="2"
+                                                            d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
+                                                    </svg>
+                                                </div>
+                                            </template>
+                                        </div>
+                                        <div>
+                                            <a :href="`/admin/news_events/${post.id}`"
+                                                class="font-bold text-gray-900 dark:text-dark-text-primary line-clamp-1 text-sm hover:text-brand-600 transition-colors"
+                                                x-text="post.title"></a>
+                                            <div class="text-[10px] text-gray-500 dark:text-dark-text-muted line-clamp-1"
+                                                x-text="post.content.replace(/<[^>]*>?/gm, '').substring(0, 50) + '...'">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-5 py-4 bg-white dark:bg-dark-bg text-sm text-center">
+                                    <span
+                                        class="px-2.5 py-0.5 text-[10px] font-bold rounded-full uppercase tracking-wide border"
+                                        :class="{
+                                              'bg-blue-50 text-blue-600 border-blue-100': post.type === 'news',
+                                              'bg-purple-50 text-purple-600 border-purple-100': post.type === 'event',
+                                              'bg-amber-50 text-amber-600 border-amber-100': post.type === 'announcement',
+                                              'bg-blue-50 text-blue-600 border-blue-100': post.type === 'job'
+                                          }" x-text="post.type"></span>
+                                </td>
+                                <td class="px-5 py-4 bg-white text-sm text-center">
+                                    <template x-if="post.is_pinned">
+                                        <span
+                                            class="inline-flex items-center justify-center w-5 h-5 bg-brand-50 text-brand-600 rounded-full">
+                                            <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                                                <path d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
+                                            </svg>
+                                        </span>
+                                    </template>
+                                    <template x-if="!post.is_pinned">
+                                        <span class="text-gray-300">-</span>
+                                    </template>
+                                </td>
+                                <td class="px-5 py-4 bg-white text-sm">
+                                    <div class="flex items-center justify-center gap-4">
+                                        <div class="flex items-center gap-1.5"
+                                            :title="`${post.reactions_count || 0} Reactions`">
+                                            <div
+                                                class="w-7 h-7 rounded-lg bg-red-50 dark:bg-red-900/20 flex items-center justify-center text-red-500">
+                                                <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
+                                                    <path
+                                                        d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+                                                </svg>
+                                            </div>
+                                            <span class="text-xs font-bold text-gray-700 dark:text-dark-text-secondary"
+                                                x-text="post.reactions_count || 0"></span>
+                                        </div>
+                                        <div class="flex items-center gap-1.5"
+                                            :title="`${post.comments_count || 0} Comments`">
+                                            <div
+                                                class="w-7 h-7 rounded-lg bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center text-blue-500">
+                                                <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
+                                                    <path
+                                                        d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v10z" />
+                                                </svg>
+                                            </div>
+                                            <span class="text-xs font-bold text-gray-700 dark:text-dark-text-secondary"
+                                                x-text="post.comments_count || 0"></span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td
+                                    class="px-5 py-4 bg-white dark:bg-dark-bg text-sm text-gray-500 dark:text-dark-text-muted whitespace-nowrap">
+                                    <div class="flex flex-col">
+                                        <span class="text-[11px] font-bold text-gray-700 dark:text-dark-text-secondary"
+                                            x-text="formatDate(post.created_at)"></span>
+                                    </div>
+                                </td>
+                                <td
+                                    class="sticky right-0 bg-white dark:bg-dark-bg-elevated group-hover:bg-gray-50 dark:group-hover:bg-dark-state-hover shadow-[-4px_0_8px_-2px_rgba(0,0,0,0.05)] px-5 py-4 text-sm text-right z-10">
+                                    <div
+                                        class="flex items-center justify-end gap-2 opacity-80 group-hover:opacity-100 transition-opacity">
+                                        <template x-if="post.type === 'event'">
+                                            <button
+                                                @click="openModal(`/admin/news_events/${post.id}/broadcast`, 'Broadcast Invitations')"
+                                                class="p-1.5 text-gray-400 hover:text-purple-600 hover:bg-purple-50 rounded-lg transition-colors"
+                                                title="Broadcast Invitations">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor"
+                                                    viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        stroke-width="2"
+                                                        d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.167H3.38a1.745 1.745 0 01-1.457-2.711l1.547-2.166a1.723 1.723 0 011.121-.632L11 5.882zM11 5.882c.35-.022.724.019 1 .118.475.17.888.477 1.177.876L16.273 11c.238.328.39.706.441 1.103.053.458.044.891-.026 1.285L15 15.391a2.01 2.01 0 01-1.574.882c-.183.003-.366-.02-.545-.068l-1.881-.512M11 5.882c0-.183.021-.366.068-.545L12 3m6 10l2 2m-2-4l2-2" />
+                                                </svg>
+                                            </button>
+                                        </template>
+                                        <button
+                                            @click="openModal(`/admin/news_events/${post.id}/moderate`, 'Moderate Publication')"
+                                            class="p-1.5 text-gray-400 hover:text-purple-600 hover:bg-purple-50 rounded-lg transition-colors"
+                                            title="Moderate & Insights">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                                            </svg>
+                                        </button>
+                                        <button @click="openModal(`/admin/news_events/${post.id}/edit`, 'Edit Content')"
+                                            class="p-1.5 text-gray-400 hover:text-brand-600 hover:bg-brand-50 rounded-lg transition-colors"
+                                            title="Edit">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z">
+                                                </path>
+                                            </svg>
+                                        </button>
+                                        <button @click="$dispatch('open-confirmation-modal', { 
+                                                            title: 'Delete Publication', 
+                                                            message: 'Are you sure you want to delete this? This action cannot be undone.', 
+                                                            action: `/admin/news_events/${post.id}`, 
+                                                            method: 'DELETE', 
+                                                            danger: true, 
+                                                            confirmText: 'Delete' 
+                                                        })"
+                                            class="p-1.5 text-gray-400 hover:bg-red-50 hover:text-red-600 rounded-lg transition-colors"
+                                            title="Delete">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
+                                                </path>
+                                            </svg>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </template>
+                        <tr x-show="!loading && newsEvents.data.length === 0">
+                            <td colspan="6" class="px-5 py-20 bg-white dark:bg-dark-bg text-center">
+                                <div
+                                    class="flex flex-col items-center justify-center text-gray-500 dark:text-dark-text-muted">
+                                    <h3 class="text-lg font-medium text-gray-900 dark:text-dark-text-primary">No content
+                                        found</h3>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            <div class="mt-4 flex justify-between items-center px-6"
+                x-show="newsEvents.next_page_url || newsEvents.prev_page_url">
+                <div class="text-sm text-gray-700 dark:text-dark-text-muted">
+                    Showing <span class="font-medium" x-text="newsEvents.from"></span> to <span class="font-medium"
+                        x-text="newsEvents.to"></span> of <span class="font-medium" x-text="newsEvents.total"></span>
+                    results
+                </div>
+                <div class="flex gap-2">
+                    <button @click="fetchData(newsEvents.prev_page_url)" :disabled="!newsEvents.prev_page_url"
+                        class="px-3 py-1 border rounded text-sm disabled:opacity-50 hover:bg-gray-50 dark:hover:bg-dark-bg-subtle">Previous</button>
+                    <button @click="fetchData(newsEvents.next_page_url)" :disabled="!newsEvents.next_page_url"
+                        class="px-3 py-1 border rounded text-sm disabled:opacity-50 hover:bg-gray-50 dark:hover:bg-dark-bg-subtle">Next</button>
+                </div>
             </div>
         </div>
 
@@ -84,20 +280,14 @@
         <div x-show="modalOpen" class="fixed inset-0 z-50 overflow-y-auto" style="display: none;">
             <div class="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
                 <div class="modal-backdrop fixed inset-0 bg-gray-900/40 backdrop-blur-sm transition-opacity"
-                    @click="closeModal()" x-show="modalOpen" x-transition:enter="ease-out duration-300"
-                    x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
-                    x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100"
-                    x-transition:leave-end="opacity-0"></div>
+                    @click="closeModal()" x-show="modalOpen" x-transition.opacity></div>
 
                 <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
 
                 <div class="modal-content-container inline-block align-bottom bg-white rounded-2xl text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-4xl sm:w-full"
                     x-show="modalOpen" x-transition:enter="ease-out duration-300"
                     x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-                    x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100"
-                    x-transition:leave="ease-in duration-200"
-                    x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
-                    x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95">
+                    x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100">
 
                     <div class="bg-white px-4 pt-5 pb-4 sm:p-8">
                         <div class="flex justify-between items-center mb-6 pl-2 border-l-4 border-brand-500">
@@ -121,119 +311,7 @@
     </div>
 
     @push('scripts')
-        <script>
-            function newsManager() {
-                return {
-                    search: '{{ $search ?? '' }}',
-                    currentTab: 'all',
-                    sort: 'latest',
-                    loading: false,
-                    saving: false,
-                    modalOpen: false,
-                    modalTitle: '',
-                    deleteModalOpen: false,
-                    itemToDelete: '',
-                    deleteUrl: '',
-
-                    init() {
-                        this.$watch('search', () => this.fetchData());
-                        this.interceptPagination();
-                    },
-
-                    setTab(tab) {
-                        this.currentTab = tab;
-                        this.fetchData();
-                    },
-
-                    async fetchData(url = null) {
-                        this.loading = true;
-                        if (!url) {
-                            url = new URL(window.location.origin + window.location.pathname);
-                            if (this.search) url.searchParams.set('search', this.search);
-                            if (this.currentTab !== 'all') url.searchParams.set('type', this.currentTab);
-                            if (this.sort !== 'latest') url.searchParams.set('sort', this.sort);
-                        }
-                        try {
-                            const response = await fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' } });
-                            const html = await response.text();
-                            document.getElementById('table-wrapper').innerHTML = html;
-                            window.history.pushState({}, '', url);
-                            this.interceptPagination();
-                        } catch (error) { console.error('Fetch failed:', error); }
-                        finally { this.loading = false; }
-                    },
-
-                    interceptPagination() {
-                        document.querySelectorAll('.pagination-container a').forEach(link => {
-                            link.onclick = (e) => {
-                                e.preventDefault();
-                                this.fetchData(e.currentTarget.href);
-                            };
-                        });
-                    },
-
-                    async openModal(url, title) {
-                        this.modalTitle = title;
-                        this.modalOpen = true;
-                        document.getElementById('modal-content').innerHTML = '<div class="flex justify-center py-20"><div class="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-600"></div></div>';
-                        try {
-                            const response = await fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' } });
-                            document.getElementById('modal-content').innerHTML = await response.text();
-
-                            // Initialize new form listener
-                            const form = document.getElementById('news-form');
-                            if (form) {
-                                form.onsubmit = async (e) => {
-                                    e.preventDefault();
-                                    await this.saveForm(e.target);
-                                };
-                            }
-                        } catch (error) { this.modalOpen = false; }
-                    },
-
-                    closeModal() { this.modalOpen = false; },
-
-                    async saveForm(form) {
-                        this.saving = true;
-                        const formData = new FormData(form);
-                        document.querySelectorAll('.error-message').forEach(el => el.textContent = '');
-                        try {
-                            const response = await fetch(form.action, {
-                                method: 'POST',
-                                body: formData,
-                                headers: {
-                                    'X-Requested-With': 'XMLHttpRequest',
-                                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-                                }
-                            });
-                            const data = await response.json();
-                            if (response.ok) {
-                                this.closeModal();
-                                this.fetchData();
-                                this.showFlash(data.success);
-                            } else if (response.status === 422) {
-                                if (data.errors) {
-                                    Object.keys(data.errors).forEach(field => {
-                                        // Handle array generic errors (photos.0 -> photos)
-                                        const cleanField = field.split('.')[0];
-                                        const errorEl = document.querySelector(`.error-message[data-field="${cleanField}"]`);
-                                        if (errorEl) errorEl.textContent = data.errors[field][0];
-                                    });
-                                }
-                            }
-                        } catch (error) { console.error('Save failed:', error); }
-                        finally { this.saving = false; }
-                    },
-
-
-
-                    showFlash(message, type = 'success') {
-                        window.dispatchEvent(new CustomEvent('toast', {
-                            detail: { message: message, type: type }
-                        }));
-                    }
-                }
-            }
-        </script>
+        <!-- No inline script needed -->
     @endpush
+
 </x-layouts.admin>

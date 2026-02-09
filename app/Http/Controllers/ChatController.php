@@ -21,14 +21,14 @@ class ChatController extends Controller
 
         // 1. System Admin: See EVERYTHING
         if ($user->role === 'admin') {
-            return response()->json(ChatGroup::with(['latestMessage.user'])->get());
+            return response()->json(ChatGroup::with(['latestMessage.user' => fn($q) => $q->withoutGlobalScopes()])->get());
         }
 
         // 2. Department Admin: See Dept groups + All Admin Dept groups
         if ($user->role === 'dept_admin') {
             $groups = ChatGroup::where('department_name', $user->department_name)
                 ->orWhere('type', 'admin_dept')
-                ->with(['latestMessage.user'])
+                ->with(['latestMessage.user' => fn($q) => $q->withoutGlobalScopes()])
                 ->get();
             return response()->json($groups);
         }
@@ -69,7 +69,7 @@ class ChatController extends Controller
                     });
                 });
         })
-            ->with(['latestMessage.user'])
+            ->with(['latestMessage.user' => fn($q) => $q->withoutGlobalScopes()])
             ->get();
 
         return response()->json($groups);
@@ -80,7 +80,7 @@ class ChatController extends Controller
         $this->checkGroupAccess($group);
 
         $messages = $group->messages()
-            ->with('user:id,name,avatar,role')
+            ->with(['user' => fn($q) => $q->withoutGlobalScopes()->select('id', 'name', 'avatar', 'role')])
             ->orderBy('created_at', 'asc')
             ->take(50)
             ->get();
@@ -108,7 +108,7 @@ class ChatController extends Controller
             'type' => 'text'
         ]);
 
-        return response()->json($message->load('user:id,name,avatar,role'));
+        return response()->json($message->load(['user' => fn($q) => $q->withoutGlobalScopes()->select('id', 'name', 'avatar', 'role')]));
     }
 
     private function checkGroupAccess(ChatGroup $group)

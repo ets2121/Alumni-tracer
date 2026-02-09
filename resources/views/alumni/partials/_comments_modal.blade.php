@@ -86,7 +86,7 @@
                             <div class="mt-6 pt-6 border-t border-gray-50 bg-gray-50/30 rounded-2xl p-4"
                                 x-show="comment.replies && comment.replies.length > 0">
                                 <!-- Facebook-style Toggle -->
-                                <template x-if="comment.replies.length >= 3 && !isExpanded(comment.id)">
+                                <template x-if="comment.replies?.length >= 3 && !isExpanded(comment.id)">
                                     <button @click="toggleExpanded(comment.id)"
                                         class="flex items-center gap-3 py-2 px-4 rounded-xl bg-white border border-gray-100 hover:border-brand-200 transition-all shadow-sm mb-4 w-full justify-start text-left">
                                         <div class="flex -space-x-2">
@@ -111,7 +111,7 @@
                                 </template>
 
                                 <!-- Replies Vertical stream -->
-                                <div class="space-y-6" x-show="isExpanded(comment.id) || comment.replies.length < 3"
+                                <div class="space-y-6" x-show="isExpanded(comment.id) || comment.replies?.length < 3"
                                     x-collapse>
                                     <template x-for="reply in comment.replies" :key="reply.id">
                                         <div class="flex flex-col gap-2 relative">
@@ -159,7 +159,7 @@
                                         </div>
                                     </template>
 
-                                    <template x-if="comment.replies.length >= 3 && isExpanded(comment.id)">
+                                    <template x-if="comment.replies?.length >= 3 && isExpanded(comment.id)">
                                         <button @click="toggleExpanded(comment.id)"
                                             class="mt-4 text-[10px] font-black text-gray-400 hover:text-brand-600 uppercase tracking-widest pl-11 transition-colors">
                                             Collapse Discussion

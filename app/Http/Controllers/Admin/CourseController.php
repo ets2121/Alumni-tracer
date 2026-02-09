@@ -37,7 +37,7 @@ class CourseController extends Controller
         $request->validate([
             'code' => 'required|string|max:20|unique:courses,code',
             'name' => 'required|string|max:255',
-            'department_name' => 'required|string|max:50',
+            'department_name' => 'required|string|max:255',
             'category' => 'required|in:Undergraduate,Graduate,Certificate',
             'description' => 'nullable|string',
         ]);
@@ -72,7 +72,7 @@ class CourseController extends Controller
         $request->validate([
             'code' => 'required|string|max:20|unique:courses,code,' . $id,
             'name' => 'required|string|max:255',
-            'department_name' => 'required|string|max:50',
+            'department_name' => 'required|string|max:255',
             'category' => 'required|in:Undergraduate,Graduate,Certificate',
             'description' => 'nullable|string',
         ]);
