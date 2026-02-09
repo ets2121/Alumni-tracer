@@ -15,32 +15,62 @@ class ChatManagementController extends Controller
         // 1. Fetch groups with message counts
         $groups = ChatGroup::withCount(['messages', 'users'])->get();
 
-        // 2. Optimized counting for each type to avoid heavy pivot joins
-        $activeAlumniCount = \App\Models\User::where('role', 'alumni')->where('status', 'active')->count();
+        // 2. Pre-fetch counts for all scenarios to optimize loop (Universal Base)
+        $globalAlumniCount = \App\Models\User::withoutGlobalScopes()->where('role', 'alumni')->where('status', 'active')->count();
 
-        // Batch counts
-        $batchCounts = \App\Models\AlumniProfile::whereHas('user', function ($q) {
-            $q->where('status', 'active');
-        })
-            ->select('batch_year', \DB::raw('count(*) as count'))
-            ->groupBy('batch_year')
-            ->pluck('count', 'batch_year');
+        $deptAlumniCounts = \App\Models\AlumniProfile::withoutGlobalScopes()
+            ->whereHas('user', fn($q) => $q->withoutGlobalScopes()->where('status', 'active'))
+            ->select('department_name', \DB::raw('count(*) as count'))
+            ->groupBy('department_name')
+            ->pluck('count', 'department_name');
 
-        // Course counts
-        $courseCounts = \App\Models\AlumniProfile::whereHas('user', function ($q) {
-            $q->where('status', 'active');
-        })
-            ->select('course_id', \DB::raw('count(*) as count'))
-            ->groupBy('course_id')
-            ->pluck('count', 'course_id');
+        $batchCounts = \App\Models\AlumniProfile::withoutGlobalScopes()
+            ->whereHas('user', fn($q) => $q->withoutGlobalScopes()->where('status', 'active'))
+            ->select('batch_year', 'department_name', \DB::raw('count(*) as count'))
+            ->groupBy('batch_year', 'department_name')
+            ->get();
+
+        $courseCounts = \App\Models\AlumniProfile::withoutGlobalScopes()
+            ->whereHas('user', fn($q) => $q->withoutGlobalScopes()->where('status', 'active'))
+            ->select('course_id', 'department_name', \DB::raw('count(*) as count'))
+            ->groupBy('course_id', 'department_name')
+            ->get();
+
+        $systemAdminCount = \App\Models\User::withoutGlobalScopes()->where('role', 'admin')->where('status', 'active')->count();
+        $deptAdminCounts = \App\Models\User::withoutGlobalScopes()
+            ->where('role', 'dept_admin')
+            ->where('status', 'active')
+            ->select('department_name', \DB::raw('count(*) as count'))
+            ->groupBy('department_name')
+            ->pluck('count', 'department_name');
 
         foreach ($groups as $group) {
             if ($group->type === 'general') {
-                $group->members_count = $activeAlumniCount;
+                $group->members_count = $group->department_name
+                    ? ($deptAlumniCounts[$group->department_name] ?? 0)
+                    : $globalAlumniCount;
             } elseif ($group->type === 'batch') {
-                $group->members_count = $batchCounts[$group->batch_year] ?? 0;
+                if ($group->department_name) {
+                    $group->members_count = $batchCounts->where('batch_year', $group->batch_year)
+                        ->where('department_name', $group->department_name)
+                        ->sum('count');
+                } else {
+                    $group->members_count = $batchCounts->where('batch_year', $group->batch_year)->sum('count');
+                }
             } elseif ($group->type === 'course') {
-                $group->members_count = $courseCounts[$group->course_id] ?? 0;
+                if ($group->department_name) {
+                    $group->members_count = $courseCounts->where('course_id', $group->course_id)
+                        ->where('department_name', $group->department_name)
+                        ->sum('count');
+                } else {
+                    $group->members_count = $courseCounts->where('course_id', $group->course_id)->sum('count');
+                }
+            } elseif ($group->type === 'admin_dept') {
+                if ($group->department_name) {
+                    $group->members_count = $systemAdminCount + ($deptAdminCounts[$group->department_name] ?? 0);
+                } else {
+                    $group->members_count = $systemAdminCount + $deptAdminCounts->sum();
+                }
             } else {
                 $group->members_count = $group->users_count ?? 0;
             }
@@ -78,18 +108,33 @@ class ChatManagementController extends Controller
         $group = $chat_management->load(['messages.user']);
 
         // Strictly fetch participants matching group criteria
-        $participantsQuery = \App\Models\User::where('status', 'active')
-            ->where('role', 'alumni')
-            ->with('alumniProfile');
+        $participantsQuery = \App\Models\User::where('status', 'active')->withoutGlobalScopes();
 
-        if ($group->type === 'batch') {
-            $participantsQuery->whereHas('alumniProfile', function ($q) use ($group) {
-                $q->where('batch_year', $group->batch_year);
-            });
-        } elseif ($group->type === 'course') {
-            $participantsQuery->whereHas('alumniProfile', function ($q) use ($group) {
-                $q->where('course_id', $group->course_id);
-            });
+        if ($group->type === 'admin_dept') {
+            $participantsQuery->whereIn('role', ['admin', 'dept_admin']);
+            if ($group->department_name) {
+                $participantsQuery->where(function ($q) use ($group) {
+                    $q->where('role', 'admin')
+                        ->orWhere('department_name', $group->department_name);
+                });
+            }
+        } else {
+            $participantsQuery->where('role', 'alumni')->with('alumniProfile');
+
+            // Explicit Manual Scoping to match Potential Counts
+            if ($group->department_name) {
+                $participantsQuery->where('department_name', $group->department_name);
+            }
+
+            if ($group->type === 'batch') {
+                $participantsQuery->whereHas('alumniProfile', function ($q) use ($group) {
+                    $q->where('batch_year', $group->batch_year);
+                });
+            } elseif ($group->type === 'course') {
+                $participantsQuery->whereHas('alumniProfile', function ($q) use ($group) {
+                    $q->where('course_id', $group->course_id);
+                });
+            }
         }
 
         $participants = $participantsQuery->get();

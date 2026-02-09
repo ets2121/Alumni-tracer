@@ -24,11 +24,11 @@ class ChatController extends Controller
             return response()->json(ChatGroup::with(['latestMessage.user' => fn($q) => $q->withoutGlobalScopes()])->get());
         }
 
-        // 2. Department Admin: See Dept groups + All Admin Dept groups
+        // 2. Department Admin: See Dept groups + Global groups
         if ($user->role === 'dept_admin') {
-            $groups = ChatGroup::where('department_name', $user->department_name)
-                ->orWhere('type', 'admin_dept')
-                ->with(['latestMessage.user' => fn($q) => $q->withoutGlobalScopes()])
+            // No custom query needed! HasDepartmentIsolation trait handles
+            // (department_name = ? OR department_name IS NULL)
+            $groups = ChatGroup::with(['latestMessage.user' => fn($q) => $q->withoutGlobalScopes()])
                 ->get();
             return response()->json($groups);
         }
@@ -120,9 +120,10 @@ class ChatController extends Controller
             return;
         }
 
-        // 2. Dept Admin: Dept scoped + Admin Dept
+        // 2. Dept Admin: Dept scoped + Global groups
         if ($user->role === 'dept_admin') {
-            if ($group->type !== 'admin_dept' && $group->department_name !== $user->department_name) {
+            // Allow if it's their department OR a global group (null department)
+            if ($group->department_name !== null && $group->department_name !== $user->department_name) {
                 abort(403, 'Access Denied: Different Department.');
             }
             return;

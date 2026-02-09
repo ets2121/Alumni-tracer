@@ -28,9 +28,24 @@ export default () => ({
         ]);
 
         // Listen for theme changes if using window-level event or observer
-        window.addEventListener('theme-changed', () => {
-            this.refreshCharts();
+        this._themeListener = () => this.refreshCharts();
+        window.addEventListener('theme-changed', this._themeListener);
+    },
+
+    destroy() {
+        // Cleanup theme listener
+        window.removeEventListener('theme-changed', this._themeListener);
+
+        // Destroy all chart instances
+        Object.values(this.charts).forEach(chart => {
+            if (chart && typeof chart.destroy === 'function') {
+                chart.destroy();
+            }
         });
+        this.charts = {};
+
+        // Reset state to prevent leaks or late reactions
+        this.recentUsers = { verified: [], pending: [] };
     },
 
     async fetchCounts() {
@@ -61,7 +76,11 @@ export default () => ({
         this.loading.recentUsers = true;
         try {
             const response = await axios.get('/admin/stats/recent-users');
-            this.recentUsers = response.data;
+            if (response.data && response.data.verified && response.data.pending) {
+                this.recentUsers = response.data;
+            } else {
+                console.warn('Recent users data format invalid:', response.data);
+            }
         } catch (error) {
             console.error('Failed to fetch recent users:', error);
         } finally {

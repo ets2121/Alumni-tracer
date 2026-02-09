@@ -235,12 +235,12 @@
                 class="bg-white dark:bg-dark-bg-elevated border border-gray-100 dark:border-dark-border rounded-2xl shadow-sm overflow-hidden flex flex-col">
                 <div class="p-6 border-b dark:border-dark-border">
                     <h3 class="text-gray-900 dark:text-dark-text-primary text-sm font-bold flex items-center">
-                        <span class="w-2 h-2 bg-green-500 rounded-full mr-2"></span>
+                        <span class="w-2 h-2 bg-brand-500 rounded-full mr-2"></span>
                         Recent Verified Alumni
                     </h3>
                 </div>
                 <div class="flex-grow">
-                    <template x-if="loading.recentUsers">
+                    <template x-if="typeof loading !== 'undefined' && loading.recentUsers">
                         <div class="p-6 space-y-4">
                             <template x-for="i in 5" :key="i">
                                 <div class="flex items-center space-x-3 animate-pulse">
@@ -253,7 +253,8 @@
                             </template>
                         </div>
                     </template>
-                    <template x-if="!loading.recentUsers">
+                    <template
+                        x-if="typeof loading !== 'undefined' && !loading.recentUsers && typeof recentUsers !== 'undefined'">
                         <div class="divide-y dark:divide-dark-border overflow-x-auto">
                             <table class="w-full text-left text-sm">
                                 <thead>
@@ -267,7 +268,7 @@
                                     </tr>
                                 </thead>
                                 <tbody class="divide-y dark:divide-dark-border">
-                                    <template x-for="user in recentUsers.verified" :key="user.email">
+                                    <template x-for="user in (recentUsers?.verified || [])" :key="user.email">
                                         <tr class="hover:bg-gray-50 dark:hover:bg-dark-bg-subtle/30 transition-colors">
                                             <td class="px-6 py-4">
                                                 <div class="flex items-center">
@@ -300,7 +301,7 @@
                                     </template>
                                 </tbody>
                             </table>
-                            <template x-if="recentUsers.verified.length === 0">
+                            <template x-if="typeof recentUsers !== 'undefined' && recentUsers.verified.length === 0">
                                 <div class="p-8 text-center text-gray-400 dark:text-dark-text-muted text-xs italic">No
                                     verified alumni found.</div>
                             </template>
@@ -319,7 +320,7 @@
                     </h3>
                 </div>
                 <div class="flex-grow">
-                    <template x-if="loading.recentUsers">
+                    <template x-if="typeof loading !== 'undefined' && loading.recentUsers">
                         <div class="p-6 space-y-4">
                             <template x-for="i in 5" :key="i">
                                 <div class="flex items-center space-x-3 animate-pulse">
@@ -332,7 +333,8 @@
                             </template>
                         </div>
                     </template>
-                    <template x-if="!loading.recentUsers">
+                    <template
+                        x-if="typeof loading !== 'undefined' && !loading.recentUsers && typeof recentUsers !== 'undefined'">
                         <div class="divide-y dark:divide-dark-border overflow-x-auto">
                             <table class="w-full text-left text-sm">
                                 <thead>
@@ -346,7 +348,7 @@
                                     </tr>
                                 </thead>
                                 <tbody class="divide-y dark:divide-dark-border">
-                                    <template x-for="user in recentUsers.pending" :key="user.email">
+                                    <template x-for="user in (recentUsers?.pending || [])" :key="user.email">
                                         <tr class="hover:bg-gray-50 dark:hover:bg-dark-bg-subtle/30 transition-colors">
                                             <td class="px-6 py-4">
                                                 <div class="flex items-center">
@@ -379,7 +381,7 @@
                                     </template>
                                 </tbody>
                             </table>
-                            <template x-if="recentUsers.pending.length === 0">
+                            <template x-if="typeof recentUsers !== 'undefined' && recentUsers.pending.length === 0">
                                 <div class="p-8 text-center text-gray-400 dark:text-dark-text-muted text-xs italic">No
                                     pending verifications.</div>
                             </template>
