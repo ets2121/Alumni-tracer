@@ -12,7 +12,6 @@ export default (config) => ({
         this.$watch('search', () => this.fetchData());
         this.$watch('tab', () => this.fetchData());
         this.interceptPagination();
-        this.fetchData();
     },
 
     setTab(newTab) {

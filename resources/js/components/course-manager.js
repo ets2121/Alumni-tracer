@@ -11,7 +11,6 @@ export default () => ({
     init() {
         this.$watch('search', () => this.fetchData());
         this.interceptPagination();
-        this.fetchData();
 
         // Use a unique event listener or scope it to the element
         const formSubmitHandler = async (e) => {

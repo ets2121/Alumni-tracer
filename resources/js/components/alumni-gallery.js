@@ -1,16 +1,10 @@
 export default () => ({
-    search: '',
+    search: new URLSearchParams(window.location.search).get('search') || '',
     loading: false,
 
     init() {
         this.$watch('search', () => this.fetchData());
         this.interceptPagination();
-
-        // Populate search from URL if exists
-        const params = new URLSearchParams(window.location.search);
-        if (params.has('search')) {
-            this.search = params.get('search');
-        }
     },
 
     async fetchData(url = null) {
