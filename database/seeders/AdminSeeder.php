@@ -12,12 +12,37 @@ class AdminSeeder extends Seeder
      */
     public function run(): void
     {
-        \App\Models\User::factory()->create([
-            'name' => 'Administrator',
-            'email' => 'admin@example.com',
-            'password' => bcrypt('password'),
-            'role' => 'admin',
-            'status' => 'active',
-        ]);
+        $domain = config('demo.admin.domain', 'qsu.com');
+        $password = bcrypt(config('demo.admin.default_password', 'password'));
+
+        // System Administrator
+        \App\Models\User::updateOrCreate(
+            ['email' => "admin@{$domain}"],
+            [
+                'name' => 'System Administrator',
+                'password' => $password,
+                'role' => 'admin',
+                'status' => 'active',
+            ]
+        );
+
+        // Department Administrators
+        $departments = \App\Models\Course::whereNotNull('department_name')
+            ->distinct()
+            ->pluck('department_name');
+
+        foreach ($departments as $dept) {
+            $deptSlug = strtolower(str_replace(' ', '.', $dept));
+            \App\Models\User::updateOrCreate(
+                ['email' => "admin.{$deptSlug}@{$domain}"],
+                [
+                    'name' => "{$dept} Administrator",
+                    'password' => $password,
+                    'role' => 'dept_admin',
+                    'status' => 'active',
+                    'department_name' => $dept,
+                ]
+            );
+        }
     }
 }

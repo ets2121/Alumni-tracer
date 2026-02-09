@@ -8,9 +8,11 @@ use App\Models\Course;
 
 use App\Traits\HasDepartmentIsolation;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+
 class AlumniProfile extends Model
 {
-    use HasDepartmentIsolation;
+    use HasFactory, HasDepartmentIsolation;
 
     protected static function booted()
     {

@@ -16,19 +16,21 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $this->call([
-            AdminSeeder::class,
             CourseSeeder::class,
+            AdminSeeder::class,
             AlumniSeeder::class,
             EvaluationSeeder::class,
         ]);
 
-        // Create a test alumni user
-        User::factory()->create([
-            'name' => 'Test Alumni',
-            'email' => 'alumni@example.com',
-            'role' => 'alumni',
-            'status' => 'active',
-            'password' => bcrypt('password'),
-        ]);
+        // Create a predictable test alumni user for quick dev access
+        User::updateOrCreate(
+            ['email' => 'alumni@example.com'],
+            [
+                'name' => 'Test Alumni',
+                'role' => 'alumni',
+                'status' => 'active',
+                'password' => bcrypt('password'),
+            ]
+        );
     }
 }
