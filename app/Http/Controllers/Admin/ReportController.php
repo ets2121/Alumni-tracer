@@ -25,7 +25,10 @@ class ReportController extends Controller
         $fromDate = $request->query('from_date');
         $toDate = $request->query('to_date');
 
-        $query = AlumniProfile::with(['user', 'course']);
+        $query = AlumniProfile::with(['user', 'course'])
+            ->whereHas('user', function ($q) {
+                $q->where('status', 'active');
+            });
 
         if ($fromDate) {
             $query->whereHas('user', function ($q) use ($fromDate) {
@@ -110,7 +113,7 @@ class ReportController extends Controller
 
         switch ($type) {
             case 'graduates_by_course':
-                $data = $query->orderBy('course_id')->orderBy('batch_year')->paginate(50)->withQueryString();
+                $data = $query->orderBy('course_id')->orderBy('batch_year')->orderBy('alumni_profiles.id')->paginate(15)->withQueryString();
                 $view = 'admin.reports.partials._graduates_by_course';
                 break;
             case 'employment_status':
@@ -155,21 +158,27 @@ class ReportController extends Controller
                     ],
                     'by_course' => Course::withCount([
                         'alumni' => function ($q) use ($request) {
+                            $q->whereHas('user', function ($uq) {
+                                $uq->where('status', 'active');
+                            });
                             if ($request->query('batch_year'))
                                 $q->where('batch_year', $request->query('batch_year'));
                         }
                     ])->get()->map(function ($course) use ($request) {
-                        $baseQ = $course->alumni();
+                        $baseQ = $course->alumni()->whereHas('user', function ($uq) {
+                            $uq->where('status', 'active');
+                        });
                         if ($request->query('batch_year'))
                             $baseQ->where('batch_year', $request->query('batch_year'));
 
                         return [
+                            'name' => $course->name,
                             'code' => $course->code,
                             'alumni_count' => $course->alumni_count,
                             'employed' => (clone $baseQ)->where('employment_status', 'Employed')->count(),
                             'unemployed' => (clone $baseQ)->where('employment_status', 'Unemployed')->count(),
                         ];
-                    })->sortByDesc('alumni_count')->take(10)->values(),
+                    })->sortByDesc('alumni_count')->values(),
 
                     'by_employment' => (clone $query)->select('employment_status', DB::raw('count(*) as count'))
                         ->groupBy('employment_status')->get(),
@@ -178,6 +187,7 @@ class ReportController extends Controller
                         ->groupBy('batch_year')->orderBy('batch_year')->get(),
 
                     'registration_trend' => User::where('role', 'alumni')
+                        ->where('status', 'active')
                         ->select(DB::raw("DATE_FORMAT(created_at, '%b %Y') as month"), DB::raw('count(*) as count'))
                         ->groupBy('month')->orderBy('created_at', 'asc')->take(6)->get(),
 
@@ -203,7 +213,7 @@ class ReportController extends Controller
                         ->select('field_of_work', DB::raw('count(*) as count'))
                         ->groupBy('field_of_work')
                         ->orderBy('count', 'desc')
-                        ->take(10)->get(),
+                        ->get(),
 
                     // Complex Data for Stacked/Grouped Charts
                     'stability_matrix' => Course::with([
@@ -262,7 +272,7 @@ class ReportController extends Controller
                 $view = 'admin.reports.partials._statistical_summary';
                 break;
             case 'detailed_labor':
-                $data = $query->with('course')->paginate(50)->withQueryString();
+                $data = $query->with('course')->orderBy('alumni_profiles.id')->paginate(15)->withQueryString();
                 $view = 'admin.reports.partials._detailed_labor';
                 break;
             case 'tracer_study':
@@ -270,7 +280,7 @@ class ReportController extends Controller
                 $view = 'admin.reports.partials._tracer_study';
                 break;
             case 'master_list':
-                $data = $query->paginate(15)->withQueryString();
+                $data = $query->orderBy('alumni_profiles.id')->paginate(15)->withQueryString();
                 $view = 'admin.reports.partials._master_list';
                 break;
             case 'annual_distribution':

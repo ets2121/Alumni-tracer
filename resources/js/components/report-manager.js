@@ -3,11 +3,12 @@ import Chart from 'chart.js/auto';
 export default () => ({
     // Report-specific independent filter states
     reportFilters: {
-        detailed_labor: { fromDate: '', toDate: '', fromYear: '', toYear: '', workStatus: '', establishmentType: '', workLocation: '', fieldOfWork: '', courseId: '', batchYear: '' },
+        detailed_labor: { fromDate: '', toDate: '', fromYear: '', toYear: '', workStatus: '', establishmentType: '', workLocation: '', fieldOfWork: '', courseId: '', batchYear: '', page: 1 },
         statistical_summary: { fromDate: '', toDate: '', fromYear: '', toYear: '', workStatus: '', establishmentType: '', workLocation: '', fieldOfWork: '', courseId: '', batchYear: '' },
         tracer_study: { fromDate: '', toDate: '', fromYear: '', toYear: '', workStatus: '', establishmentType: '', workLocation: '', fieldOfWork: '', courseId: '', batchYear: '' },
         master_list: { fromDate: '', toDate: '', fromYear: '', toYear: '', workStatus: '', establishmentType: '', workLocation: '', fieldOfWork: '', courseId: '', batchYear: '', subType: 'all', search: '', page: 1 },
         annual_distribution: { fromDate: '', toDate: '', fromYear: '', toYear: '', workStatus: '', establishmentType: '', workLocation: '', fieldOfWork: '', courseId: '', batchYear: '', subType: 'by_year', chartType: 'bar' },
+        graduates_by_course: { fromDate: '', toDate: '', fromYear: '', toYear: '', workStatus: '', establishmentType: '', workLocation: '', fieldOfWork: '', courseId: '', batchYear: '', page: 1 },
     },
     activeCharts: {}, // Store Chart instances
     loading: false,
@@ -58,6 +59,12 @@ export default () => ({
             }
             window.location.href = url.toString();
         }
+
+        // Expose function for pagination
+        this.changePage = (p) => {
+            this.reportFilters[this.currentReportType].page = p;
+            this.generateReport(this.currentReportType);
+        }
     },
 
     openEvaluationModal() {
@@ -107,9 +114,12 @@ export default () => ({
             batchYear: '', subType: defaults.subType, chartType: defaults.chartType
         };
 
+        if (this.reportFilters[target].hasOwnProperty('page')) {
+            this.reportFilters[target].page = 1;
+        }
+
         if (target === 'master_list') {
             this.reportFilters[target].search = '';
-            this.reportFilters[target].page = 1;
         }
 
         this.generateReport(target);

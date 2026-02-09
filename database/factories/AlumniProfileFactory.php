@@ -45,6 +45,10 @@ class AlumniProfileFactory extends Factory
             'company_name' => $faker->company,
             'position' => $faker->jobTitle,
             'work_address' => $faker->address,
+            'work_location' => $faker->randomElement(['Local', 'Overseas']),
+            'field_of_work' => $faker->randomElement(['Information Technology', 'Human Resources', 'Education', 'Finance', 'Engineering', 'Marketing', 'Sales', 'Healthcare']),
+            'work_status' => $faker->randomElement(['Permanent', 'Contractual', 'Job Order']),
+            'establishment_type' => $faker->randomElement(['Public', 'Private']),
         ]);
     }
 

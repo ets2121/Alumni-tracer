@@ -90,33 +90,7 @@
 
 
 
-            <!-- Tracer Reports -->
-            <div @click="generateReport('tracer_study')"
-                class="group relative bg-white rounded-[2.5rem] p-1 border border-gray-100 shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 cursor-pointer overflow-hidden">
-                <div
-                    class="absolute inset-0 bg-gradient-to-br from-green-50/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
-                </div>
-                <div class="relative p-8">
-                    <div
-                        class="w-14 h-14 bg-green-600 text-white rounded-2xl flex items-center justify-center mb-6 shadow-xl shadow-green-100 group-hover:scale-110 transition-transform">
-                        <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04M12 2.944a11.955 11.955 0 018.618 3.04M12 21.189c4.736-2.559 8-7.429 8-12.429a11.955 11.955 0 01-8.618-3.04M12 21.189c-4.736-2.559-8-7.429-8-12.429a11.955 11.955 0 018.618-3.04" />
-                        </svg>
-                    </div>
-                    <h3 class="text-xl font-black text-gray-900 mb-3 uppercase tracking-tighter">Tracer Reports</h3>
-                    <p class="text-sm text-gray-400 font-medium leading-relaxed mb-6">CHED-compliant graduate monitoring
-                        and sentiment analysis.</p>
-                    <div class="flex items-center text-[10px] font-black text-green-600 uppercase tracking-widest">
-                        <span>Launch Tracer</span>
-                        <svg class="w-4 h-4 ml-2 group-hover:translate-x-2 transition-transform" fill="none"
-                            stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                        </svg>
-                    </div>
-                </div>
-            </div>
+
 
             <!-- Detailed Alumni Registry -->
             <div @click="generateReport('detailed_labor')"
@@ -175,33 +149,7 @@
             </div>
 
 
-            <!-- Tracer Reports -->
-            <div @click="generateReport('tracer_study')"
-                class="group relative bg-white rounded-[2.5rem] p-1 border border-gray-100 shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 cursor-pointer overflow-hidden">
-                <div
-                    class="absolute inset-0 bg-gradient-to-br from-green-50/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
-                </div>
-                <div class="relative p-8">
-                    <div
-                        class="w-14 h-14 bg-green-600 text-white rounded-2xl flex items-center justify-center mb-6 shadow-xl shadow-green-100 group-hover:scale-110 transition-transform">
-                        <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04M12 2.944a11.955 11.955 0 018.618 3.04M12 21.189c4.736-2.559 8-7.429 8-12.429a11.955 11.955 0 01-8.618-3.04M12 21.189c-4.736-2.559-8-7.429-8-12.429a11.955 11.955 0 018.618-3.04" />
-                        </svg>
-                    </div>
-                    <h3 class="text-xl font-black text-gray-900 mb-3 uppercase tracking-tighter">Tracer Reports</h3>
-                    <p class="text-sm text-gray-400 font-medium leading-relaxed mb-6">CHED-compliant graduate monitoring
-                        and sentiment analysis.</p>
-                    <div class="flex items-center text-[10px] font-black text-green-600 uppercase tracking-widest">
-                        <span>Launch Tracer</span>
-                        <svg class="w-4 h-4 ml-2 group-hover:translate-x-2 transition-transform" fill="none"
-                            stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                        </svg>
-                    </div>
-                </div>
-            </div>
+
         </div>
 
 

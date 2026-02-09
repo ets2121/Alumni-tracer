@@ -1,6 +1,7 @@
 <div class="space-y-6">
     <!-- Report Official Header -->
-    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-6 pb-8 border-b-2 border-gray-900 dark:border-dark-border mb-8 text-center sm:text-left">
+    <div
+        class="flex flex-col sm:flex-row sm:items-center justify-between gap-6 pb-8 border-b-2 border-gray-900 dark:border-dark-border mb-8 text-center sm:text-left">
         <div class="flex flex-col sm:flex-row items-center gap-4">
             <div
                 class="w-12 h-12 bg-gray-900 dark:bg-dark-bg-subtle rounded-xl flex items-center justify-center text-white dark:text-dark-text-primary shadow-lg dark:shadow-none shrink-0">
@@ -14,7 +15,9 @@
                     Alumni Dataset Registry</h1>
                 <p
                     class="text-[9px] font-bold text-gray-400 dark:text-dark-text-muted uppercase tracking-[0.2em] mt-0.5">
-                    Raw Professional Intelligence • {{ $data->count() }} Records</p>
+                    Raw Professional Intelligence • Displaying {{ $data->firstItem() }}-{{ $data->lastItem() }} of
+                    {{ $data->total() }} Records
+                </p>
             </div>
         </div>
         <div class="flex flex-col sm:text-right border-t sm:border-t-0 pt-4 sm:pt-0 dark:border-dark-border">
@@ -26,6 +29,43 @@
             </p>
         </div>
     </div>
+
+    @if(!$data->isEmpty())
+        <!-- Top Pagination Quick Access -->
+        <div
+            class="flex flex-col sm:flex-row items-center justify-between gap-4 px-6 py-4 mb-6 bg-gray-50 dark:bg-dark-bg-subtle/20 rounded-[1.5rem] border border-gray-100 dark:border-dark-border shadow-sm">
+            <div class="flex items-center gap-2">
+                <div class="w-2 h-2 rounded-full bg-brand-500 animate-pulse"></div>
+                <span class="text-[10px] font-black text-gray-900 dark:text-dark-text-primary uppercase tracking-widest">
+                    Page {{ $data->currentPage() }} of {{ $data->lastPage() }}
+                </span>
+            </div>
+            <div class="flex items-center gap-3">
+                @if($data->onFirstPage())
+                    <button
+                        class="px-4 py-2 bg-white dark:bg-dark-bg-subtle text-gray-300 dark:text-dark-text-disabled rounded-xl text-[9px] font-black uppercase cursor-not-allowed border border-gray-100 dark:border-dark-border">Prev</button>
+                @else
+                    <button @click="changePage({{ $data->currentPage() - 1 }})"
+                        class="px-4 py-2 bg-white dark:bg-dark-bg-subtle border border-gray-200 dark:border-dark-border text-gray-700 dark:text-dark-text-primary hover:bg-gray-50 dark:hover:bg-dark-state-hover rounded-xl text-[9px] font-black uppercase transition-all shadow-sm">Prev</button>
+                @endif
+
+                @if($data->hasMorePages())
+                    <button @click="changePage({{ $data->currentPage() + 1 }})"
+                        class="px-6 py-2 bg-brand-600 text-white hover:bg-brand-700 rounded-xl text-[9px] font-black uppercase transition-all shadow-lg shadow-brand-100 flex items-center gap-2 group">
+                        Next Page
+                        <svg class="w-3 h-3 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                        </svg>
+                    </button>
+                @else
+                    <button
+                        class="px-6 py-2 bg-gray-100 dark:bg-dark-bg-subtle text-gray-400 dark:text-dark-text-disabled rounded-xl text-[9px] font-black uppercase cursor-not-allowed border border-gray-200 dark:border-dark-border">End
+                        of Registry</button>
+                @endif
+            </div>
+        </div>
+    @endif
 
     @if($data->isEmpty())
         <div
@@ -71,7 +111,8 @@
                             <tr class="hover:bg-gray-50/50 dark:hover:bg-dark-state-hover transition-colors group">
                                 <td class="px-6 py-5">
                                     <div class="font-black text-gray-900 dark:text-dark-text-primary uppercase text-[11px]">
-                                        {{ $alumnus->full_name }}</div>
+                                        {{ $alumnus->full_name }}
+                                    </div>
                                 </td>
                                 <td class="px-6 py-5">
                                     <span
@@ -92,7 +133,8 @@
                                 </td>
                                 <td class="px-6 py-5">
                                     <div class="text-[10px] font-bold text-gray-900 dark:text-dark-text-primary">
-                                        {{ $alumnus->work_status ?? 'N/A' }}</div>
+                                        {{ $alumnus->work_status ?? 'N/A' }}
+                                    </div>
                                     <div class="text-[9px] text-gray-400 dark:text-dark-text-muted uppercase font-bold">
                                         {{ $alumnus->establishment_type ?? '-' }}
                                     </div>
@@ -105,6 +147,42 @@
                         @endforeach
                     </tbody>
                 </table>
+            </div>
+
+            <!-- Classic Pagination Section -->
+            <div class="mt-8 flex flex-col sm:flex-row items-center justify-between gap-4 px-2">
+                <div
+                    class="text-[10px] font-black text-gray-400 dark:text-dark-text-muted uppercase tracking-widest text-center sm:text-left">
+                    Showing {{ $data->firstItem() }} to {{ $data->lastItem() }} of {{ $data->total() }} alumni
+                </div>
+                <div class="flex gap-2 w-full sm:w-auto overflow-x-auto justify-center">
+                    @if($data->onFirstPage())
+                        <button
+                            class="px-4 py-2 bg-gray-50 dark:bg-dark-bg-subtle text-gray-300 dark:text-dark-text-disabled rounded-xl text-[10px] font-black uppercase cursor-not-allowed shrink-0">Previous</button>
+                    @else
+                        <button @click="changePage({{ $data->currentPage() - 1 }})"
+                            class="px-4 py-2 bg-white dark:bg-dark-bg-subtle border border-gray-100 dark:border-dark-border text-gray-600 dark:text-dark-text-secondary hover:bg-gray-50 dark:hover:bg-dark-state-hover rounded-xl text-[10px] font-black uppercase transition-all shadow-sm shrink-0">Previous</button>
+                    @endif
+
+                    <div
+                        class="flex items-center px-4 text-[10px] font-black text-gray-900 dark:text-dark-text-primary uppercase tracking-widest">
+                        Page {{ $data->currentPage() }} / {{ $data->lastPage() }}
+                    </div>
+
+                    @if($data->hasMorePages())
+                        <button @click="changePage({{ $data->currentPage() + 1 }})"
+                            class="px-6 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-xl text-[10px] font-black uppercase transition-all shadow-xl shadow-brand-100 shrink-0 flex items-center gap-2">
+                            <span>Next Page</span>
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                            </svg>
+                        </button>
+                    @else
+                        <button
+                            class="px-6 py-2 bg-gray-100 dark:bg-dark-bg-subtle text-gray-400 dark:text-dark-text-disabled rounded-xl text-[10px] font-black uppercase cursor-not-allowed shrink-0 border border-gray-200 dark:border-dark-border">Next
+                            Page</button>
+                    @endif
+                </div>
             </div>
         </div>
     @endif
