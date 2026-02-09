@@ -50,192 +50,222 @@
                         <input type="hidden" name="form_id" value="{{ $form->id }}">
 
 
-                        @foreach($form->questions as $question)
+                        @if(count($form->questions) > 0)
                             @php
-                                $options = $question->options ?? []; // Array
-                                $section = $question->section;
-                                $type = $question->type;
-                                $qNum = $options['question_number'] ?? '';
+                                $currentSection = null;
+                                // We need to group questions by section first to handle the grid properly? 
+                                // Or we can just break the grid when section changes.
+                                // Let's try breaking the grid.
                             @endphp
 
-                            @if($section && $section !== $currentSection)
-                                @php $currentSection = $section; @endphp
-                                <div class="mt-8 mb-4">
-                                    <h2 class="text-xl font-bold text-gray-800 border-b-2 border-green-500 pb-2">{{ $section }}</h2>
-                                </div>
-                            @endif
-
-                            <fieldset class="mb-6 p-4 rounded-lg hover:bg-gray-50 transition min-w-0"
-                                x-show="isVisible({{ $question->id }})"
-                                :disabled="!isVisible({{ $question->id }})"
-                                x-transition>
-                                <label class="block text-gray-700 text-base font-semibold mb-2">
-                                    @if($qNum)
-                                        <span class="mr-1">{{ $qNum }}.</span>
-                                    @endif
-                                    {{ $question->question_text }}
-                                    @if($question->required)
-                                        <span class="text-red-500">*</span>
-                                    @endif
-                                </label>
-
-                                <!-- Question Type: Text -->
-                                @if($type === 'text')
+                            <div class="space-y-8"> <!-- Main Container for Sections -->
+                                @foreach($form->questions as $index => $question)
                                     @php
-                                        $isNumeric = Str::contains(strtolower($question->question_text), ['year', 'number', 'age', 'amount', 'salary', 'contact']);
-                                        $inputType = $isNumeric ? 'number' : 'text';
-                                        $placeholder = $question->required ? 'Enter your answer...' : 'N/A (Optional)';
+                                        $section = $question->section;
+                                        $type = $question->type;
+                                        $options = $question->options ?? [];
+                                        $qNum = $options['question_number'] ?? '';
+                                        
+                                        // Determine Column Span
+                                        $colSpan = 'col-span-1 md:col-span-12'; // Default full width
+                                        
+                                        // Half-width fields
+                                        if (in_array($type, ['text', 'email', 'number', 'select', 'date', 'date_group'])) {
+                                             $colSpan = 'col-span-1 md:col-span-6';
+                                        }
+                                        
+                                        // Specific overrides could go here if needed
                                     @endphp
-                                    <input type="{{ $inputType }}" name="answers[{{ $question->id }}]" x-model="answers[{{ $question->id }}]"
-                                        class="w-full border-gray-300 rounded-lg shadow-sm focus:border-green-500 focus:ring focus:ring-green-200"
-                                        placeholder="{{ $placeholder }}"
-                                        {{ $question->required ? 'required' : '' }}>
 
-                                    <!-- Question Type: Email -->
-                                @elseif($type === 'email')
-                                    <input type="email" name="answers[{{ $question->id }}]" x-model="answers[{{ $question->id }}]"
-                                        class="w-full border-gray-300 rounded-lg shadow-sm focus:border-green-500 focus:ring focus:ring-green-200"
-                                        {{ $question->required ? 'required' : '' }}>
-
-                                    <!-- Question Type: Radio -->
-                                @elseif($type === 'radio' || $type === 'radio_with_other')
-                                    <div class="space-y-2">
-                                        @if(isset($options['options']))
-                                            @foreach($options['options'] as $opt)
-                                                <label class="inline-flex items-center mr-4">
-                                                    <input type="radio" value="{{ $opt }}" name="answers[{{ $question->id }}]"
-                                                        x-model="answers[{{ $question->id }}]" class="text-green-600 focus:ring-green-500"
-                                                        {{ $question->required ? 'required' : '' }}>
-                                                    <span class="ml-2">{{ $opt }}</span>
-                                                </label>
-                                            @endforeach
+                                    @if($section !== $currentSection)
+                                        @if($index > 0)
+                                            </div> <!-- Close previous grid -->
+                                            </div> <!-- Close previous section container -->
                                         @endif
-                                    </div>
+                                        
+                                        @php $currentSection = $section; @endphp
+                                        
+                                        <div class="bg-gray-50/50 p-6 rounded-xl border border-gray-100">
+                                            @if($section)
+                                                <h2 class="text-xl font-bold text-gray-800 border-b border-gray-200 pb-3 mb-6 flex items-center gap-2">
+                                                    <span class="bg-green-600 w-2 h-6 rounded-full inline-block"></span>
+                                                    {{ $section }}
+                                                </h2>
+                                            @endif
+                                            
+                                            <div class="grid grid-cols-1 md:grid-cols-12 gap-6"> <!-- Start new grid -->
+                                    @endif
 
-                                    <!-- Question Type: Checkbox -->
-                                @elseif($type === 'checkbox')
-                                    <div class="space-y-2">
-                                        @if(isset($options['options']))
-                                            @foreach($options['options'] as $opt)
-                                                <label class="flex items-center">
-                                                    <input type="checkbox" value="{{ $opt }}" name="answers[{{ $question->id }}][]"
-                                                        class="rounded text-green-600 focus:ring-green-500">
-                                                    <span class="ml-2">{{ $opt }}</span>
-                                                </label>
-                                            @endforeach
-                                        @endif
-                                    </div>
+                                    <div class="{{ $colSpan }} min-w-0"
+                                        x-show="isVisible({{ $question->id }})"
+                                        x-transition:enter="transition ease-out duration-300"
+                                        x-transition:enter-start="opacity-0 transform scale-95"
+                                        x-transition:enter-end="opacity-100 transform scale-100"
+                                        style="display: none;"> <!-- Hidden by default to prevent flicker, handled by x-show -->
+                                        
+                                        <div class="h-full">
+                                            <label class="block text-sm font-bold text-gray-700 mb-2">
+                                                @if($qNum)
+                                                    <span class="text-green-600 mr-1">{{ $qNum }}.</span>
+                                                @endif
+                                                {{ $question->question_text }}
+                                                @if($question->required)
+                                                    <span class="text-red-500">*</span>
+                                                @endif
+                                            </label>
 
-                                    <!-- Question Type: Date Group (Month, Day, Year) -->
-                                @elseif($type === 'date_group')
-                                    <div class="flex space-x-2">
-                                        <div class="w-1/3">
-                                            <select name="answers[{{ $question->id }}][month]"
-                                                class="w-full border-gray-300 rounded-lg shadow-sm" required>
-                                                <option value="">Month</option>
-                                                @foreach(['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'] as $month)
-                                                    <option value="{{ $month }}">{{ $month }}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                        <div class="w-1/3">
-                                            <select name="answers[{{ $question->id }}][day]"
-                                                class="w-full border-gray-300 rounded-lg shadow-sm" required>
-                                                <option value="">Day</option>
-                                                @for($i = 1; $i <= 31; $i++)
-                                                    <option value="{{ $i }}">{{ $i }}</option>
-                                                @endfor
-                                            </select>
-                                        </div>
-                                        <div class="w-1/3">
-                                            <select name="answers[{{ $question->id }}][year]"
-                                                class="w-full border-gray-300 rounded-lg shadow-sm" required>
-                                                <option value="">Year</option>
-                                                @for($i = date('Y') - 15; $i >= 1960; $i--)
-                                                    <option value="{{ $i }}">{{ $i }}</option>
-                                                @endfor
-                                            </select>
-                                        </div>
-                                    </div>
+                                            <!-- Question Types -->
+                                            @if($type === 'text')
+                                                @php
+                                                    $isNumeric = Str::contains(strtolower($question->question_text), ['year', 'number', 'age', 'amount', 'salary', 'contact', 'zip']);
+                                                    $inputType = $isNumeric ? 'number' : 'text';
+                                                    $placeholder = $question->required ? 'Enter your answer...' : 'Optional';
+                                                @endphp
+                                                <input type="{{ $inputType }}" name="answers[{{ $question->id }}]" x-model="answers[{{ $question->id }}]"
+                                                    class="w-full border-gray-300 rounded-lg shadow-sm focus:border-green-500 focus:ring focus:ring-green-200 transition-all font-sans"
+                                                    placeholder="{{ $placeholder }}"
+                                                    {{ $question->required ? 'required' : '' }}>
 
-                                    <!-- Question Type: Dynamic Table -->
-                                @elseif($type === 'dynamic_table')
-                                    <div x-data="{ rows: Array.from({ length: {{ $options['min_rows'] ?? 1 }} }, () => ({})) }">
-                                        <table class="w-full border-collapse border border-gray-200 mb-2">
-                                            <thead>
-                                                <tr class="bg-gray-100">
-                                                    @foreach($options['table_columns'] as $col)
-                                                        <th class="border border-gray-200 p-2 text-left text-sm">{{ $col }}</th>
-                                                    @endforeach
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <template x-for="(row, index) in rows" :key="index">
-                                                    <tr>
-                                                        @foreach($options['table_columns'] as $colIndex => $col)
-                                                            <td class="border border-gray-200 p-1">
-                                                                @php
-                                                                    $isDate = Str::contains(strtolower($col), ['date', 'year graduated']);
-                                                                    $inputType = $isDate ? 'date' : 'text';
-                                                                    
-                                                                    // Specific optional columns even if question is required
-                                                                    $optionalCols = ['honors/awards', 'rating', 'duration', 'institution'];
-                                                                    $isOptionalCol = Str::contains(strtolower($col), $optionalCols);
-                                                                    
-                                                                    // If question is optional, inputs shouldn't enforce required unless we want to enforce row completeness?
-                                                                    // Usually if they fill a row, they should fill key fields. 
-                                                                    // But if the question ITSELF is optional, the browser validation might block submission if defaults are empty?
-                                                                    // No, because empty inputs are just "" and if required is present, browser blocks.
-                                                                    // If question is optional, we probably shouldn't require ANY field technically, OR only if row is dirty (too complex for simple HTML).
-                                                                    // Safest: If question is NOT required, remove required attribute.
-                                                                    // Exception: "Honors/Awards" is always optional.
-                                                                    
-                                                                    $isRequired = $question->required && !$isOptionalCol;
-                                                                @endphp
-                                                                <input type="{{ $inputType }}"
-                                                                    :name="'answers[{{ $question->id }}]['+index+'][{{ $col }}]'"
-                                                                    class="w-full border-transparent focus:border-green-500 text-sm"
-                                                                    {{ $isRequired ? 'required' : '' }}>
-                                                            </td>
+                                            @elseif($type === 'email')
+                                                <input type="email" name="answers[{{ $question->id }}]" x-model="answers[{{ $question->id }}]"
+                                                    class="w-full border-gray-300 rounded-lg shadow-sm focus:border-green-500 focus:ring focus:ring-green-200"
+                                                    placeholder="example@email.com"
+                                                    {{ $question->required ? 'required' : '' }}>
+
+                                            @elseif($type === 'radio' || $type === 'radio_with_other')
+                                                <div class="space-y-2 mt-1">
+                                                    @if(isset($options['options']))
+                                                        @foreach($options['options'] as $opt)
+                                                            <label class="flex items-start hover:bg-gray-50 p-2 rounded-lg -ml-2 transition-colors cursor-pointer">
+                                                                <input type="radio" value="{{ $opt }}" name="answers[{{ $question->id }}]"
+                                                                    x-model="answers[{{ $question->id }}]" 
+                                                                    class="mt-0.5 text-green-600 focus:ring-green-500 border-gray-300"
+                                                                    {{ $question->required ? 'required' : '' }}>
+                                                                <span class="ml-2 text-gray-700 text-sm leading-snug">{{ $opt }}</span>
+                                                            </label>
                                                         @endforeach
-                                                    </tr>
-                                                </template>
-                                            </tbody>
-                                        </table>
-                                        <button type="button" @click="rows.push({})"
-                                            class="text-xs text-green-600 hover:text-green-800 font-semibold">+ Add Row</button>
-                                    </div>
+                                                    @endif
+                                                </div>
 
-                                    <!-- Question Type: Checkbox Matrix -->
-                                @elseif($type === 'checkbox_matrix')
-                                    <div class="overflow-x-auto">
-                                        <table class="w-full border-collapse border border-gray-200">
-                                            <thead>
-                                                <tr class="bg-gray-100">
-                                                    <th class="border border-gray-200 p-2 text-left w-1/2">Reason</th>
-                                                    @foreach($options['matrix_categories'] as $cat)
-                                                        <th class="border border-gray-200 p-2 text-center">{{ $cat }}</th>
-                                                    @endforeach
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                @foreach($options['matrix_options'] as $mOpt)
-                                                    <tr>
-                                                        <td class="border border-gray-200 p-2 text-sm">{{ $mOpt }}</td>
-                                                        @foreach($options['matrix_categories'] as $cat)
-                                                            <td class="border border-gray-200 p-2 text-center">
-                                                                <input type="checkbox" name="answers[{{ $question->id }}][{{ $cat }}][]"
-                                                                    value="{{ $mOpt }}" class="text-green-600 focus:ring-green-500">
-                                                            </td>
+                                            @elseif($type === 'checkbox')
+                                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-1">
+                                                    @if(isset($options['options']))
+                                                        @foreach($options['options'] as $opt)
+                                                            <label class="flex items-start hover:bg-gray-50 p-2 rounded-lg -ml-2 transition-colors cursor-pointer">
+                                                                <input type="checkbox" value="{{ $opt }}" name="answers[{{ $question->id }}][]"
+                                                                    class="mt-0.5 rounded text-green-600 focus:ring-green-500 border-gray-300">
+                                                                <span class="ml-2 text-gray-700 text-sm leading-snug">{{ $opt }}</span>
+                                                            </label>
                                                         @endforeach
-                                                    </tr>
-                                                @endforeach
-                                            </tbody>
-                                        </table>
+                                                    @endif
+                                                </div>
+
+                                            @elseif($type === 'date_group')
+                                                <div class="grid grid-cols-3 gap-3">
+                                                    <div class="col-span-1">
+                                                        <select name="answers[{{ $question->id }}][month]" class="w-full border-gray-300 rounded-lg shadow-sm text-sm" required>
+                                                            <option value="">Month</option>
+                                                            @foreach(['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'] as $month)
+                                                                <option value="{{ $month }}">{{ $month }}</option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-span-1">
+                                                        <select name="answers[{{ $question->id }}][day]" class="w-full border-gray-300 rounded-lg shadow-sm text-sm" required>
+                                                            <option value="">Day</option>
+                                                            @for($i = 1; $i <= 31; $i++)
+                                                                <option value="{{ $i }}">{{ $i }}</option>
+                                                            @endfor
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-span-1">
+                                                        <select name="answers[{{ $question->id }}][year]" class="w-full border-gray-300 rounded-lg shadow-sm text-sm" required>
+                                                            <option value="">Year</option>
+                                                            @for($i = date('Y'); $i >= 1960; $i--)
+                                                                <option value="{{ $i }}">{{ $i }}</option>
+                                                            @endfor
+                                                        </select>
+                                                    </div>
+                                                </div>
+
+                                            @elseif($type === 'dynamic_table')
+                                                 <div x-data="{ rows: Array.from({ length: {{ $options['min_rows'] ?? 1 }} }, () => ({})) }" class="overflow-x-auto">
+                                                    <table class="min-w-full divide-y divide-gray-200 border border-gray-200 rounded-lg overflow-hidden">
+                                                        <thead class="bg-gray-50">
+                                                            <tr>
+                                                                @foreach($options['table_columns'] as $col)
+                                                                    <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ $col }}</th>
+                                                                @endforeach
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody class="bg-white divide-y divide-gray-200">
+                                                            <template x-for="(row, index) in rows" :key="index">
+                                                                <tr>
+                                                                    @foreach($options['table_columns'] as $colIndex => $col)
+                                                                        <td class="px-2 py-2">
+                                                                            @php
+                                                                                $isDate = Str::contains(strtolower($col), ['date', 'year']);
+                                                                                $inputType = $isDate ? 'date' : 'text';
+                                                                                $isRequired = $question->required && !Str::contains(strtolower($col), ['optional', 'honor', 'award']);
+                                                                            @endphp
+                                                                            <input type="{{ $inputType }}"
+                                                                                :name="'answers[{{ $question->id }}]['+index+'][{{ $col }}]'"
+                                                                                class="block w-full border-gray-300 rounded-md shadow-sm sm:text-sm focus:ring-green-500 focus:border-green-500"
+                                                                                {{ $isRequired ? 'required' : '' }}>
+                                                                        </td>
+                                                                    @endforeach
+                                                                </tr>
+                                                            </template>
+                                                        </tbody>
+                                                    </table>
+                                                    <button type="button" @click="rows.push({})"
+                                                        class="mt-2 text-xs flex items-center gap-1 text-green-700 hover:text-green-900 font-bold uppercase tracking-wider">
+                                                        <span>+ Add Row</span>
+                                                    </button>
+                                                </div>
+
+                                            @elseif($type === 'checkbox_matrix')
+                                                <div class="overflow-x-auto border border-gray-200 rounded-lg">
+                                                    <table class="min-w-full divide-y divide-gray-200">
+                                                        <thead class="bg-gray-50">
+                                                            <tr>
+                                                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/3">Option</th>
+                                                                @foreach($options['matrix_categories'] as $cat)
+                                                                    <th class="px-2 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">{{ $cat }}</th>
+                                                                @endforeach
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody class="bg-white divide-y divide-gray-200">
+                                                            @foreach($options['matrix_options'] as $mOpt)
+                                                                <tr class="hover:bg-gray-50">
+                                                                    <td class="px-4 py-2 text-sm font-medium text-gray-900">{{ $mOpt }}</td>
+                                                                    @foreach($options['matrix_categories'] as $cat)
+                                                                        <td class="px-2 py-2 text-center">
+                                                                            <input type="checkbox" name="answers[{{ $question->id }}][{{ $cat }}][]"
+                                                                                value="{{ $mOpt }}" class="text-green-600 focus:ring-green-500 rounded border-gray-300">
+                                                                        </td>
+                                                                    @endforeach
+                                                                </tr>
+                                                            @endforeach
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            @endif
+                                        </div>
                                     </div>
+                                @endforeach
+                                
+                                <!-- Close last grid and section container -->
+                                @if(count($form->questions) > 0)
+                                    </div> <!-- Close last grid -->
+                                    </div> <!-- Close last section container -->
                                 @endif
-                            </fieldset>
-                        @endforeach
+                            </div>
+                        @else
+                            <div class="text-center py-12 text-gray-500">
+                                No questions found for this tracer survey.
+                            </div>
+                        @endif
 
                         <div class="mt-8 flex justify-end">
                             <button type="submit"
