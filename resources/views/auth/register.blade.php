@@ -117,41 +117,55 @@
             <form @submit.prevent="requestOtp" class="space-y-4">
                 <!-- Name -->
                 <div>
-                    <x-input-label for="name" :value="__('Full Name')" />
-                    <x-text-input id="name" x-model="form.name" class="block mt-1 w-full" type="text" required
-                        autofocus />
+                    <x-input-label for="name" :value="__('Full Name')" class="text-white" />
+                    <x-text-input id="name" x-model="form.name"
+                        class="block mt-1 w-full bg-white/10 border-white/20 text-white placeholder-white/50 focus:border-brand-500 focus:ring-brand-500"
+                        type="text" required autofocus />
                 </div>
 
                 <!-- Email Address -->
                 <div class="mt-4">
-                    <x-input-label for="email" :value="__('Email Address')" />
-                    <x-text-input id="email" x-model="form.email" class="block mt-1 w-full" type="email" required />
+                    <x-input-label for="email" :value="__('Email Address')" class="text-white" />
+                    <x-text-input id="email" x-model="form.email"
+                        class="block mt-1 w-full bg-white/10 border-white/20 text-white placeholder-white/50 focus:border-brand-500 focus:ring-brand-500"
+                        type="email" required />
                 </div>
 
                 <!-- Password -->
                 <div class="mt-4">
-                    <x-input-label for="password" :value="__('Password')" />
-                    <x-text-input id="password" x-model="form.password" class="block mt-1 w-full" type="password"
-                        required />
+                    <x-input-label for="password" :value="__('Password')" class="text-white" />
+                    <x-text-input id="password" x-model="form.password"
+                        class="block mt-1 w-full bg-white/10 border-white/20 text-white placeholder-white/50 focus:border-brand-500 focus:ring-brand-500"
+                        type="password" required />
                 </div>
 
                 <!-- Confirm Password -->
                 <div class="mt-4">
-                    <x-input-label for="password_confirmation" :value="__('Confirm Password')" />
+                    <x-input-label for="password_confirmation" :value="__('Confirm Password')" class="text-white" />
                     <x-text-input id="password_confirmation" x-model="form.password_confirmation"
-                        class="block mt-1 w-full" type="password" required />
+                        class="block mt-1 w-full bg-white/10 border-white/20 text-white placeholder-white/50 focus:border-brand-500 focus:ring-brand-500"
+                        type="password" required />
                 </div>
 
                 <div class="flex items-center justify-between mt-8">
-                    <a class="text-sm text-gray-600 hover:text-brand-600 font-medium underline"
-                        href="{{ route('login') }}">
+                    <a class="text-sm text-gray-200 hover:text-white font-medium underline" href="{{ route('login') }}">
                         Already registered?
                     </a>
 
                     <button type="submit" :disabled="loading"
-                        class="inline-flex items-center px-6 py-3 bg-brand-600 border border-transparent rounded-xl font-bold text-xs text-white uppercase tracking-widest hover:bg-brand-700 active:bg-brand-900 focus:outline-none focus:border-brand-900 focus:ring ring-brand-300 disabled:opacity-25 transition ease-in-out duration-150 shadow-lg shadow-brand-100">
+                        class="inline-flex items-center px-6 py-3 bg-brand-600 border border-transparent rounded-xl font-bold text-xs text-white uppercase tracking-widest hover:bg-brand-700 active:bg-brand-900 focus:outline-none focus:border-brand-900 focus:ring ring-brand-300 disabled:opacity-50 transition ease-in-out duration-150 shadow-lg shadow-brand-500/30">
                         <span x-show="!loading">Send Code</span>
-                        <span x-show="loading">Please wait...</span>
+                        <span x-show="loading" class="flex items-center gap-2">
+                            <svg class="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none"
+                                viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                                    stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor"
+                                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                                </path>
+                            </svg>
+                            Processing...
+                        </span>
                     </button>
                 </div>
             </form>

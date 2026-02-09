@@ -25,9 +25,12 @@
                         aria-label="Global">
                         <div class="flex items-center flex-grow flex-shrink-0 lg:flex-grow-0">
                             <div class="flex items-center justify-between w-full md:w-auto">
-                                <a href="#">
+                                <a href="#" class="flex items-center gap-3">
+                                    <img src="{{ asset('images/logo-2.png') }}" alt="Logo"
+                                        class="h-12 w-auto drop-shadow-md">
                                     <span class="sr-only">Alumni System</span>
-                                    <x-application-logo class="h-8 w-auto sm:h-10 text-brand-600 fill-current" />
+                                    <span
+                                        class="font-bold text-xl text-brand-900 tracking-tight">{{ config('app.name') }}</span>
                                 </a>
                             </div>
                         </div>
@@ -37,11 +40,12 @@
                                     <a href="{{ url('/dashboard') }}"
                                         class="font-medium text-gray-500 hover:text-gray-900">Dashboard</a>
                                 @else
-                                    <a href="{{ route('login') }}" class="font-medium text-brand-600 hover:text-brand-500">Log
+                                    <a href="{{ route('login') }}"
+                                        class="font-medium text-brand-600 hover:text-brand-500 transition-colors">Log
                                         in</a>
                                     @if (Route::has('register'))
                                         <a href="{{ route('register') }}"
-                                            class="font-medium text-gray-500 hover:text-gray-900">Register</a>
+                                            class="font-medium text-gray-500 hover:text-brand-600 transition-colors">Register</a>
                                     @endif
                                 @endauth
                             @endif
@@ -53,7 +57,7 @@
                     <div class="sm:text-center lg:text-left">
                         <h1 class="text-4xl tracking-tight font-extrabold text-gray-900 sm:text-5xl md:text-6xl">
                             <span class="block xl:inline">Welcome to the</span>
-                            <span class="block text-brand-600 xl:inline">Alumni Tracking System</span>
+                            <span class="block text-brand-600 xl:inline">Alumni System</span>
                         </h1>
                         <p
                             class="mt-3 text-base text-gray-500 sm:mt-5 sm:text-lg sm:max-w-xl sm:mx-auto md:mt-5 md:text-xl lg:mx-0">
@@ -64,13 +68,13 @@
                             <div class="rounded-md shadow">
                                 <a href="{{ route('register') }}"
                                     class="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-white bg-brand-600 hover:bg-brand-700 md:py-4 md:text-lg md:px-10">
-                                    Get Started
+                                    Join Now
                                 </a>
                             </div>
                             <div class="mt-3 sm:mt-0 sm:ml-3">
                                 <a href="{{ route('login') }}"
                                     class="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-brand-700 bg-brand-100 hover:bg-brand-200 md:py-4 md:text-lg md:px-10">
-                                    Sign In
+                                    Login
                                 </a>
                             </div>
                         </div>
@@ -79,9 +83,8 @@
             </div>
         </div>
         <div class="lg:absolute lg:inset-y-0 lg:right-0 lg:w-1/2">
-            <img class="h-56 w-full object-cover sm:h-72 md:h-96 lg:w-full lg:h-full"
-                src="https://images.unsplash.com/photo-1523050854058-8df90110c9f1?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1950&q=80"
-                alt="University Campus">
+            <img class="h-56 w-full object-cover sm:h-72 md:h-96 lg:w-full lg:h-full opacity-90"
+                src="{{ asset('images/hero-1.png') }}" alt="University Building">
         </div>
     </div>
 </body>
