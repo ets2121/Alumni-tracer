@@ -153,6 +153,7 @@
                                                         @foreach($options['options'] as $opt)
                                                             <label class="flex items-start hover:bg-gray-50 p-2 rounded-lg -ml-2 transition-colors cursor-pointer">
                                                                 <input type="checkbox" value="{{ $opt }}" name="answers[{{ $question->id }}][]"
+                                                                    x-model="answers[{{ $question->id }}]"
                                                                     class="mt-0.5 rounded text-green-600 focus:ring-green-500 border-gray-300">
                                                                 <span class="ml-2 text-gray-700 text-sm leading-snug">{{ $opt }}</span>
                                                             </label>

@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System Features | Alumni System</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.bunny.net">
+    <link href="https://fonts.bunny.net/css?family=inter:400,500,600,700,800&display=swap" rel="stylesheet" />
+
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* CSS Reset & Variables */
+        :root {
+            --bg-body: #0f172a;
+            --bg-sidebar: #020617;
+            --bg-card: #1e293b;
+            --bg-subtle: #16202a;
+
+            --text-primary: #f8fafc;
+            --text-secondary: #cbd5e1;
+            --text-muted: #94a3b8;
+
+            --brand-primary: #1b4332;
+            --brand-hover: #166534;
+            --brand-light: #4ade80;
+            --brand-accent: #d4af37;
+
+            --border-color: #334155;
+            --border-subtle: #1e293b;
+
+            --sidebar-width: 280px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-primary);
+            line-height: 1.6;
+            display: flex;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Sidebar Navigation */
+        #sidebar {
+            width: var(--sidebar-width);
+            background-color: var(--bg-sidebar);
+            border-right: 1px solid var(--border-color);
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 50;
+            transition: transform 0.3s ease;
+        }
+
+        .sidebar-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            background-color: var(--bg-sidebar);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .sidebar-brand {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .logo-icon {
+            color: var(--brand-light);
+        }
+
+        .sidebar-nav {
+            padding: 1rem 0;
+            list-style: none;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1.5rem;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: all 0.2s;
+            border-left: 3px solid transparent;
+        }
+
+        .nav-link:hover {
+            background-color: var(--bg-subtle);
+            color: var(--text-primary);
+        }
+
+        .nav-link.active {
+            background-color: var(--bg-card);
+            color: var(--brand-light);
+            border-left-color: var(--brand-light);
+        }
+
+        .nav-icon {
+            width: 20px;
+            margin-right: 0.75rem;
+            text-align: center;
+        }
+
+        /* Mobile Header */
+        #mobile-header {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background-color: var(--bg-sidebar);
+            border-bottom: 1px solid var(--border-color);
+            z-index: 60;
+            align-items: center;
+            padding: 0 1rem;
+            justify-content: space-between;
+        }
+
+        #menu-toggle {
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        /* Main Content */
+        #main-content {
+            margin-left: var(--sidebar-width);
+            flex: 1;
+            padding: 2rem 3rem;
+            max-width: 1200px;
+        }
+
+        /* Typography */
+        h1,
+        h2,
+        h3,
+        h4 {
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+        }
+
+        h1 {
+            font-size: 2.25rem;
+            font-weight: 800;
+            letter-spacing: -0.025em;
+        }
+
+        h2 {
+            font-size: 1.875rem;
+            margin-top: 3rem;
+            position: relative;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        h3 {
+            font-size: 1.25rem;
+            margin-top: 1.5rem;
+            color: var(--brand-light);
+            font-weight: 600;
+        }
+
+        h4 {
+            font-size: 1.1rem;
+            margin-top: 1rem;
+            color: var(--text-secondary);
+            font-weight: 600;
+        }
+
+        p {
+            margin-bottom: 1rem;
+            color: var(--text-secondary);
+        }
+
+        ul {
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--text-secondary);
+        }
+
+        li {
+            margin-bottom: 0.5rem;
+        }
+
+        /* Components */
+        .card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            font-size: 0.95rem;
+        }
+
+        .data-table th,
+        .data-table td {
+            text-align: left;
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .data-table th {
+            color: var(--brand-accent);
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 0.05em;
+        }
+
+        .code-block {
+            background-color: #000;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            font-family: monospace;
+            color: var(--brand-light);
+            overflow-x: auto;
+            margin: 1rem 0;
+            border: 1px solid var(--border-color);
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .feature-item {
+            background-color: var(--bg-subtle);
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            border: 1px solid var(--border-subtle);
+            transition: transform 0.2s;
+        }
+
+        .feature-item:hover {
+            border-color: var(--brand-primary);
+        }
+
+        .feature-icon {
+            color: var(--brand-light);
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .badge-status {
+            background-color: rgba(74, 222, 128, 0.1);
+            color: var(--brand-light);
+            border: 1px solid rgba(74, 222, 128, 0.2);
+        }
+
+        /* Collapsible Sections */
+        .collapsible {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            margin-bottom: 0.5rem;
+            overflow: hidden;
+        }
+
+        .collapsible-header {
+            padding: 1rem 1.5rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: var(--bg-card);
+            transition: background-color 0.2s;
+        }
+
+        .collapsible-header:hover {
+            background-color: var(--bg-subtle);
+        }
+
+        .collapsible-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+            background-color: var(--bg-subtle);
+        }
+
+        .collapsible-content.open {
+            max-height: 2000px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .collapsible-body {
+            padding: 1.5rem;
+        }
+
+        .chevron {
+            transition: transform 0.3s;
+        }
+
+        .open .chevron {
+            transform: rotate(180deg);
+        }
+
+        /* System Info Header */
+        .system-info {
+            background: linear-gradient(135deg, var(--bg-card) 0%, var(--brand-primary) 150%);
+            padding: 2.5rem;
+            border-radius: 1rem;
+            border: 1px solid var(--border-color);
+            margin-bottom: 3rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .system-info::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at top right, rgba(74, 222, 128, 0.1), transparent 40%);
+        }
+
+        /* Footer */
+        footer {
+            margin-top: 5rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border-color);
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.875rem;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            #mobile-header {
+                display: flex;
+            }
+
+            #sidebar {
+                transform: translateX(-100%);
+                top: 60px;
+                /* Below mobile header */
+                height: calc(100vh - 60px);
+            }
+
+            #sidebar.active {
+                transform: translateX(0);
+            }
+
+            #main-content {
+                margin-left: 0;
+                padding: 1.5rem;
+                padding-top: 5.5rem;
+                /* mobile header height + padding */
+            }
+
+            h1 {
+                font-size: 1.75rem;
+            }
+
+            h2 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Mobile Header -->
+    <header id="mobile-header">
+        <div class="sidebar-brand">
+            <i class="fas fa-graduation-cap logo-icon"></i>
+            <span>Alumni System</span>
+        </div>
+        <button id="menu-toggle" aria-label="Toggle menu">
+            <i class="fas fa-bars"></i>
+        </button>
+    </header>
+
+    <!-- Sidebar Navigation -->
+    <nav id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-brand">
+                <i class="fas fa-graduation-cap logo-icon"></i>
+                <span>Alumni System</span>
+            </div>
+            <div style="margin-top: 0.5rem; font-size: 0.8rem; color: var(--text-muted);">
+                Quirino State University
+            </div>
+        </div>
+        <ul class="sidebar-nav">
+            <li><a href="#overview" class="nav-link active"><i class="fas fa-home nav-icon"></i> System Overview</a>
+            </li>
+            <li><a href="#analytics" class="nav-link"><i class="fas fa-calculator nav-icon"></i> Analytics &
+                    Formulas</a></li>
+            <li><a href="#alumni" class="nav-link"><i class="fas fa-user-graduate nav-icon"></i> Alumni Profile</a></li>
+            <li><a href="#tracer" class="nav-link"><i class="fas fa-poll nav-icon"></i> Tracer Study</a></li>
+            <li><a href="#reports" class="nav-link"><i class="fas fa-file-export nav-icon"></i> Report Features</a></li>
+            <li><a href="#rbac" class="nav-link"><i class="fas fa-shield-alt nav-icon"></i> Access Control</a></li>
+        </ul>
+    </nav>
+
+    <!-- Main Content -->
+    <main id="main-content">
+
+        <!-- Header Section -->
+        <section id="overview">
+            <div class="system-info">
+                <h1>Alumni Tracking System</h1>
+                <p style="font-size: 1.1rem; margin-top: 0.5rem; max-width: 800px;">
+                    A centralized platform for tracking graduate career progression, facilitating accreditation
+                    reporting, and enhancing alumni engagement through data-driven insights.
+                </p>
+                <div style="margin-top: 1.5rem;">
+                    <span class="badge badge-status">Ver 1.0 Production Ready</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Analytics Logic Section -->
+        <section id="analytics">
+            <h2>Detailed Analytics & Computation Logic</h2>
+            <p>Transparency on how system metrics are calculated is essential for accurate accreditation reporting.
+                Below are the specific formulas used by the backend `ReportController`.</p>
+
+            <div class="feature-grid">
+                <!-- Employment Rate -->
+                <div class="feature-item">
+                    <h4><i class="fas fa-briefcase" style="color: var(--brand-accent);"></i> Employment Rate</h4>
+                    <p>Calculates the percentage of alumni who are currently employed.</p>
+                    <div class="code-block">
+                        (Employed Count / Total Alumni) * 100
+                    </div>
+                    <ul>
+                        <li><small>Rounded to 1 decimal place.</small></li>
+                        <li><small><strong>Employed Count:</strong> Users with status 'Employed'.</small></li>
+                    </ul>
+                </div>
+
+                <!-- Overseas Rate -->
+                <div class="feature-item">
+                    <h4><i class="fas fa-plane" style="color: var(--brand-accent);"></i> Overseas Employment</h4>
+                    <p>Percentage of employed alumni working abroad.</p>
+                    <div class="code-block">
+                        (Overseas Count / Employed Count) * 100
+                    </div>
+                    <ul>
+                        <li><small><strong>Overseas Count:</strong> Users with work_location = 'Overseas'.</small></li>
+                        <li><small>Denominator is <em>Employed</em> users only, not all alumni.</small></li>
+                    </ul>
+                </div>
+
+                <!-- Integrity Score -->
+                <div class="feature-item">
+                    <h4><i class="fas fa-database" style="color: var(--brand-accent);"></i> Data Integrity Score</h4>
+                    <p>Measures the completeness of the alumni dataset.</p>
+                    <div class="code-block">
+                        ((Total - Incomplete) / Total) * 100
+                    </div>
+                    <p class="text-sm mt-2">A profile is marked <strong>Incomplete</strong> if ANY are missing:</p>
+                    <ul class="text-sm">
+                        <li>Field of Work</li>
+                        <li>Work Status (e.g., Permanent)</li>
+                        <li>Establishment Type (e.g., Private)</li>
+                        <li>Work Location</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Alumni Profile Section -->
+        <section id="alumni">
+            <h2>Alumni Profile Structure</h2>
+            <p>The profile module allows alumni to manage their personal and professional data. Field visibility and
+                editability are strictly controlled.</p>
+
+            <div class="collapsible">
+                <div class="collapsible-header" onclick="toggleCollapse(this)">
+                    <span><strong>1. Registration & Core Identity</strong> <small class="text-muted">(Read-Only after
+                            creation)</small></span>
+                    <i class="fas fa-chevron-down chevron"></i>
+                </div>
+                <div class="collapsible-content">
+                    <div class="collapsible-body">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Field Name</th>
+                                    <th>Description</th>
+                                    <th>Editability</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>First / Last Name</td>
+                                    <td>Legal name of the alumni.</td>
+                                    <td><span class="text-red-400">Restricted</span> (Admin only)</td>
+                                </tr>
+                                <tr>
+                                    <td>Course / Program</td>
+                                    <td>Academic program graduated from (e.g., BSIT).</td>
+                                    <td><span class="text-red-400">Restricted</span> (Admin only)</td>
+                                </tr>
+                                <tr>
+                                    <td>Batch Year</td>
+                                    <td>Year of graduation.</td>
+                                    <td><span class="text-red-400">Restricted</span> (Admin only)</td>
+                                </tr>
+                                <tr>
+                                    <td>Student ID / Proof</td>
+                                    <td>Uploaded image for identity verification.</td>
+                                    <td>One-time upload</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="collapsible">
+                <div class="collapsible-header" onclick="toggleCollapse(this)">
+                    <span><strong>2. Professional Data</strong> <small class="text-muted">(User
+                            Updateable)</small></span>
+                    <i class="fas fa-chevron-down chevron"></i>
+                </div>
+                <div class="collapsible-content">
+                    <div class="collapsible-body">
+                        <p>This data feeds directly into the "Detailed Labor" and "Integrity Score" reports.</p>
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Field</th>
+                                    <th>Options / Format</th>
+                                    <th>Analytics Impact</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Employment Status</td>
+                                    <td>Employed, Unemployed, Ongoing Studies</td>
+                                    <td>Primary Employment Rate</td>
+                                </tr>
+                                <tr>
+                                    <td>Work Status</td>
+                                    <td>Permanent, Contractual, Job Order, Self-Employed</td>
+                                    <td>Stability Matrix</td>
+                                </tr>
+                                <tr>
+                                    <td>Establishment Type</td>
+                                    <td>Public (Gov), Private</td>
+                                    <td>Sector Analysis</td>
+                                </tr>
+                                <tr>
+                                    <td>Work Location</td>
+                                    <td>Local, Overseas</td>
+                                    <td>Brain Drain / Migration Stats</td>
+                                </tr>
+                                <tr>
+                                    <td>Company Info</td>
+                                    <td>Name, Position, Address (Free text)</td>
+                                    <td>Detailed Labor List</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tracer Study Section -->
+        <section id="tracer">
+            <h2>Tracer Survey Module</h2>
+            <p>The system utilizes a <strong>Dynamic Form Builder</strong> for tracer studies, allowing administrators
+                to create complex surveys without coding.</p>
+
+            <div class="feature-grid">
+                <div class="feature-item">
+                    <h4><i class="fas fa-random"></i> Conditional Logic</h4>
+                    <p>Questions can show/hide based on previous answers.</p>
+                    <p class="text-sm text-gray-400 mt-2">Example: <em>"If Unemployed"</em> &rarr; Show <em>"Reason for
+                            unemployment"</em>. Hide <em>"Salary"</em>.</p>
+                </div>
+                <div class="feature-item">
+                    <h4><i class="fas fa-table"></i> Dynamic Tables</h4>
+                    <p>Allows alumni to enter multiple rows of data.</p>
+                    <p class="text-sm text-gray-400 mt-2">Used for: <em>List of trainings attended</em>, <em>List of
+                            awards received</em>.</p>
+                </div>
+                <div class="feature-item">
+                    <h4><i class="fas fa-th-list"></i> Matrix Grids</h4>
+                    <p>Complex checkbox matrices for skill assessment.</p>
+                    <p class="text-sm text-gray-400 mt-2">Example: <em>Rate skills (Communication, Technical) vs
+                            (Learned in College, Used in Work)</em>.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Reports Section -->
+        <section id="reports">
+            <h2>Reporting & Exporting Features</h2>
+            <p>All reports can be filtered by Date, Course, Batch, and Employment Status.</p>
+
+            <div class="card">
+                <h3><i class="fas fa-file-download" style="color: var(--brand-accent);"></i> Export Formats</h3>
+                <p>The system uses specific engines for data export to ensure compatibility.</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                    <div class="p-4 border border-gray-600 rounded bg-gray-800">
+                        <strong class="text-green-400">CSV (Comma Separated)</strong>
+                        <p class="text-sm mt-1">Best for importing into other database systems or legacy software. Raw
+                            data format.</p>
+                    </div>
+                    <div class="p-4 border border-gray-600 rounded bg-gray-800">
+                        <strong class="text-green-400">Excel (.xls)</strong>
+                        <p class="text-sm mt-1">Formatted with headers and styles. Ready for presentation and pivot
+                            tables.</p>
+                    </div>
+                </div>
+            </div>
+
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Report Type</th>
+                        <th>Data Included</th>
+                        <th>Purpose</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Master List</strong></td>
+                        <td>Basic contact & degree info</td>
+                        <td>General alumni directory</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Detailed Labor</strong></td>
+                        <td>Full employment history, company, position, salary</td>
+                        <td>In-depth career analysis</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Statistical Summary</strong></td>
+                        <td>Aggregated counts (Pie chart data)</td>
+                        <td>Executive summary & dashboard</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Footer -->
+        <footer>
+            <p><strong>System Documentation Reference</strong></p>
+            <p>Generated for: System Administrators & Accreditors</p>
+            <p>&copy; 2026 Quirino State University. All Rights Reserved.</p>
+        </footer>
+
+    </main>
+
+    <script>
+        // Mobile Menu Toggle
+        const menuToggle = document.getElementById('menu-toggle');
+        const sidebar = document.getElementById('sidebar');
+
+        menuToggle.addEventListener('click', () => {
+            sidebar.classList.toggle('active');
+            const icon = menuToggle.querySelector('i');
+            if (sidebar.classList.contains('active')) {
+                icon.classList.remove('fa-bars');
+                icon.classList.add('fa-times');
+            } else {
+                icon.classList.remove('fa-times');
+                icon.classList.add('fa-bars');
+            }
+        });
+
+        // Collapsible Sections
+        function toggleCollapse(element) {
+            const content = element.nextElementSibling;
+            const chevron = element.querySelector('.chevron');
+
+            content.classList.toggle('open');
+            element.classList.toggle('open');
+
+            // Allow animation
+            if (content.style.maxHeight) {
+                content.style.maxHeight = null;
+            } else {
+                content.style.maxHeight = content.scrollHeight + "px";
+            }
+        }
+
+        // Active Navigation Highlight
+        const sections = document.querySelectorAll('section');
+        const navLinks = document.querySelectorAll('.nav-link');
+
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                if (pageYOffset >= (sectionTop - 250)) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href').includes(current)) {
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>
