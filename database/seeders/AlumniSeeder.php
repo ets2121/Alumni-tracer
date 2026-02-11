@@ -24,7 +24,12 @@ class AlumniSeeder extends Seeder
         foreach ($courses as $course) {
             // Generate Verified Alumni
             User::factory($verifiedCount)
-                ->create(['role' => 'alumni', 'status' => 'active'])
+                ->create([
+                    'role' => 'alumni',
+                    'status' => 'active',
+                    'department_name' => $course->department_name,
+                    'created_at' => now()->subDays(rand(0, 365)), // Spread over last year
+                ])
                 ->each(function ($user) use ($course) {
                     $profile = AlumniProfile::factory()
                         ->verified()
@@ -32,6 +37,7 @@ class AlumniSeeder extends Seeder
                             'user_id' => $user->id,
                             'course_id' => $course->id,
                             'department_name' => $course->department_name,
+                            'created_at' => $user->created_at, // Sync with user
                         ]);
 
                     // Seed Employment History
@@ -43,7 +49,11 @@ class AlumniSeeder extends Seeder
             // Generate Non-Verified Alumni (Pending)
             User::factory($nonVerifiedCount)
                 ->pending()
-                ->create(['role' => 'alumni'])
+                ->create([
+                    'role' => 'alumni',
+                    'department_name' => $course->department_name,
+                    'created_at' => now()->subDays(rand(0, 365)),
+                ])
                 ->each(function ($user) use ($course) {
                     AlumniProfile::factory()
                         ->nonVerified()
@@ -51,6 +61,7 @@ class AlumniSeeder extends Seeder
                             'user_id' => $user->id,
                             'course_id' => $course->id,
                             'department_name' => $course->department_name,
+                            'created_at' => $user->created_at,
                         ]);
                 });
         }

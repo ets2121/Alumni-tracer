@@ -142,22 +142,56 @@
                 </div>
             </div>
 
-            <!-- Alumni by Department -->
+            <!-- Alumni by Department/Course -->
             <div
                 class="bg-white dark:bg-dark-bg-elevated border border-gray-100 dark:border-dark-border rounded-2xl shadow-sm p-6">
-                <h3 class="text-gray-800 dark:text-dark-text-primary text-sm font-bold mb-6 flex items-center">
-                    <span class="w-1.5 h-6 bg-indigo-500 rounded-full mr-3"></span>
-                    Alumni per Department
-                </h3>
-                <div class="h-72 relative">
-                    <template x-if="loading.charts">
-                        <div class="absolute inset-0 flex items-center justify-center">
-                            <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-500"></div>
-                        </div>
-                    </template>
-                    <canvas x-ref="alumniByDeptChart"></canvas>
-                </div>
+                @if(Auth::user()->isSystemAdmin())
+                    <h3 class="text-gray-800 dark:text-dark-text-primary text-sm font-bold mb-6 flex items-center">
+                        <span class="w-1.5 h-6 bg-indigo-500 rounded-full mr-3"></span>
+                        Alumni per Department
+                    </h3>
+                    <div class="h-72 relative">
+                        <template x-if="loading.charts">
+                            <div class="absolute inset-0 flex items-center justify-center">
+                                <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-500"></div>
+                            </div>
+                        </template>
+                        <canvas x-ref="alumniByDeptChart"></canvas>
+                    </div>
+                @else
+                    <h3 class="text-gray-800 dark:text-dark-text-primary text-sm font-bold mb-6 flex items-center">
+                        <span class="w-1.5 h-6 bg-purple-500 rounded-full mr-3"></span>
+                        Alumni per Course
+                    </h3>
+                    <div class="h-72 relative">
+                        <template x-if="loading.charts">
+                            <div class="absolute inset-0 flex items-center justify-center">
+                                <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-500"></div>
+                            </div>
+                        </template>
+                        <canvas x-ref="alumniByCourseChart"></canvas>
+                    </div>
+                @endif
             </div>
+
+            @if(Auth::user()->isSystemAdmin())
+                <!-- Alumni by Course (Secondary for Sys Admin) -->
+                <div
+                    class="bg-white dark:bg-dark-bg-elevated border border-gray-100 dark:border-dark-border rounded-2xl shadow-sm p-6">
+                    <h3 class="text-gray-800 dark:text-dark-text-primary text-sm font-bold mb-6 flex items-center">
+                        <span class="w-1.5 h-6 bg-purple-500 rounded-full mr-3"></span>
+                        Alumni per Course (Top 10)
+                    </h3>
+                    <div class="h-72 relative">
+                        <template x-if="loading.charts">
+                            <div class="absolute inset-0 flex items-center justify-center">
+                                <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-500"></div>
+                            </div>
+                        </template>
+                        <canvas x-ref="alumniByCourseChart"></canvas>
+                    </div>
+                </div>
+            @endif
 
             <!-- Employment Status -->
             <div

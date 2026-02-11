@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alumni Flowchart | Alumni System</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-body: #020617;
+            --bg-card: #0f172a;
+            --brand-light: #fbbf24;
+            /* Gold/Yellow for Alumni */
+            --border-color: #1e293b;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --brand-green: #4ade80;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-primary);
+            margin: 0;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .header {
+            width: 100%;
+            max-width: 1200px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .back-link {
+            color: var(--brand-light);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 600;
+        }
+
+        .title-group h1 {
+            margin: 0;
+            font-size: 1.5rem;
+            color: #fff;
+        }
+
+        .diag-container {
+            background-color: var(--bg-card);
+            padding: 2rem;
+            border-radius: 1rem;
+            border: 1px solid var(--border-color);
+            width: 100%;
+            max-width: 1200px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            overflow-x: auto;
+        }
+
+        .mermaid {
+            background-color: transparent !important;
+        }
+
+        .legend {
+            margin-top: 2rem;
+            display: flex;
+            gap: 2rem;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.85rem;
+        }
+
+        .color-box {
+            width: 16px;
+            height: 16px;
+            border-radius: 4px;
+        }
+    </style>
+    <script>
+        mermaid.initialize({
+            theme: 'dark',
+            startOnLoad: true,
+            flowchart: { useMaxWidth: true, htmlLabels: true, curve: 'basis' },
+            themeVariables: {
+                primaryColor: '#1e293b',
+                primaryTextColor: '#fff',
+                primaryBorderColor: '#334155',
+                lineColor: '#fbbf24',
+                secondaryColor: '#0f172a',
+                tertiaryColor: '#1e293b'
+            }
+        });
+    </script>
+</head>
+
+<body>
+    <div class="header">
+        <div class="title-group">
+            <h1><i class="fas fa-user-graduate" style="color: var(--brand-light);"></i> Alumni User Journey</h1>
+            <p style="font-size: 0.9rem; color: var(--text-secondary); margin-top: 0.25rem;">Registration, Verification
+                & Long-term Engagement</p>
+        </div>
+        <a href="system_flowcharts.html" class="back-link">
+            <i class="fas fa-arrow-left"></i>
+            Back to Hub
+        </a>
+    </div>
+
+    <div class="diag-container">
+        <pre class="mermaid">
+graph TD
+    %% Global Styling
+    classDef register fill:#78350f,stroke:#fbbf24,stroke-width:2px,color:#fff;
+    classDef verify fill:#312e81,stroke:#818cf8,stroke-width:1px,color:#e0e7ff;
+    classDef engaged fill:#1e293b,stroke:#fbbf24,stroke-width:1px,color:#cbd5e1;
+    classDef survey fill:#064e3b,stroke:#10b981,stroke-width:1px,color:#d1fae5;
+    classDef wait fill:#451a03,stroke:#d97706,stroke-width:1px,color:#fef3c7;
+
+    Start((Register)) --> Form[Fill Personal & Academic Data]
+    Form --> Proof[Upload Student ID/Proof]
+    Proof --> OTP[VerificationController: Send OTP Email]
+    
+    OTP --> ValidOTP{Verify OTP}
+    ValidOTP -->|Success| Pending[Status: Pending Admin Approval]
+    
+    Pending --> Approval{Admin Review}
+    Approval -->|Rejected| Fail[Contact Admin]
+    Approval -->|Approved| Active[Status: Active]
+
+    Active --> Dashboard[Alumni Dashboard]
+    
+    Dashboard --> Bio[Professional Profile]
+    Dashboard --> Feed[Community Engagement]
+    Dashboard --> Utils[Tools & Feedback]
+
+    subgraph Bio [Career Identity]
+        Empl[Add Employment History]
+        Edu[Update Education Data]
+        Bio --> Empl & Edu
+    end
+
+    subgraph Feed [Engagement]
+        News[News & Events] --> React[Like/Comment]
+        Chat[Real-time Chat] --> Join[Join Dept/Batch Groups]
+        Gallery[Memories] --> ViewAlbum[View Event Photos]
+    end
+
+    subgraph Utils [Data Contribution]
+        GTS[CHED Tracer Survey] --> SubmitSurvey[Submit Annual Updates]
+        Eval[System Evaluation] --> Feedback[Submit UX Feedback]
+    end
+
+    %% Node Styles
+    class Start,Form,Proof register;
+    class OTP,ValidOTP verify;
+    class Pending,Approval,Fail wait;
+    class Active,Dashboard,Bio,Feed engaged;
+    class Utils,GTS,Eval,SubmitSurvey survey;
+        </pre>
+    </div>
+
+    <div class="legend">
+        <div class="legend-item">
+            <div class="color-box" style="background: #78350f; border: 1px solid #fbbf24;"></div> Onboarding
+        </div>
+        <div class="legend-item">
+            <div class="color-box" style="background: #312e81; border: 1px solid #818cf8;"></div> Auth Verification
+        </div>
+        <div class="legend-item">
+            <div class="color-box" style="background: #451a03; border: 1px solid #d97706;"></div> Approval Queue
+        </div>
+        <div class="legend-item">
+            <div class="color-box" style="background: #1e293b; border: 1px solid #fbbf24;"></div> Engaged User
+        </div>
+        <div class="legend-item">
+            <div class="color-box" style="background: #064e3b; border: 1px solid #10b981;"></div> Surveys & Feedback
+        </div>
+    </div>
+
+    <footer style="margin-top: 3rem; color: var(--text-secondary); font-size: 0.8rem;">
+        &copy; 2026 QSU Alumni System | Alumni Lifecycle Diagram
+    </footer>
+</body>
+
+</html>

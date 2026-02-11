@@ -14,8 +14,10 @@ return new class extends Migration {
             $table->string('department_name')->nullable()->after('role');
         });
 
-        // Update enum values for role
-        DB::statement("ALTER TABLE users MODIFY COLUMN role ENUM('admin', 'dept_admin', 'alumni') DEFAULT 'alumni'");
+        // Update enum values for role (MySQL only, SQLite doesn't support MODIFY COLUMN)
+        if (DB::getDriverName() === 'mysql') {
+            DB::statement("ALTER TABLE users MODIFY COLUMN role ENUM('admin', 'dept_admin', 'alumni') DEFAULT 'alumni'");
+        }
     }
 
     /**
@@ -27,6 +29,8 @@ return new class extends Migration {
             $table->dropColumn('department_name');
         });
 
-        DB::statement("ALTER TABLE users MODIFY COLUMN role ENUM('admin', 'alumni') DEFAULT 'alumni'");
+        if (DB::getDriverName() === 'mysql') {
+            DB::statement("ALTER TABLE users MODIFY COLUMN role ENUM('admin', 'alumni') DEFAULT 'alumni'");
+        }
     }
 };

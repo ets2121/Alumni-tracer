@@ -100,19 +100,24 @@ export default () => ({
         // 1. Registration Trends (Line)
         this.initLineChart('registrationTrendsChart', data.registration_trends, 'Alumni Registrations', '#10b981');
 
-        // 2. Alumni by Department (Bar)
+        // 2. Alumni by Department (Bar) - System Admins see multiple depts, Dept Admins see one
         this.initBarChart('alumniByDeptChart', data.alumni_by_dept, 'Alumni per Department', '#6366f1');
 
-        // 3. Employment Status (Doughnut)
+        // 3. Alumni by Course (Bar) - Especially useful for Dept Admins
+        if (data.alumni_by_course) {
+            this.initBarChart('alumniByCourseChart', data.alumni_by_course, 'Alumni per Course', '#8b5cf6');
+        }
+
+        // 4. Employment Status (Doughnut)
         this.initDoughnutChart('employmentStatusChart', data.employment_status);
 
-        // 4. Gender Distribution (Pie)
+        // 5. Gender Distribution (Pie)
         this.initPieChart('genderDistChart', data.gender_distribution);
 
-        // 5. Civil Status Distribution (Bar)
+        // 6. Civil Status Distribution (Bar)
         this.initBarChart('civilStatusChart', data.civil_status, 'Civil Status', '#f59e0b', 'y');
 
-        // 6. Employment Type (Doughnut)
+        // 7. Employment Type (Doughnut)
         this.initDoughnutChart('employmentTypeChart', data.employment_type);
     },
 

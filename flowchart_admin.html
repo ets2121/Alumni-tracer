@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Flowchart | Alumni System</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-body: #020617;
+            --bg-card: #0f172a;
+            --brand-light: #4ade80;
+            --border-color: #1e293b;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-primary);
+            margin: 0;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .header {
+            width: 100%;
+            max-width: 1200px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .back-link {
+            color: var(--brand-light);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 600;
+        }
+
+        .title-group h1 {
+            margin: 0;
+            font-size: 1.5rem;
+            color: #fff;
+        }
+
+        .diag-container {
+            background-color: var(--bg-card);
+            padding: 2rem;
+            border-radius: 1rem;
+            border: 1px solid var(--border-color);
+            width: 100%;
+            max-width: 1200px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            overflow-x: auto;
+        }
+
+        .mermaid {
+            background-color: transparent !important;
+        }
+
+        .legend {
+            margin-top: 2rem;
+            display: flex;
+            gap: 2rem;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 0.5rem;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.85rem;
+        }
+
+        .color-box {
+            width: 16px;
+            height: 16px;
+            border-radius: 4px;
+        }
+    </style>
+    <script>
+        mermaid.initialize({
+            theme: 'dark',
+            startOnLoad: true,
+            flowchart: { useMaxWidth: true, htmlLabels: true, curve: 'basis' },
+            themeVariables: {
+                primaryColor: '#1e293b',
+                primaryTextColor: '#fff',
+                primaryBorderColor: '#334155',
+                lineColor: '#4ade80',
+                secondaryColor: '#0f172a',
+                tertiaryColor: '#1e293b'
+            }
+        });
+    </script>
+</head>
+
+<body>
+    <div class="header">
+        <div class="title-group">
+            <h1><i class="fas fa-shield-halved" style="color: var(--brand-light);"></i> System Admin Workflow</h1>
+            <p style="font-size: 0.9rem; color: var(--text-secondary); margin-top: 0.25rem;">Global Infrastructure &
+                Governance</p>
+        </div>
+        <a href="system_flowcharts.html" class="back-link">
+            <i class="fas fa-arrow-left"></i>
+            Back to Hub
+        </a>
+    </div>
+
+    <div class="diag-container">
+        <pre class="mermaid">
+graph TD
+    %% Global Styling
+    classDef start fill:#1b4332,stroke:#4ade80,stroke-width:2px,color:#fff;
+    classDef process fill:#1e293b,stroke:#334155,stroke-width:1px,color:#cbd5e1;
+    classDef control fill:#334155,stroke:#4ade80,stroke-width:1px,color:#fff;
+    classDef restricted fill:#450a0a,stroke:#f87171,stroke-width:1px,color:#fecaca;
+    classDef report fill:#1e1b4b,stroke:#818cf8,stroke-width:1px,color:#e0e7ff;
+
+    Start((Login)) --> Auth{Admin Auth}
+    Auth -->|Failed| LoginError[Auth Error]
+    Auth -->|Success| Dashboard[Admin Dashboard]
+
+    Dashboard --> Core[Core Management]
+    Dashboard --> Eng[Engagement]
+    Dashboard --> Data[Analytics & Reports]
+
+    subgraph Core [Core Operations]
+        Users[User Mgmt] --> UserList[Admin/Dept/Alumni CRUD]
+        PreReg[Pre-Registration] --> Verify[Review Proof & Approve]
+        Courses[Course Mgmt] --> CourseCRUD[Manage Program List]
+    end
+
+    subgraph Eng [Global Engagement]
+        News[News & Events] --> Broadcast[Global Broadcast System]
+        News --> Moderation[Comment/Reaction Moderation]
+        Chat[Chat Mgmt] --> BannedWords[Banned Words Master Toggle]
+        Chat --> GroupAdmin[Manage All Groups]
+    end
+
+    subgraph Data [Data Intelligence]
+        Reports[System Reports] --> GenReport[Generate Aggregated Stats]
+        Reports --> Export[Export PDF/Excel/CSV]
+        Tracer[Tracer Survey] --> GTS[Review CHED GTS Responses]
+        Tracer --> TracerExport[Bulk Data Export]
+        Eval[Evaluations] --> Analytics[Interactive Metrics]
+    end
+
+    %% Node Styles
+    class Start start;
+    class Dashboard,Verify,Broadcast control;
+    class UserList,CourseCRUD,Moderation,GroupAdmin process;
+    class GenReport,Export,TracerExport,Analytics report;
+    class LoginError restricted;
+        </pre>
+    </div>
+
+    <div class="legend">
+        <div class="legend-item">
+            <div class="color-box" style="background: #1b4332; border: 1px solid #4ade80;"></div> Node Start
+        </div>
+        <div class="legend-item">
+            <div class="color-box" style="background: #334155; border: 1px solid #4ade80;"></div> Direct Control
+        </div>
+        <div class="legend-item">
+            <div class="color-box" style="background: #1e1b4b; border: 1px solid #818cf8;"></div> Data/Report Export
+        </div>
+        <div class="legend-item">
+            <div class="color-box" style="background: #1e293b; border: 1px solid #334155;"></div> CRUD/Standard Process
+        </div>
+    </div>
+
+    <footer style="margin-top: 3rem; color: var(--text-secondary); font-size: 0.8rem;">
+        &copy; 2026 QSU Alumni System | Admin Architectural Diagram
+    </footer>
+</body>
+
+</html>

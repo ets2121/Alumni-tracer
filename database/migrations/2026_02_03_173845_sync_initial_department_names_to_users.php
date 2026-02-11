@@ -10,10 +10,12 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        \DB::statement("UPDATE users 
-                       INNER JOIN alumni_profiles ON users.id = alumni_profiles.user_id 
-                       SET users.department_name = alumni_profiles.department_name 
-                       WHERE users.role = 'alumni' AND alumni_profiles.department_name IS NOT NULL");
+        if (\DB::getDriverName() === 'mysql') {
+            \DB::statement("UPDATE users 
+                           INNER JOIN alumni_profiles ON users.id = alumni_profiles.user_id 
+                           SET users.department_name = alumni_profiles.department_name 
+                           WHERE users.role = 'alumni' AND alumni_profiles.department_name IS NOT NULL");
+        }
     }
 
     /**

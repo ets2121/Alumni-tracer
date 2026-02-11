@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System Flowcharts | Alumni System</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.bunny.net">
+    <link href="https://fonts.bunny.net/css?family=inter:400,500,600,700,800&display=swap" rel="stylesheet" />
+
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --bg-body: #0f172a;
+            --bg-sidebar: #020617;
+            --bg-card: #1e293b;
+            --bg-subtle: #16202a;
+            --text-primary: #f8fafc;
+            --text-secondary: #cbd5e1;
+            --text-muted: #94a3b8;
+            --brand-primary: #1b4332;
+            --brand-hover: #166534;
+            --brand-light: #4ade80;
+            --brand-accent: #d4af37;
+            --border-color: #334155;
+            --border-subtle: #1e293b;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            width: 100%;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            background: linear-gradient(to right, #4ade80, #22c55e);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        p.subtitle {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .role-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-bottom: 4rem;
+        }
+
+        .role-card {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--border-color);
+            border-radius: 1.5rem;
+            padding: 2.5rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .role-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--brand-light);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2), 0 10px 10px -5px rgba(0, 0, 0, 0.1);
+        }
+
+        .role-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 150px;
+            height: 150px;
+            background: radial-gradient(circle at center, var(--brand-light), transparent 70%);
+            opacity: 0.05;
+            transform: translate(30%, -30%);
+        }
+
+        .role-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--brand-light);
+        }
+
+        .role-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: #fff;
+        }
+
+        .role-desc {
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            flex-grow: 1;
+        }
+
+        .view-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.75rem 1.5rem;
+            background-color: var(--brand-primary);
+            color: #fff;
+            text-decoration: none;
+            border-radius: 0.75rem;
+            font-weight: 600;
+            transition: all 0.2s;
+            border: 1px solid rgba(74, 222, 128, 0.2);
+            gap: 0.75rem;
+        }
+
+        .view-btn:hover {
+            background-color: var(--brand-hover);
+            transform: scale(1.02);
+        }
+
+        .footer {
+            margin-top: auto;
+            text-align: center;
+            color: var(--text-muted);
+            padding: 2rem;
+            border-top: 1px solid var(--border-color);
+            width: 100%;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.25rem;
+            }
+
+            .role-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>System Flowcharts</h1>
+            <p class="subtitle">Detailed architectural visualizations of user journeys and business logic for each
+                account role in the Alumni Tracking System.</p>
+        </header>
+
+        <div class="role-grid">
+            <!-- System Admin -->
+            <div class="role-card">
+                <i class="fas fa-shield-halved role-icon"></i>
+                <h2 class="role-title">System Administrator</h2>
+                <p class="role-desc">High-level oversight including global user management, system configuration, RBAC
+                    policy enforcement, and comprehensive institutional reporting.</p>
+                <a href="flowchart_admin.html" class="view-btn">
+                    <span>View Journey</span>
+                    <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+
+            <!-- Dept Admin -->
+            <div class="role-card">
+                <i class="fas fa-building-user role-icon"></i>
+                <h2 class="role-title">Department Admin</h2>
+                <p class="role-desc">Management of departmental graduates, alumni verification workflows,
+                    department-specific employment analytics, and chat community moderation.</p>
+                <a href="flowchart_dept_admin.html" class="view-btn">
+                    <span>View Journey</span>
+                    <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+
+            <!-- Alumni -->
+            <div class="role-card">
+                <i class="fas fa-user-graduate role-icon"></i>
+                <h2 class="role-title">Alumni User</h2>
+                <p class="role-desc">The end-user experience from registration and OTP verification to professional
+                    profile maintenance, career tracking, and community engagement.</p>
+                <a href="flowchart_alumni.html" class="view-btn">
+                    <span>View Journey</span>
+                    <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+
+        <section
+            style="margin-top: 2rem; padding: 2rem; background: var(--bg-card); border-radius: 1rem; border: 1px solid var(--border-color);">
+            <h3 style="margin-bottom: 1rem; color: var(--brand-light);">About the Diagrams</h3>
+            <p style="color: var(--text-secondary);">These flowcharts are generated using <strong>Mermaid.js</strong> to
+                ensure they remain accurate to the system's codebase. They represent the live logic implemented in the
+                <code>Web Routes</code>, <code>Middlewares</code>, and <code>Controller</code> layers.</p>
+        </section>
+    </div>
+
+    <footer class="footer">
+        <p>&copy; 2026 Quirino State University | Alumni Tracking System Documentation</p>
+    </footer>
+</body>
+
+</html>

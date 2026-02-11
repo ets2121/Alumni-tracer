@@ -3,12 +3,12 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-
 use App\Traits\HasDepartmentIsolation;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Course extends Model
 {
-    use HasDepartmentIsolation;
+    use HasDepartmentIsolation, HasFactory;
 
     protected $fillable = ['code', 'name', 'department_name', 'description', 'category'];
 

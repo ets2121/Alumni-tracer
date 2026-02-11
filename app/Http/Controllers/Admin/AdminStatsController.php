@@ -29,8 +29,8 @@ class AdminStatsController extends Controller
                 'alumni_total' => (clone $query)->where('role', 'alumni')->count(),
                 'alumni_verified' => (clone $query)->where('role', 'alumni')->where('status', 'active')->count(),
                 'alumni_pending' => (clone $query)->where('role', 'alumni')->where('status', 'pending')->count(),
-                'dept_admins' => User::withoutGlobalScopes()->where('role', 'dept_admin')->count(),
-                'total_departments' => Course::withoutGlobalScopes()->distinct()->count('department_name'),
+                'dept_admins' => User::where('role', 'dept_admin')->count(),
+                'total_departments' => Course::distinct()->count('department_name'),
                 'active_events' => (clone $newsQuery)->where('type', 'event')
                     ->where('event_date', '>=', now())
                     ->where(function ($q) {
