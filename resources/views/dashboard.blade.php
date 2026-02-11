@@ -13,22 +13,22 @@
                 </div>
             </div>
             <div
-                class="flex items-center space-x-1 bg-gray-100/80 dark:bg-dark-bg-subtle/80 p-1 rounded-xl border border-gray-200/50 dark:border-dark-border/50 shadow-sm">
+                class="flex items-center space-x-1 bg-gray-200 dark:bg-dark-bg-subtle p-1 rounded-xl border border-gray-300/50 dark:border-dark-border shadow-inner">
                 <button @click="currentTab = 'all'; $dispatch('switch-feed-tab', 'all')"
-                    :class="currentTab === 'all' ? 'bg-white dark:bg-dark-bg-elevated text-brand-600 shadow-sm' : 'text-gray-500 dark:text-dark-text-muted hover:text-gray-900 dark:hover:text-dark-text-primary'"
-                    class="flex-1 py-1.5 rounded-lg text-[11px] font-bold uppercase tracking-wider transition-all cursor-pointer">All</button>
+                    :class="currentTab === 'all' ? 'bg-brand-600 dark:bg-brand-500 text-white shadow-md' : 'text-gray-600 dark:text-dark-text-muted hover:text-gray-900 dark:hover:text-dark-text-primary hover:bg-white/50 dark:hover:bg-white/5'"
+                    class="flex-1 py-1.5 rounded-lg text-[11px] font-black uppercase tracking-wider transition-all cursor-pointer">All</button>
                 <button @click="currentTab = 'news'; $dispatch('switch-feed-tab', 'news')"
-                    :class="currentTab === 'news' ? 'bg-white dark:bg-dark-bg-elevated text-brand-600 shadow-sm' : 'text-gray-500 dark:text-dark-text-muted hover:text-gray-900 dark:hover:text-dark-text-primary'"
-                    class="flex-1 py-1.5 rounded-lg text-[11px] font-bold uppercase tracking-wider transition-all cursor-pointer">News</button>
+                    :class="currentTab === 'news' ? 'bg-brand-600 dark:bg-brand-500 text-white shadow-md' : 'text-gray-600 dark:text-dark-text-muted hover:text-gray-900 dark:hover:text-dark-text-primary hover:bg-white/50 dark:hover:bg-white/5'"
+                    class="flex-1 py-1.5 rounded-lg text-[11px] font-black uppercase tracking-wider transition-all cursor-pointer">News</button>
                 <button @click="currentTab = 'event'; $dispatch('switch-feed-tab', 'event')"
-                    :class="currentTab === 'event' ? 'bg-white dark:bg-dark-bg-elevated text-brand-600 shadow-sm' : 'text-gray-500 dark:text-dark-text-muted hover:text-gray-900 dark:hover:text-dark-text-primary'"
-                    class="flex-1 py-1.5 rounded-lg text-[11px] font-bold uppercase tracking-wider transition-all cursor-pointer">Events</button>
+                    :class="currentTab === 'event' ? 'bg-brand-600 dark:bg-brand-500 text-white shadow-md' : 'text-gray-600 dark:text-dark-text-muted hover:text-gray-900 dark:hover:text-dark-text-primary hover:bg-white/50 dark:hover:bg-white/5'"
+                    class="flex-1 py-1.5 rounded-lg text-[11px] font-black uppercase tracking-wider transition-all cursor-pointer">Events</button>
                 <button @click="currentTab = 'announcement'; $dispatch('switch-feed-tab', 'announcement')"
-                    :class="currentTab === 'announcement' ? 'bg-white dark:bg-dark-bg-elevated text-brand-600 shadow-sm' : 'text-gray-500 dark:text-dark-text-muted hover:text-gray-900 dark:hover:text-dark-text-primary'"
-                    class="flex-1 py-1.5 rounded-lg text-[11px] font-bold uppercase tracking-wider transition-all cursor-pointer">Announcements</button>
+                    :class="currentTab === 'announcement' ? 'bg-brand-600 dark:bg-brand-500 text-white shadow-md' : 'text-gray-600 dark:text-dark-text-muted hover:text-gray-900 dark:hover:text-dark-text-primary hover:bg-white/50 dark:hover:bg-white/5'"
+                    class="flex-1 py-1.5 rounded-lg text-[11px] font-black uppercase tracking-wider transition-all cursor-pointer">Announcements</button>
                 <button @click="currentTab = 'job'; $dispatch('switch-feed-tab', 'job')"
-                    :class="currentTab === 'job' ? 'bg-white dark:bg-dark-bg-elevated text-brand-600 shadow-sm' : 'text-gray-500 dark:text-dark-text-muted hover:text-gray-900 dark:hover:text-dark-text-primary'"
-                    class="flex-1 py-1.5 rounded-lg text-[11px] font-bold uppercase tracking-wider transition-all cursor-pointer">Jobs</button>
+                    :class="currentTab === 'job' ? 'bg-brand-600 dark:bg-brand-500 text-white shadow-md' : 'text-gray-600 dark:text-dark-text-muted hover:text-gray-900 dark:hover:text-dark-text-primary hover:bg-white/50 dark:hover:bg-white/5'"
+                    class="flex-1 py-1.5 rounded-lg text-[11px] font-black uppercase tracking-wider transition-all cursor-pointer">Jobs</button>
             </div>
         </div>
     </x-slot>

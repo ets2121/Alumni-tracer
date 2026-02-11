@@ -15,24 +15,24 @@
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')"
-                        class="text-white hover:text-black hover:border-brand-200">
+                        class="text-white font-bold hover:text-white hover:bg-brand-500/50 hover:border-white transition-all">
                         {{ __('Dashboard') }}
                     </x-nav-link>
                     <x-nav-link :href="route('alumni.gallery.index')" :active="request()->routeIs('alumni.gallery.*')"
-                        class="text-white hover:text-black hover:border-brand-200">
+                        class="text-white font-bold hover:text-white hover:bg-brand-500/50 hover:border-white transition-all">
                         {{ __('Gallery') }}
                     </x-nav-link>
                     <x-nav-link :href="route('alumni.memos.index')" :active="request()->routeIs('alumni.memos.*')"
-                        class="text-brand-100 hover:text-white hover:border-brand-200">
+                        class="text-white font-bold hover:text-white hover:bg-brand-500/50 hover:border-white transition-all">
                         {{ __('CHED Memos') }}
                     </x-nav-link>
                     <x-nav-link :href="route('chat.index')" :active="request()->routeIs('chat.*')"
-                        class="text-brand-100 hover:text-white hover:border-brand-200">
+                        class="text-white font-bold hover:text-white hover:bg-brand-500/50 hover:border-white transition-all">
                         {{ __('Group Chat') }}
                     </x-nav-link>
                     <x-nav-link :href="route('alumni.evaluations.index')"
                         :active="request()->routeIs('alumni.evaluations.*')"
-                        class="text-brand-100 hover:text-white hover:border-brand-200 relative">
+                        class="text-white font-bold hover:text-white hover:bg-brand-500/50 hover:border-white transition-all relative">
                         {{ __('Evaluations') }}
                         <!-- Badge -->
                         @if(Auth::user()->status === 'active')
@@ -44,7 +44,7 @@
                         @endif
                     </x-nav-link>
                     <x-nav-link :href="route('ched-gts.index')" :active="request()->routeIs('ched-gts.*')"
-                        class="text-brand-100 hover:text-white hover:border-brand-200 relative">
+                        class="text-white font-bold hover:text-white hover:bg-brand-500/50 hover:border-white transition-all relative">
                         {{ __('Tracer Survey') }}
                     </x-nav-link>
                 </div>
