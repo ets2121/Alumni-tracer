@@ -102,11 +102,15 @@ class AdminStatsController extends Controller
     private function getRegistrationTrends()
     {
         // Monthly registration for the last 12 months
+        // Use COUNT(*) and explicit table name to avoid ambiguity or strict mode issues
         $trends = User::where('role', 'alumni')
-            ->select(DB::raw('COUNT(id) as count'), DB::raw("DATE_FORMAT(created_at, '%Y-%m') as month"))
+            ->select(
+                DB::raw('COUNT(*) as count'),
+                DB::raw("DATE_FORMAT(created_at, '%Y-%m') as month")
+            )
             ->where('created_at', '>=', now()->subMonths(12))
-            ->groupBy('month')
-            ->orderBy('month')
+            ->groupBy(DB::raw("DATE_FORMAT(created_at, '%Y-%m')"))
+            ->orderBy(DB::raw("DATE_FORMAT(created_at, '%Y-%m')"), 'asc')
             ->get();
 
         return [
@@ -142,9 +146,11 @@ class AdminStatsController extends Controller
 
     private function getAlumniByCourse()
     {
+        // Explicitly select columns and use count(alumni_profiles.id) to be safe with joins
         $dist = AlumniProfile::join('courses', 'alumni_profiles.course_id', '=', 'courses.id')
-            ->select('courses.code', DB::raw('count(*) as count'))
+            ->select('courses.code', DB::raw('COUNT(alumni_profiles.id) as count'))
             ->groupBy('courses.code')
+            ->orderBy('count', 'desc')
             ->limit(10)
             ->get();
 

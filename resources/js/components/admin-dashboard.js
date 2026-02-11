@@ -122,6 +122,7 @@ export default () => ({
     },
 
     initLineChart(ref, data, label, color) {
+        if (!this.$refs[ref]) return;
         const ctx = this.$refs[ref].getContext('2d');
         if (this.charts[ref]) this.charts[ref].destroy();
 
@@ -154,6 +155,7 @@ export default () => ({
     },
 
     initBarChart(ref, data, label, color, axis = 'x') {
+        if (!this.$refs[ref]) return;
         const ctx = this.$refs[ref].getContext('2d');
         if (this.charts[ref]) this.charts[ref].destroy();
 
@@ -182,6 +184,7 @@ export default () => ({
     },
 
     initDoughnutChart(ref, data) {
+        if (!this.$refs[ref]) return;
         const ctx = this.$refs[ref].getContext('2d');
         if (this.charts[ref]) this.charts[ref].destroy();
 
@@ -208,6 +211,7 @@ export default () => ({
     },
 
     initPieChart(ref, data) {
+        if (!this.$refs[ref]) return;
         const ctx = this.$refs[ref].getContext('2d');
         if (this.charts[ref]) this.charts[ref].destroy();
 
