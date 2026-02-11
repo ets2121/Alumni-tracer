@@ -12,6 +12,17 @@ class AlumniFeedController extends Controller
     public function fetch(Request $request)
     {
         $user = Auth::user();
+
+        if ($user->status !== 'active') {
+            return response()->json([
+                'html' => '<div class="flex flex-col items-center justify-center p-12 text-center">
+                            <p class="text-gray-500 dark:text-dark-text-muted font-medium">Account verification required to view feed content.</p>
+                          </div>',
+                'next_cursor' => null,
+                'has_more' => false
+            ]);
+        }
+
         $profile = $user->alumniProfile;
         $tab = $request->query('tab', 'all');
         $page = $request->query('page', 1);
