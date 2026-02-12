@@ -1,5 +1,6 @@
 export default (config) => ({
     endpoint: config.endpoint,
+    isActive: config.isActive,
     tab: 'all',
     nextCursor: null,
     loading: false,
@@ -16,15 +17,18 @@ export default (config) => ({
     },
 
     init() {
+        console.log('Alumni Feed Component Initialized', { isActive: this.isActive });
+
         // SWR Logic: Try to load from cache first
         const cacheKey = `feed_${this.tab}`;
         const cached = sessionStorage.getItem(cacheKey);
         if (cached) {
             this.feedHtml = cached;
-            // Still fetch in background to refresh
         }
 
-        this.fetchFeed();
+        if (this.isActive) {
+            this.fetchFeed();
+        }
 
         const observer = new IntersectionObserver((entries) => {
             if (entries[0].isIntersecting && !this.loading && this.hasMore) {
@@ -52,16 +56,6 @@ export default (config) => ({
                 }
             });
             this.discussionModal.html = await response.text();
-            this.$nextTick(() => {
-                if (this.$refs.discussionModalContent) {
-                    // Check if Alpine.initTree is available, otherwise rely on x-html reactivity or re-scan
-                    // Alpine v3 automatically observes new DOM from x-html? 
-                    // Actually x-html typically DOES NOT initialize Alpine components inside.
-                    // But if discussion modal content is just HTML/Tailwind, it's fine.
-                    // If it has Alpine interactions, we might need a helper.
-                    // For now, assume it's mostly static or handled by global listeners.
-                }
-            });
         } catch (e) {
             this.discussionModal.html = '<div class="p-10 text-center text-red-500 font-bold italic">Failed to load discussion. Please try again.</div>';
         }
@@ -73,7 +67,6 @@ export default (config) => ({
         this.nextCursor = null;
         this.hasMore = true;
 
-        // SWR for tab switching
         const cacheKey = `feed_${this.tab}`;
         const cached = sessionStorage.getItem(cacheKey);
         if (cached) {
@@ -82,16 +75,15 @@ export default (config) => ({
             this.feedHtml = '';
         }
 
-        this.fetchFeed();
+        if (this.isActive) {
+            this.fetchFeed();
+        }
 
         this.$dispatch('feed-tab-synced', newTab);
 
         const container = document.getElementById('feed-scroll-container');
         if (container) {
-            container.scrollTo({
-                top: 0,
-                behavior: 'smooth'
-            });
+            container.scrollTo({ top: 0, behavior: 'smooth' });
         }
     },
 
@@ -100,17 +92,6 @@ export default (config) => ({
         this.loading = true;
 
         try {
-            // We need the route URL. Since we are in a JS file, we can't use blade {{ route() }}.
-            // We'll trust that the API endpoint is consistent or pass it via data-attribute if needed.
-            // For now, hardcoding based on existing route or using a global config object is best.
-            // Let's assume '/alumni/feed' based on typical routing, but the dashboard used {{ route('alumni.feed.fetch') }}
-            // We should probably pass the endpoint into the component init or check window.routes.
-
-            // BETTER: Use a relative URL or a known API path.
-            // unique route: alumni.feed.fetch -> /alumni/feed/fetch (guess)
-            // I'll check web.php to be sure, but for now I'll use a relative path that likely works or inject it.
-            // Actually, I can pass it as an argument to the component: x-data="alumniFeed('/alumni/feed/fetch')"
-
             let url = `${this.endpoint}?tab=${this.tab}`;
             if (this.nextCursor) {
                 url += `&cursor=${this.nextCursor}`;
@@ -134,11 +115,6 @@ export default (config) => ({
 
             this.nextCursor = data.next_cursor;
             this.hasMore = data.has_more;
-
-            if (!this.nextCursor) {
-                this.hasMore = false;
-            }
-
         } catch (error) {
             console.error('Feed error:', error);
         } finally {

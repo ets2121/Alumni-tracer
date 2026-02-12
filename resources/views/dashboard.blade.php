@@ -35,11 +35,11 @@
         </div>
     </x-slot>
 
-    <div class="h-full flex flex-col overflow-hidden bg-gray-50 dark:bg-dark-bg-deep"
-        @if(Auth::user()->status === 'active') x-data="alumniFeed({
-                endpoint: '{{ route('alumni.feed.fetch') }}'
+    <div class="h-full flex flex-col overflow-hidden bg-gray-50 dark:bg-dark-bg-deep" x-data="alumniFeed({
+                endpoint: '{{ route('alumni.feed.fetch') }}',
+                isActive: {{ Auth::user()->status === 'active' ? 'true' : 'false' }}
             })" x-on:switch-feed-tab.window="switchTab($event.detail)"
-        x-on:open-image-modal.window="imageModal.src = $event.detail.src; imageModal.open = true" @endif>
+        x-on:open-image-modal.window="imageModal.src = $event.detail.src; imageModal.open = true">
 
         <!-- Main Scrollable Area -->
         <div class="flex-1 overflow-y-auto custom-scrollbar pb-12" id="feed-scroll-container">
